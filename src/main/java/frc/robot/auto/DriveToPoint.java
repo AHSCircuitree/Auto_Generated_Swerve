@@ -22,9 +22,9 @@ public class DriveToPoint extends Command {
 
   private double goalX;
   private double goalY;
-  private double angle;
+  //private double angle;
   private double speed;
-  private double initialAngle;
+  //private double initialAngle;
   private double invertedX = 1;
   private double invertedY = 1;
 
@@ -36,7 +36,7 @@ public class DriveToPoint extends Command {
 
     goalX = X;
     goalY = Y;
-    angle = Angle;
+    //angle = Angle;
     speed = Speed;
 
     drive = new SwerveRequest.FieldCentric()
@@ -68,7 +68,7 @@ public class DriveToPoint extends Command {
 
     }
 
-    initialAngle = drivetrain.getPigeon2().getAngle();
+    //initialAngle = drivetrain.getPigeon2().getAngle();
 
   }
 
