@@ -107,4 +107,11 @@ public class Telemetry {
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
     }
+
+    public Pose2d returnPose() {
+
+        return m_lastPose;
+
+    }
+
 }
