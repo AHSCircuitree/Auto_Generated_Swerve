@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.auto.ResetPose;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
@@ -57,8 +56,7 @@ public class RobotContainer {
     Player1.a().whileTrue(drivetrain.applyRequest(() -> brake));
     Player1.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-Player1.getLeftY(), -Player1.getLeftX()))));
-
-    Player1.x().whileTrue(new ResetPose(logger));
+ 
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
@@ -90,7 +88,7 @@ public class RobotContainer {
     drivetrain.applyRequest(() -> drive
     .withVelocityX(normalizeSpeeds(-logger.returnPose().getX() + 1.5))  
     .withVelocityY(normalizeSpeeds(-logger.returnPose().getY() + 0)) 
-    .withRotationalRate(0)).withTimeout(10));
+    .withRotationalRate(0)));
 
   }
 
