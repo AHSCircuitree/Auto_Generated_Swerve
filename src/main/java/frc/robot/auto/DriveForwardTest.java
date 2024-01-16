@@ -4,14 +4,19 @@
 
 package frc.robot.auto;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.SwerveTeleop;
 import frc.robot.Telemetry;
 
-public class DriveToPoint extends Command {
+public class DriveForwardTest extends Command {
 
   /** Creates a new DriveToPoint. */ 
 
@@ -21,30 +26,26 @@ public class DriveToPoint extends Command {
   private Telemetry tele;
 
   private double goalX;
-  private double goalY;
-  //private double angle;
   private double speed;
-  //private double initialAngle;
+
   private double invertedX = 1;
-  private double invertedY = 1;
 
-  public DriveToPoint(double X, double Y, double Angle, double Speed, SwerveTeleop Drivetrain, Telemetry Tele) {
+  private String autoMessage;
 
-    
+  public DriveForwardTest(double X, double Speed, SwerveTeleop Drivetrain, Telemetry Tele) {
+
     drivetrain = Drivetrain;
     tele = Tele;
+ 
+    goalX = X + tele.returnPose().getX();
 
-    goalX = X;
-    goalY = Y;
-    //angle = Angle;
     speed = Speed;
 
     drive = new SwerveRequest.FieldCentric()
     .withDeadband(0.2)
     .withRotationalDeadband(0.2)
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-    // Use addRequirements() here to declare subsystem dependencies.
+ 
     addRequirements(Drivetrain);
 
   }
@@ -53,23 +54,15 @@ public class DriveToPoint extends Command {
   @Override
   public void initialize() {
  
-    goalX = goalX + tele.returnPose().getX();
-    goalY = goalY + tele.returnPose().getY();
-
-    if (goalX < 0) {
+    if (goalX - tele.returnPose().getX() < 0) {
 
       invertedX = -1;
 
     }
 
-    if (goalY < 0) {
-
-      invertedY = -1;
-
-    }
-
-    //initialAngle = drivetrain.getPigeon2().getAngle();
-
+    autoMessage = "Initalized";
+    SmartDashboard.putString("Auto Message", autoMessage);
+ 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -78,8 +71,16 @@ public class DriveToPoint extends Command {
 
     drivetrain.applyRequest(() -> drive
     .withVelocityX(speed * invertedX)  
-    .withVelocityY(speed * invertedY) 
+    .withVelocityY(0) 
     .withRotationalRate(0));
+
+    SmartDashboard.putNumber("Target X", goalX);
+    SmartDashboard.putNumber("Current X", tele.returnPose().getX());
+
+    autoMessage = "In Loop";
+    SmartDashboard.putString("Auto Message", autoMessage);
+ 
+    drivetrain.registerTelemetry(tele::telemeterize);
 
   }
 
@@ -92,13 +93,16 @@ public class DriveToPoint extends Command {
     .withVelocityY(0) 
     .withRotationalRate(0));
 
+    autoMessage = "Ended";
+    SmartDashboard.putString("Auto Message", autoMessage);
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    if ((Math.abs(goalX - tele.returnPose().getX()) > .05) && (Math.abs(goalY - tele.returnPose().getY()) < .05)) {
+ 
+    if ((Math.abs(goalX - tele.returnPose().getX()) < .12)) {
 
       return true;
 

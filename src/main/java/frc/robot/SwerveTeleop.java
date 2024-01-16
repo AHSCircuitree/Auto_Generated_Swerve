@@ -28,7 +28,6 @@ public class SwerveTeleop extends SwerveDrivetrain implements Subsystem {
             startSimThread();
         }
  
- 
     }
     public SwerveTeleop(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
