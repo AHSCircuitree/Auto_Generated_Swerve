@@ -15,8 +15,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.auto.DriveForwardTest;
+import frc.robot.auto.ResetPose;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
@@ -37,7 +38,7 @@ public class RobotContainer {
   // Commands
  
   // Objects for Tele-op Drive
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+  public SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.2) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -57,6 +58,7 @@ public class RobotContainer {
     Player1.b().whileTrue(drivetrain
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-Player1.getLeftY(), -Player1.getLeftX()))));
 
+    Player1.x().whileTrue(new ResetPose(logger));
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
@@ -70,12 +72,44 @@ public class RobotContainer {
     configureBindings();
 
     SmartDashboard.putData("Select Auto", AutoSelect);
-    AutoSelect.setDefaultOption("Test1", new DriveForwardTest(2, .3, drivetrain, logger));
-    AutoSelect.addOption("Test2", new DriveForwardTest(2, .3, drivetrain, logger));
+    //AutoSelect.setDefaultOption("Test1", new DriveForwardTest(2, .6, drivetrain, logger));
+    //AutoSelect.addOption("Test2", new DriveForwardTest(2, .3, drivetrain, logger));
 
   }
 
   public Command getAutonomousCommand() {
-    return new DriveForwardTest(2, .3, drivetrain, logger);
+ 
+    /*
+    return drivetrain.applyRequest(() -> drive
+    .withVelocityX(1 - logger.returnPose().getX())  
+    .withVelocityY(1 - logger.returnPose().getX()) 
+    .withRotationalRate(0)).withTimeout(10);
+    */
+
+    return new SequentialCommandGroup(
+    drivetrain.applyRequest(() -> drive
+    .withVelocityX(normalizeSpeeds(-logger.returnPose().getX() + 1.5))  
+    .withVelocityY(normalizeSpeeds(-logger.returnPose().getY() + 0)) 
+    .withRotationalRate(0)).withTimeout(10));
+
   }
+
+  public double normalizeSpeeds(double speed) {
+
+    if (speed > -.7 && speed < -.1) {
+
+      return -.7;
+
+    } else if (speed < .7 && speed > .1) {
+
+      return .7;
+
+    } else {
+
+      return speed;
+
+    }
+ 
+  }    
+
 }

@@ -1,9 +1,12 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -17,7 +20,10 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
+ 
     private final double MaxSpeed;
+    private double centerOffsetX = 8.29;
+    private double centerOffsetY = 4.10;
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
@@ -79,8 +85,8 @@ public class Telemetry {
         Pose2d pose = state.Pose;
         fieldTypePub.set("Field2d");
         fieldPub.set(new double[] {
-                pose.getX(),
-                pose.getY(),
+                pose.getX() + centerOffsetX,
+                pose.getY() + centerOffsetY,
                 pose.getRotation().getDegrees()
         });
 
@@ -106,6 +112,7 @@ public class Telemetry {
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
+
     }
 
     public Pose2d returnPose() {
@@ -113,5 +120,6 @@ public class Telemetry {
         return m_lastPose;
 
     }
+
  
 }
