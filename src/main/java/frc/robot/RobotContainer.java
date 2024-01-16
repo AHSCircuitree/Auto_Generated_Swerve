@@ -77,17 +77,10 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
  
-    /*
-    return drivetrain.applyRequest(() -> drive
-    .withVelocityX(1 - logger.returnPose().getX())  
-    .withVelocityY(1 - logger.returnPose().getX()) 
-    .withRotationalRate(0)).withTimeout(10);
-    */
-
     return new SequentialCommandGroup(
     drivetrain.applyRequest(() -> drive
-    .withVelocityX(normalizeSpeeds(-logger.returnPose().getX() + 1.5))  
-    .withVelocityY(normalizeSpeeds(-logger.returnPose().getY() + 0)) 
+    .withVelocityX(normalizeSpeeds(-(logger.returnPose().getX() - 8.29) + 1))  
+    .withVelocityY(normalizeSpeeds(-(logger.returnPose().getY() - 4.10))) 
     .withRotationalRate(0)));
 
   }
