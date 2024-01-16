@@ -11,13 +11,14 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auto.DriveForwardTest;
 import frc.robot.generated.TunerConstants;
+import frc.robot.sim.GimmePoints;
 
 public class RobotContainer {
 
@@ -27,6 +28,7 @@ public class RobotContainer {
 
   // Controllers
   private final CommandXboxController Player1 = new CommandXboxController(0);
+  private final XboxController Player1Sim = new XboxController(0);
  
   // Subsystems
   private final SwerveTeleop drivetrain = TunerConstants.DriveTrain;  
@@ -52,6 +54,8 @@ public class RobotContainer {
             .withVelocityY(-Player1.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-Player1.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
+
+    drivetrain.setDefaultCommand(new GimmePoints(Player1Sim, drivetrain));
 
     Player1.a().whileTrue(drivetrain.applyRequest(() -> brake));
     Player1.b().whileTrue(drivetrain
