@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 
@@ -76,12 +77,17 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
- 
+
     return new SequentialCommandGroup(
     drivetrain.applyRequest(() -> drive
-    .withVelocityX(normalizeSpeeds(-(logger.returnPose().getX() - 8.29) + 1))  
-    .withVelocityY(normalizeSpeeds(-(logger.returnPose().getY() - 4.10))) 
-    .withRotationalRate(0)));
+    .withVelocityX(MoveToX(-3, .7))  
+    .withVelocityY(MoveToY(-1, .7)) 
+    .withRotationalRate(10)).withTimeout(7),
+     drivetrain.applyRequest(() -> drive
+    .withVelocityX(MoveToX(0, .7))  
+    .withVelocityY(MoveToY(0, .7)) 
+    .withRotationalRate(0))
+    );
 
   }
 
@@ -102,5 +108,54 @@ public class RobotContainer {
     }
  
   }    
+
+
+  public double MoveToX(double X, double speed) {
+ 
+    double OffsetX = X + Constants.XOFFSET;
+
+    if (logger.returnPose().getX() + Constants.XOFFSET < OffsetX && Math.abs(logger.returnPose().getX() - X) > Constants.POSETOLERANCE) {
+
+      SmartDashboard.putNumber("Going to X", OffsetX);
+      SmartDashboard.putNumber("Current At X", logger.returnPose().getX()+ Constants.XOFFSET);
+      return speed;
+
+    } else if (logger.returnPose().getX() + Constants.XOFFSET > OffsetX && Math.abs(logger.returnPose().getX() - X) > Constants.POSETOLERANCE) {
+
+      SmartDashboard.putNumber("Going to X", OffsetX);
+      SmartDashboard.putNumber("Current At X", logger.returnPose().getX()+ Constants.XOFFSET);
+      return -speed;
+
+    } else {
+
+      return 0;
+
+    }
+
+  }
+
+  public double MoveToY(double Y, double speed) {
+ 
+    double OffsetY = Y + Constants.YOFFSET;
+
+    if (logger.returnPose().getY() + Constants.YOFFSET < OffsetY && Math.abs(logger.returnPose().getY() - Y) > Constants.POSETOLERANCE) {
+
+      SmartDashboard.putNumber("Going to Y", OffsetY);
+      SmartDashboard.putNumber("Current At Y", logger.returnPose().getY()+ Constants.YOFFSET);
+      return speed;
+
+    } else if (logger.returnPose().getY() + Constants.YOFFSET > OffsetY && Math.abs(logger.returnPose().getY() - Y) > Constants.POSETOLERANCE) {
+
+      SmartDashboard.putNumber("Going to Y", OffsetY);
+      SmartDashboard.putNumber("Current At Y", logger.returnPose().getY()+ Constants.YOFFSET);
+      return -speed;
+
+    } else {
+
+      return 0;
+
+    }
+
+  }
 
 }

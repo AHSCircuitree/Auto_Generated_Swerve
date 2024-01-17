@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class Telemetry {
  
     private final double MaxSpeed;
-    private double centerOffsetX = 8.29;
-    private double centerOffsetY = 4.10;
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
@@ -85,8 +83,8 @@ public class Telemetry {
         Pose2d pose = state.Pose;
         fieldTypePub.set("Field2d");
         fieldPub.set(new double[] {
-                pose.getX() + centerOffsetX,
-                pose.getY() + centerOffsetY,
+                pose.getX() + Constants.XOFFSET,
+                pose.getY() + Constants.YOFFSET,
                 pose.getRotation().getDegrees()
         });
 
@@ -120,6 +118,12 @@ public class Telemetry {
         return m_lastPose;
 
     }
+ 
+    BooleanSupplier CheckIfFinished(double X, double Y) {
 
+        return () -> Math.abs(m_lastPose.getX() - X) > Constants.POSETOLERANCE;
+        //&& Math.abs(m_lastPose.getY() - Y) > Constants.POSETOLERANCE;
+
+    }
  
 }
