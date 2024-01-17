@@ -23,7 +23,7 @@ import frc.robot.generated.TunerConstants;
 public class RobotContainer {
 
   // Variables
-  private static final double MaxSpeed = 6; // 6 meters per second desired top speed
+  private static final double MaxSpeed = 2; // 6 meters per second desired top speed
   private static final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
 
   // Controllers
@@ -80,9 +80,9 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
     drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToX(-3, .7))  
-    .withVelocityY(MoveToY(-1, .7)) 
-    .withRotationalRate(10)).withTimeout(7),
+    .withVelocityX(MoveToX(1, .7))  
+    .withVelocityY(MoveToY(0, .7)) 
+    .withRotationalRate(0)).withTimeout(7),
      drivetrain.applyRequest(() -> drive
     .withVelocityX(MoveToX(0, .7))  
     .withVelocityY(MoveToY(0, .7)) 
