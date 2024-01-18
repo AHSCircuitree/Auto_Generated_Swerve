@@ -142,7 +142,13 @@ public class RobotContainer {
     }
  
   }
- 
+
+  public double Rotate(double Angle, double Speed) {
+    
+    return 2;
+
+  }
+
   public Command DriveToPoint(double X, double Y, double Speed) {
 
     return drivetrain.applyRequest(() -> drive
