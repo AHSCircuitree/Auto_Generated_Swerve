@@ -86,11 +86,9 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative()).withTimeout(.1),
-    DriveToPoint(0, 0, .7),
-    DriveToPoint(0, 1, .7),
-    DriveToPoint(0, 0, .7),
-    DriveToPoint(0, 2, .7),
-    DriveToPoint(0, 0, .7)
+    DriveToPoint(0, 2, 0, .7),
+    DriveToPoint(0, 0, 90, .7)
+   
     );
 
   }
@@ -143,18 +141,32 @@ public class RobotContainer {
  
   }
 
-  public double Rotate(double Angle, double Speed) {
+  public double Rotate(double TargetAngle, double Speed) {
     
-    return 2;
+    double CurrentAngle = logger.returnPose().getRotation().getDegrees();
+
+    if (TargetAngle > CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+
+      return Speed;
+
+    } else if (TargetAngle < CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+
+      return -Speed;
+
+    } else {
+
+      return 0;
+
+    }
 
   }
 
-  public Command DriveToPoint(double X, double Y, double Speed) {
+  public Command DriveToPoint(double X, double Y, double Angle, double Speed) {
 
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(MoveToY(Y, .7))  
     .withVelocityY(MoveToX(X, .7)) 
-    .withRotationalRate(0)).until(logger.CheckIfFinished(X, Y));
+    .withRotationalRate(Rotate(Angle, 1))).until(logger.CheckIfFinished(X, Y));
 
   }
 

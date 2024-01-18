@@ -8,6 +8,6 @@ public class Constants {
 
     // Auto
     public static double POSETOLERANCE = .03;
-    public static double ANGLETOLERANCE = .3;
+    public static double ANGLETOLERANCE = 2;
     
 }
