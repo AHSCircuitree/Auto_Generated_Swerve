@@ -86,9 +86,11 @@ public class RobotContainer {
 
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative()).withTimeout(.1),
-    DriveToPoint(0, 2, 0, .7),
-    DriveToPoint(0, 0, 90, .7)
-   
+    DriveToPoint(0, 1, 135, 1.5),
+    DriveToPoint(0, 1.5, 135, 1.5),
+    DriveToPoint(0, 0, 135, 1.5)
+ 
+     
     );
 
   }
@@ -103,11 +105,11 @@ public class RobotContainer {
 
     if (OffsetCurrent < OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
-      return -speed;
+      return speed;
 
     } else if (OffsetCurrent > OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
-      return speed;
+      return -speed;
 
     } else {
 
@@ -126,11 +128,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("Currently at Y", OffsetCurrent);
 
     if (OffsetCurrent < OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
-
+      //return 0;
       return speed;
 
     } else if (OffsetCurrent > OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
+      //return 0;
       return -speed;
 
     } else {
@@ -145,11 +148,11 @@ public class RobotContainer {
     
     double CurrentAngle = logger.returnPose().getRotation().getDegrees();
 
-    if (TargetAngle > CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+    if (TargetAngle < CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
 
       return Speed;
 
-    } else if (TargetAngle < CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+    } else if (TargetAngle > CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
 
       return -Speed;
 
@@ -164,9 +167,9 @@ public class RobotContainer {
   public Command DriveToPoint(double X, double Y, double Angle, double Speed) {
 
     return drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToY(Y, .7))  
-    .withVelocityY(MoveToX(X, .7)) 
-    .withRotationalRate(Rotate(Angle, 1))).until(logger.CheckIfFinished(X, Y));
+    .withVelocityX(MoveToX(Y, Speed))  
+    .withVelocityY(MoveToY(X, Speed)) 
+    .withRotationalRate(Rotate(0, 0))).until(logger.CheckIfFinished(Y, X));
 
   }
 
