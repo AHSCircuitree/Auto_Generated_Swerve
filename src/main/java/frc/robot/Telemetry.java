@@ -121,8 +121,8 @@ public class Telemetry {
  
     BooleanSupplier CheckIfFinished(double X, double Y) {
 
-        return () -> Math.abs(m_lastPose.getX() - X) > Constants.POSETOLERANCE;
-        //&& Math.abs(m_lastPose.getY() - Y) > Constants.POSETOLERANCE;
+        return () -> Math.abs(m_lastPose.getX() - X) < Constants.POSETOLERANCE
+        && Math.abs(m_lastPose.getY() - Y) < Constants.POSETOLERANCE;
 
     }
  

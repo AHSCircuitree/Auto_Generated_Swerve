@@ -65,6 +65,12 @@ public class RobotContainer {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    SmartDashboard.putNumber("Going to X", 0);
+    SmartDashboard.putNumber("Currently at X", logger.returnPose().getX());
+    SmartDashboard.putNumber("Going to Y", 0);
+    SmartDashboard.putNumber("Currently at Y", logger.returnPose().getY());
+
   }
 
   public RobotContainer() {
@@ -79,75 +85,54 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     return new SequentialCommandGroup(
-    drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToX(1, .7))  
-    .withVelocityY(MoveToY(0, .7)) 
-    .withRotationalRate(0)).withTimeout(7),
-     drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToX(0, .7))  
-    .withVelocityY(MoveToY(0, .7)) 
-    .withRotationalRate(0))
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative()).withTimeout(.1),
+    DriveToPoint(0, 0, .7),
+    DriveToPoint(0, 1, .7),
+    DriveToPoint(0, 0, .7),
+    DriveToPoint(0, 2, .7),
+    DriveToPoint(0, 0, .7)
     );
 
   }
-
-  public double normalizeSpeeds(double speed) {
-
-    if (speed > -.7 && speed < -.1) {
-
-      return -.7;
-
-    } else if (speed < .7 && speed > .1) {
-
-      return .7;
-
-    } else {
-
-      return speed;
-
-    }
  
-  }    
-
-
   public double MoveToX(double X, double speed) {
  
-    double OffsetX = X + Constants.XOFFSET;
+    double OffsetTarget = X;
+    double OffsetCurrent = logger.returnPose().getX();
 
-    if (logger.returnPose().getX() + Constants.XOFFSET < OffsetX && Math.abs(logger.returnPose().getX() - X) > Constants.POSETOLERANCE) {
+    SmartDashboard.putNumber("Going to X", OffsetTarget);
+    SmartDashboard.putNumber("Currently at X", OffsetCurrent);
 
-      SmartDashboard.putNumber("Going to X", OffsetX);
-      SmartDashboard.putNumber("Current At X", logger.returnPose().getX()+ Constants.XOFFSET);
-      return speed;
+    if (OffsetCurrent < OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
-    } else if (logger.returnPose().getX() + Constants.XOFFSET > OffsetX && Math.abs(logger.returnPose().getX() - X) > Constants.POSETOLERANCE) {
-
-      SmartDashboard.putNumber("Going to X", OffsetX);
-      SmartDashboard.putNumber("Current At X", logger.returnPose().getX()+ Constants.XOFFSET);
       return -speed;
+
+    } else if (OffsetCurrent > OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
+
+      return speed;
 
     } else {
 
       return 0;
 
     }
-
+ 
   }
 
   public double MoveToY(double Y, double speed) {
  
-    double OffsetY = Y + Constants.YOFFSET;
+    double OffsetTarget = Y;
+    double OffsetCurrent = logger.returnPose().getY();
 
-    if (logger.returnPose().getY() + Constants.YOFFSET < OffsetY && Math.abs(logger.returnPose().getY() - Y) > Constants.POSETOLERANCE) {
+    SmartDashboard.putNumber("Going to Y", OffsetTarget);
+    SmartDashboard.putNumber("Currently at Y", OffsetCurrent);
 
-      SmartDashboard.putNumber("Going to Y", OffsetY);
-      SmartDashboard.putNumber("Current At Y", logger.returnPose().getY()+ Constants.YOFFSET);
+    if (OffsetCurrent < OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
+
       return speed;
 
-    } else if (logger.returnPose().getY() + Constants.YOFFSET > OffsetY && Math.abs(logger.returnPose().getY() - Y) > Constants.POSETOLERANCE) {
+    } else if (OffsetCurrent > OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
-      SmartDashboard.putNumber("Going to Y", OffsetY);
-      SmartDashboard.putNumber("Current At Y", logger.returnPose().getY()+ Constants.YOFFSET);
       return -speed;
 
     } else {
@@ -155,6 +140,15 @@ public class RobotContainer {
       return 0;
 
     }
+ 
+  }
+ 
+  public Command DriveToPoint(double X, double Y, double Speed) {
+
+    return drivetrain.applyRequest(() -> drive
+    .withVelocityX(MoveToY(Y, .7))  
+    .withVelocityY(MoveToX(X, .7)) 
+    .withRotationalRate(0)).until(logger.CheckIfFinished(X, Y));
 
   }
 
