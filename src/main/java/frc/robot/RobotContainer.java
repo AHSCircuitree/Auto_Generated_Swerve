@@ -35,6 +35,10 @@ public class RobotContainer {
   // Selectors
   SendableChooser<Command> AutoSelect = new SendableChooser<>();
 
+  // PID Controllers
+  private PIDController AutoDrivePID = new PIDController(1.2, 0, 0);
+  private PIDController AutoTurnPID = new PIDController(0.03, 0, 0);
+
   // Commands
  
   // Objects for Tele-op Drive
@@ -59,10 +63,10 @@ public class RobotContainer {
         .applyRequest(() -> point.withModuleDirection(new Rotation2d(-Player1.getLeftY(), -Player1.getLeftX()))));
  
     // reset the field-centric heading on left bumper press
-    Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
 
     if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
     }
     drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -77,6 +81,7 @@ public class RobotContainer {
     configureBindings();
 
     SmartDashboard.putData("Select Auto", AutoSelect);
+    SmartDashboard.putNumber("PID Test", AutoTurnPID.calculate(0, 3));
     //AutoSelect.setDefaultOption("Test1", new DriveForwardTest(2, .6, drivetrain, logger));
     //AutoSelect.addOption("Test2", new DriveForwardTest(2, .3, drivetrain, logger));
 
@@ -86,9 +91,10 @@ public class RobotContainer {
 
     // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative()).withTimeout(.1),
-    DriveToPoint(Constants.WayPoints.FieldCenter[0], Constants.WayPoints.FieldCenter[1], 0, .7),
-    DriveToPoint(Constants.WayPoints.RedMiddleRing[0], Constants.WayPoints.RedMiddleRing[1], 0, .7)
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))).withTimeout(.1),
+    DriveToPoint(1, 1.5, -2),
+    DriveToPoint(1, 1.9, 2),
+    DriveToPoint(1, 2, 1)
      
     );
 
@@ -96,20 +102,17 @@ public class RobotContainer {
  
   public double MoveToX(double X, double speed) {
  
-    double OffsetTarget = X;
-    double OffsetCurrent = logger.returnPose().getX();
+    double OffsetTarget = -X;
+    double OffsetCurrent = logger.returnPose().getY();
 
     SmartDashboard.putNumber("Going to X", OffsetTarget);
     SmartDashboard.putNumber("Currently at X", OffsetCurrent);
 
-    if (OffsetCurrent < OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
+    if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
-      return speed;
-
-    } else if (OffsetCurrent > OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
-
-      return -speed;
-
+      //return 0;
+      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
+    
     } else {
 
       return 0;
@@ -121,19 +124,42 @@ public class RobotContainer {
   public double MoveToY(double Y, double speed) {
  
     double OffsetTarget = Y;
-    double OffsetCurrent = logger.returnPose().getY();
+    double OffsetCurrent = logger.returnPose().getX();
 
     SmartDashboard.putNumber("Going to Y", OffsetTarget);
     SmartDashboard.putNumber("Currently at Y", OffsetCurrent);
 
-    if (OffsetCurrent < OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
-      //return 0;
-      return speed;
+    if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
+    
+      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
+ 
+    } else {
 
-    } else if (OffsetCurrent > OffsetTarget && Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
+      return 0;
 
-      //return 0;
-      return -speed;
+    }
+ 
+  }
+
+  public double Rotate(double TargetAngle, boolean TurningRight) {
+
+    double CurrentAngle = logger.returnPose().getRotation().getDegrees();
+
+    double Direction;
+
+    if (CurrentAngle <= TargetAngle) {
+
+      Direction = 1;
+
+    } else {
+
+      Direction = -1;
+
+    }
+
+    if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+
+      return 1.2 * Direction;
 
     } else {
 
@@ -143,32 +169,13 @@ public class RobotContainer {
  
   }
 
-  public double Rotate(double TargetAngle, double Speed) {
-    
-    double CurrentAngle = logger.returnPose().getRotation().getDegrees();
-
-    if (TargetAngle < CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
-
-      return Speed;
-
-    } else if (TargetAngle > CurrentAngle && Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
-
-      return -Speed;
-
-    } else {
-
-      return 0;
-
-    }
-
-  }
-
-  public Command DriveToPoint(double X, double Y, double Angle, double Speed) {
+  public Command DriveToPoint(double X, double Y, double Angle) {
 
     return drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToX(Y, Speed))  
-    .withVelocityY(MoveToY(X, Speed)) 
-    .withRotationalRate(Rotate(0, 0))).until(logger.CheckIfFinished(Y, X));
+    .withVelocityX(MoveToY(Y, 0))  
+    .withVelocityY(MoveToX(X, 0)) 
+    .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, X, -Angle));
+    //.withRotationalRate(0)).until(logger.CheckIfFinished(Y, X));
 
   }
 

@@ -46,7 +46,7 @@ public class Telemetry {
     DoublePublisher velocityY = driveStats.getDoubleTopic("Velocity Y").publish();
     DoublePublisher speed = driveStats.getDoubleTopic("Speed").publish();
     DoublePublisher odomPeriod = driveStats.getDoubleTopic("Odometry Period").publish();
-
+    
     /* Keep a reference of the last pose to calculate the speeds */
     Pose2d m_lastPose = new Pose2d();
     double lastTime = Utils.getCurrentTimeSeconds();
@@ -119,11 +119,12 @@ public class Telemetry {
 
     }
  
-    BooleanSupplier CheckIfFinished(double X, double Y) {
+    BooleanSupplier CheckIfFinished(double X, double Y, double Angle) {
 
-        return () -> Math.abs(m_lastPose.getX() - X) < Constants.POSETOLERANCE
-        && Math.abs(m_lastPose.getY() - Y) < Constants.POSETOLERANCE;
-
+        return () -> Math.abs(m_lastPose.getX() - X) <= Constants.POSETOLERANCE
+        && Math.abs(m_lastPose.getY() - Y) <= Constants.POSETOLERANCE
+        && Math.abs(returnPose().getRotation().getDegrees() - Angle) <= Constants.ANGLETOLERANCE;
+  
     }
  
 }
