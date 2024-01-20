@@ -8,6 +8,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 
@@ -25,7 +25,7 @@ public class RobotContainer {
   // Variables
   private static final double MaxSpeed = 2; // 6 meters per second desired top speed
   private static final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
-
+ 
   // Controllers
   private final CommandXboxController Player1 = new CommandXboxController(0);
  
@@ -84,12 +84,11 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
 
+    // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative()).withTimeout(.1),
-    DriveToPoint(0, 1, 135, 1.5),
-    DriveToPoint(0, 1.5, 135, 1.5),
-    DriveToPoint(0, 0, 135, 1.5)
- 
+    DriveToPoint(Constants.WayPoints.FieldCenter[0], Constants.WayPoints.FieldCenter[1], 0, .7),
+    DriveToPoint(Constants.WayPoints.RedMiddleRing[0], Constants.WayPoints.RedMiddleRing[1], 0, .7)
      
     );
 

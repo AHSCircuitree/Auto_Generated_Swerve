@@ -9,5 +9,12 @@ public class Constants {
     // Auto
     public static double POSETOLERANCE = .15;
     public static double ANGLETOLERANCE = 2;
+
+    public class WayPoints {
+
+        public static double FieldCenter[] = {0, 0};
+        public static double RedMiddleRing[] = {-4, -6};
+
+    }
     
 }
