@@ -33,6 +33,7 @@ public class RobotContainer {
  
   // Subsystems
   private final SwerveTeleop drivetrain = TunerConstants.DriveTrain;  
+  private final Limelight limelight = new Limelight();
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
@@ -53,11 +54,13 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    limelight.setDefaultCommand(null);
+
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-Player1.getLeftY() * MaxSpeed) // Drive forward with
                                                                                            // negative Y (forward)
             .withVelocityY(-Player1.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-Player1.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            .withRotationalRate((-Player1.getRightX() * MaxAngularRate) - (limelight.dbl_tx / 15)) // Drive counterclockwise with negative X (left)
         ));
 
     Player1.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -86,7 +89,7 @@ public class RobotContainer {
 
     // Push telemetry and selectors
     SmartDashboard.putData("Select Auto", AutoSelect);
-  
+ 
   }
 
   public Command getAutonomousCommand() {
@@ -94,10 +97,11 @@ public class RobotContainer {
     // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))).withTimeout(.1),
-    DriveToPoint(1, 1.5, 0),
-    DriveToPoint(1, 1.9, 0),
-    DriveToPoint(1, 2, 0)
-     
+    //DriveToPoint(1, 1.5, 0),
+    //DriveToPoint(1, 1.9, 0),
+    //DriveToPoint(1, 2, 0)
+    DriveToPointLimelight(0, 0) 
+
     );
 
   }
@@ -171,12 +175,27 @@ public class RobotContainer {
  
   }
 
+  public double LimelightRotate() {
+
+    return limelight.dbl_tx / 13;
+ 
+  }
+
   public Command DriveToPoint(double X, double Y, double Angle) {
 
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(MoveToY(Y, 0))  
     .withVelocityY(MoveToX(X, 0)) 
     .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, X, -Angle));
+  
+  }
+
+  public Command DriveToPointLimelight(double X, double Y) {
+
+    return drivetrain.applyRequest(() -> drive
+    .withVelocityX(MoveToY(Y, 0))  
+    .withVelocityY(MoveToX(X, 0)) 
+    .withRotationalRate(LimelightRotate()));
   
   }
 
