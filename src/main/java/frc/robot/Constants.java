@@ -12,8 +12,10 @@ public class Constants {
 
     public class WayPoints {
 
-        public static double FieldCenter[] = {0, 0};
-        public static double RedMiddleRing[] = {-4, -6};
+        public static double FieldCenter[] = {0, 0, 0};
+        public static double RedCenter[] = {0, 0, 0};
+        public static double RedLeft[] = {0, 0, 0};
+        public static double RedMiddleRing[] = {-4, -6, 0};
 
     }
     

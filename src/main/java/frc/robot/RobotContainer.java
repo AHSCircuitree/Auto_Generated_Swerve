@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.lang.reflect.Array;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -33,7 +35,7 @@ public class RobotContainer {
   private final SwerveTeleop drivetrain = TunerConstants.DriveTrain;  
 
   // Selectors
-  SendableChooser<Command> AutoSelect = new SendableChooser<>();
+  private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(1.2, 0, 0);
@@ -78,13 +80,13 @@ public class RobotContainer {
   }
 
   public RobotContainer() {
+    
+    // Set the button bindings
     configureBindings();
 
+    // Push telemetry and selectors
     SmartDashboard.putData("Select Auto", AutoSelect);
-    SmartDashboard.putNumber("PID Test", AutoTurnPID.calculate(0, 3));
-    //AutoSelect.setDefaultOption("Test1", new DriveForwardTest(2, .6, drivetrain, logger));
-    //AutoSelect.addOption("Test2", new DriveForwardTest(2, .3, drivetrain, logger));
-
+  
   }
 
   public Command getAutonomousCommand() {
@@ -92,9 +94,9 @@ public class RobotContainer {
     // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))).withTimeout(.1),
-    DriveToPoint(1, 1.5, -2),
-    DriveToPoint(1, 1.9, 2),
-    DriveToPoint(1, 2, 1)
+    DriveToPoint(1, 1.5, 0),
+    DriveToPoint(1, 1.9, 0),
+    DriveToPoint(1, 2, 0)
      
     );
 
@@ -175,8 +177,7 @@ public class RobotContainer {
     .withVelocityX(MoveToY(Y, 0))  
     .withVelocityY(MoveToX(X, 0)) 
     .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, X, -Angle));
-    //.withRotationalRate(0)).until(logger.CheckIfFinished(Y, X));
-
+  
   }
 
 }
