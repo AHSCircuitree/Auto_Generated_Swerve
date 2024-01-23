@@ -40,13 +40,13 @@ public class RobotContainer {
 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(1.2, 0, 0);
-  private PIDController AutoTurnPID = new PIDController(0.03, 0, 0);
+  private PIDController AutoTurnPID = new PIDController(0.06, 0, 0);
 
   // Commands
  
   // Objects for Tele-op Drive
   public SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.03).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
+      .withDeadband(MaxSpeed * 0.03).withRotationalDeadband(MaxAngularRate * 0.05) // Small deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -60,7 +60,7 @@ public class RobotContainer {
         drivetrain.applyRequest(() -> drive.withVelocityX(-Player1.getLeftY() * MaxSpeed) // Drive forward with
                                                                                            // negative Y (forward)
             .withVelocityY(-Player1.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate((-Player1.getRightX() * MaxAngularRate) - (limelight.dbl_tx / 15)) // Drive counterclockwise with negative X (left)
+            .withRotationalRate((-Player1.getRightX() * MaxAngularRate) + (AutoTurnPID.calculate(limelight.dbl_tx))) // Drive counterclockwise with negative X (left)
         ));
 
     Player1.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -73,12 +73,8 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
     }
-    drivetrain.registerTelemetry(logger::telemeterize);
 
-    SmartDashboard.putNumber("Going to X", 0);
-    SmartDashboard.putNumber("Currently at X", logger.returnPose().getX());
-    SmartDashboard.putNumber("Going to Y", 0);
-    SmartDashboard.putNumber("Currently at Y", logger.returnPose().getY());
+    drivetrain.registerTelemetry(logger::telemeterize);
 
   }
 
@@ -88,7 +84,9 @@ public class RobotContainer {
     configureBindings();
 
     // Push telemetry and selectors
+ 
     SmartDashboard.putData("Select Auto", AutoSelect);
+    SmartDashboard.putNumber("PID Test", AutoTurnPID.calculate(-45, 90));
  
   }
 
@@ -106,14 +104,11 @@ public class RobotContainer {
 
   }
  
-  public double MoveToX(double X, double speed) {
+  public double VerticalMovement(double X, double speed) {
  
     double OffsetTarget = -X;
     double OffsetCurrent = logger.returnPose().getY();
-
-    SmartDashboard.putNumber("Going to X", OffsetTarget);
-    SmartDashboard.putNumber("Currently at X", OffsetCurrent);
-
+ 
     if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
 
       //return 0;
@@ -127,14 +122,11 @@ public class RobotContainer {
  
   }
 
-  public double MoveToY(double Y, double speed) {
+  public double HorizonalMovement(double Y, double speed) {
  
     double OffsetTarget = Y;
     double OffsetCurrent = logger.returnPose().getX();
-
-    SmartDashboard.putNumber("Going to Y", OffsetTarget);
-    SmartDashboard.putNumber("Currently at Y", OffsetCurrent);
-
+ 
     if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
     
       return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
@@ -151,21 +143,9 @@ public class RobotContainer {
 
     double CurrentAngle = logger.returnPose().getRotation().getDegrees();
 
-    double Direction;
-
-    if (CurrentAngle <= TargetAngle) {
-
-      Direction = 1;
-
-    } else {
-
-      Direction = -1;
-
-    }
-
     if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
 
-      return 1.2 * Direction;
+      return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
 
     } else {
 
@@ -184,8 +164,8 @@ public class RobotContainer {
   public Command DriveToPoint(double X, double Y, double Angle) {
 
     return drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToY(Y, 0))  
-    .withVelocityY(MoveToX(X, 0)) 
+    .withVelocityX(HorizonalMovement(Y, 0))  
+    .withVelocityY(VerticalMovement(X, 0)) 
     .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, X, -Angle));
   
   }
@@ -193,8 +173,8 @@ public class RobotContainer {
   public Command DriveToPointLimelight(double X, double Y) {
 
     return drivetrain.applyRequest(() -> drive
-    .withVelocityX(MoveToY(Y, 0))  
-    .withVelocityY(MoveToX(X, 0)) 
+    .withVelocityX(HorizonalMovement(Y, 0))  
+    .withVelocityY(VerticalMovement(X, 0)) 
     .withRotationalRate(LimelightRotate()));
   
   }
