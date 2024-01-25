@@ -317,30 +317,22 @@ public class Limelight extends SubsystemBase {
     double targetOffsetAngle_Vertical = ty;
 
     //how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = -30;//was30
+    double limelightMountAngleDegrees = 0;//was30
 
     //distance from the center of the Limelight lens to the floor
-    double limelightHeightInches = 48.0;
+    double limelightHeightInches = 46.0;
 
     //distance from the low tags to the floor
-    double lowTagHeightInches = 14.625;
-
-    //distanve form the high tags to the floor
-    double highTagHeightInches = 24.38;
-
+    double tagHeightInches = 56;
+ 
     double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
     //calculate distance
     double distanceFromLimelightToGoalInches = -1;
-
-    if(TagID() == 4 || TagID() == 5){
-      distanceFromLimelightToGoalInches = (highTagHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
-    }
-    else{
-      distanceFromLimelightToGoalInches = (lowTagHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
-    }
-    
+ 
+    distanceFromLimelightToGoalInches = (tagHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
+ 
     double distanceFromLimelighttoGoalMeters = distanceFromLimelightToGoalInches / 39.37;
     //return in meters
     if (HasValidTarget() == false) {

@@ -57,10 +57,10 @@ public class RobotContainer {
     limelight.setDefaultCommand(null);
 
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-Player1.getLeftY() * MaxSpeed) // Drive forward with
+        drivetrain.applyRequest(() -> drive.withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed) // Drive forward with
                                                                                            // negative Y (forward)
-            .withVelocityY(-Player1.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate((-Player1.getRightX() * MaxAngularRate) + (AutoTurnPID.calculate(limelight.dbl_tx))) // Drive counterclockwise with negative X (left)
+            .withVelocityY(Deadband(-Player1.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
         ));
 
     Player1.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -95,10 +95,11 @@ public class RobotContainer {
     // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))).withTimeout(.1),
-    //DriveToPoint(1, 1.5, 0),
-    //DriveToPoint(1, 1.9, 0),
-    //DriveToPoint(1, 2, 0)
-    DriveToPointLimelight(0, 0) 
+    DriveToPoint(0, 1.5, 0),
+    DriveToPoint(1, 0, 0),
+    DriveToPoint(0, 0, 0)
+    //DriveToPoint(0, 0, 0),
+    //DriveToPointLimelight(0, 0) 
 
     );
 
@@ -177,6 +178,24 @@ public class RobotContainer {
     .withVelocityY(VerticalMovement(X, 0)) 
     .withRotationalRate(LimelightRotate()));
   
+  }
+
+  public double Deadband(double value) {
+
+    if (value < .1 && value > 0) {
+
+      return 0;
+
+    } else if (value > -.1 && value < 0) {
+
+      return 0;
+
+    } else {
+
+      return value;
+
+    }
+
   }
 
 }
