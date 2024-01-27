@@ -27,6 +27,7 @@ public class RobotContainer {
   // Variables
   private static final double MaxSpeed = 2; // 6 meters per second desired top speed
   private static final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
+  private static double[] InitalPose;
  
   // Controllers
   private final CommandXboxController Player1 = new CommandXboxController(0);
@@ -37,6 +38,7 @@ public class RobotContainer {
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
+  private final SendableChooser<double[]> PoseSelect = new SendableChooser<>();
 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(2, 0, 0);
@@ -69,11 +71,7 @@ public class RobotContainer {
  
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
-
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)));
-    }
-
+ 
     drivetrain.registerTelemetry(logger::telemeterize);
 
   }
@@ -84,22 +82,36 @@ public class RobotContainer {
     configureBindings();
 
     // Push telemetry and selectors
- 
     SmartDashboard.putData("Select Auto", AutoSelect);
+
+    PoseSelect.setDefaultOption("Default", Constants.WayPoints.FieldCenter);
+    PoseSelect.addOption("Blue Left", Constants.WayPoints.BlueStartingLeft);
+    PoseSelect.addOption("Blue Center", Constants.WayPoints.BlueStartingCenter);
+    PoseSelect.addOption("Blue Right", Constants.WayPoints.BlueStartingRight);
+    PoseSelect.addOption("Red Left", Constants.WayPoints.RedStartingLeft);
+    PoseSelect.addOption("Red Center", Constants.WayPoints.RedStartingCenter);
+    PoseSelect.addOption("Red Right", Constants.WayPoints.RedStartingRight);
+
+    SmartDashboard.putData("Select Starting Position", PoseSelect);
     SmartDashboard.putNumber("PID Test", AutoTurnPID.calculate(-45, 90));
- 
+
+    if (Utils.isSimulation()) {
+      drivetrain.seedFieldRelative(new Pose2d(
+        new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
+        Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2))));
+    }
+
+    InitalPose = PoseSelect.getSelected();
+   
   }
 
   public Command getAutonomousCommand() {
 
     // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))).withTimeout(.1),
-    DriveToPoint(1, 0, 45),
-    DriveToPoint(0, 0, 45),
-    DriveToPoint(1, 1, -45),
-    DriveToPoint(0, 0, 0)
- 
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
+    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
+    Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2))))).withTimeout(.1)
     //DriveToPoint(0, 0, 0),
     //DriveToPointLimelight(0, 0) 
 
