@@ -39,7 +39,7 @@ public class RobotContainer {
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
 
   // PID Controllers
-  private PIDController AutoDrivePID = new PIDController(1.2, 0, 0);
+  private PIDController AutoDrivePID = new PIDController(2, 0, 0);
   private PIDController AutoTurnPID = new PIDController(0.06, 0, 0);
 
   // Commands
@@ -95,9 +95,11 @@ public class RobotContainer {
     // [0] = X, [1] = Y, [2] = Rotation
     return new SequentialCommandGroup(
     drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))).withTimeout(.1),
-    DriveToPoint(0, 1.5, 0),
-    DriveToPoint(1, 0, 0),
+    DriveToPoint(1, 0, 45),
+    DriveToPoint(0, 0, 45),
+    DriveToPoint(1, 1, -45),
     DriveToPoint(0, 0, 0)
+ 
     //DriveToPoint(0, 0, 0),
     //DriveToPointLimelight(0, 0) 
 
@@ -167,7 +169,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(HorizonalMovement(Y, 0))  
     .withVelocityY(VerticalMovement(X, 0)) 
-    .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, X, -Angle));
+    .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, -X, -Angle));
   
   }
 

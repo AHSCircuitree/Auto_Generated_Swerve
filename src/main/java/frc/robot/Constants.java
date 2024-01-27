@@ -7,7 +7,7 @@ public class Constants {
     public static double YOFFSET = 0;
 
     // Auto
-    public static double POSETOLERANCE = .2;
+    public static double POSETOLERANCE = .1;
     public static double ANGLETOLERANCE = 3;
 
     public class WayPoints {
