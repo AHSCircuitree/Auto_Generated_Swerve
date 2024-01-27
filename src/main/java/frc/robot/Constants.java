@@ -20,8 +20,11 @@ public class Constants {
         public static double RedStartingLeft[] = {16.002, 4.369, 60};
         public static double RedStartingCenter[] = {15.189, 5.639, 0};
         public static double RedStartingRight[] = {16.002, 6.782, -60};
-        
 
+        // Blue Right Steal
+        public static double RightBlueStageLine[] = {0.7874, 5.8674, 120};
+        public static double MiddleRing5FromBlue[] = {0.7874, 7.8232, 90};
+ 
         // Auto Waypoints-
         public static double RedCenter[] = {0, 0, 0};
         public static double RedLeft[] = {0, 0, 0};

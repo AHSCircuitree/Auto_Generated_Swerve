@@ -82,6 +82,34 @@ public class RobotContainer {
     configureBindings();
 
     // Push telemetry and selectors
+    AutoSelect.setDefaultOption("Blue Right Steal", new SequentialCommandGroup(
+
+    // Set starting pos to selected pos
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
+    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
+    Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2))))).withTimeout(.1),
+
+    DriveToPoint(
+    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0), // X, 
+    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),// Y, 
+    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2)), // Angle
+
+    DriveToPoint(
+    Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 0), // X, 
+    Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 1),// Y, 
+    Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 2)), // Angle
+
+    DriveToPoint(
+    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0), // X, 
+    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),// Y, 
+    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2)), // Angle
+
+    DriveToPoint(
+    Array.getDouble(Constants.WayPoints.BlueStartingRight, 1), // X, 
+    Array.getDouble(Constants.WayPoints.BlueStartingRight, 0),// Y, 
+    Array.getDouble(Constants.WayPoints.BlueStartingRight, 2)) // Angle
+ 
+    ));
     SmartDashboard.putData("Select Auto", AutoSelect);
 
     PoseSelect.setDefaultOption("Default", Constants.WayPoints.FieldCenter);
@@ -108,20 +136,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     // [0] = X, [1] = Y, [2] = Rotation
-    return new SequentialCommandGroup(
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
-    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
-    Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2))))).withTimeout(.1)
-    //DriveToPoint(0, 0, 0),
-    //DriveToPointLimelight(0, 0) 
-
-    );
-
+    return AutoSelect.getSelected();
+ 
   }
  
   public double VerticalMovement(double X, double speed) {
  
-    double OffsetTarget = -X;
+    double OffsetTarget = X;
     double OffsetCurrent = logger.returnPose().getY();
  
     if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
@@ -181,7 +202,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(HorizonalMovement(Y, 0))  
     .withVelocityY(VerticalMovement(X, 0)) 
-    .withRotationalRate(Rotate(-Angle, true))).until(logger.CheckIfFinished(Y, -X, -Angle));
+    .withRotationalRate(Rotate(Angle, true))).until(logger.CheckIfFinished(Y, X, Angle));
   
   }
 
