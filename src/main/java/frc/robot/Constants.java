@@ -14,21 +14,24 @@ public class Constants {
 
         // Initial Points
         public static double FieldCenter[] = {0, 0, 0};
-        public static double BlueStartingLeft[] = {0.610, 6.782, -120};
-        public static double BlueStartingCenter[] = {1.372, 5.639, 180};
-        public static double BlueStartingRight[] = {0.610, 4.369, 120};
-        public static double RedStartingLeft[] = {16.002, 4.369, 60};
-        public static double RedStartingCenter[] = {15.189, 5.639, 0};
-        public static double RedStartingRight[] = {16.002, 6.782, -60};
+        public static double BlueStartingLeft[] = {6.782, 0.610, -120};
+        public static double BlueStartingCenter[] = {5.639, 1.372, 180};
+        public static double BlueStartingRight[] = {4.369, 0.610, 120};
+        public static double RedStartingLeft[] = {4.369, 16.002, 60};
+        public static double RedStartingCenter[] = {5.639, 15.189, 0};
+        public static double RedStartingRight[] = {6.782, 16.002, -60};
+
+        // Blue Side Rings
+        public static double BlueThreeShootStart1[] = {7.5104, 1.5654, 60};
+        public static double BlueThreeShootStart2[] = {7.5104, 2.5654, 170};
+        public static double BlueLeftRing[] = {7.0104, 2.5654, 180};
+        public static double BlueCenterRing[] = {5.5626, 2.5654, 180};
+        public static double BlueRightRing[] = {4.0894, 2.5654, 180};
 
         // Blue Right Steal
         public static double RightBlueStageLine[] = {0.7874, 5.8674, 120};
         public static double MiddleRing5FromBlue[] = {0.7874, 7.8232, 90};
- 
-        // Auto Waypoints-
-        public static double RedCenter[] = {0, 0, 0};
-        public static double RedLeft[] = {0, 0, 0};
-        public static double RedMiddleRing[] = {-4, -6, 0};
+  
 
     }
     

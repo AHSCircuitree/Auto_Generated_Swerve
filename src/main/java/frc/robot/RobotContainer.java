@@ -85,29 +85,22 @@ public class RobotContainer {
     AutoSelect.setDefaultOption("Blue Right Steal", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .3),
+      DriveToPoint(Constants.WayPoints.MiddleRing5FromBlue), 
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .5), 
+      DriveToPoint(Constants.WayPoints.BlueStartingRight)
+ 
+    ));
 
-      DriveToPoint(
-      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0), 
-      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),
-      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2), 
-      .5),
-
-      DriveToPoint(
-      Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 0),
-      Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 1),  
-      Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 2)),
-
-      DriveToPoint(
-      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0),  
-      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),
-      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2),
-      .5),
-
-      DriveToPoint(
-      Array.getDouble(Constants.WayPoints.BlueStartingRight, 1),
-      Array.getDouble(Constants.WayPoints.BlueStartingRight, 0),
-      Array.getDouble(Constants.WayPoints.BlueStartingRight, 2))
-      
+    AutoSelect.addOption("Blue Left Shoot Three", new SequentialCommandGroup(
+     
+      ResetAutoOdom().withTimeout(.1),
+      DriveToPoint(Constants.WayPoints.BlueThreeShootStart1),
+      DriveToPoint(Constants.WayPoints.BlueThreeShootStart2),
+      DriveToPoint(Constants.WayPoints.BlueLeftRing),
+      DriveToPoint(Constants.WayPoints.BlueCenterRing),
+      DriveToPoint(Constants.WayPoints.BlueRightRing)
+ 
     ));
 
 
@@ -232,7 +225,11 @@ public class RobotContainer {
  
   }
 
-  public Command DriveToPoint(double X, double Y, double Angle) {
+  public Command DriveToPoint(double[] Pose) {
+
+    double X = Array.getDouble(Pose, 0);
+    double Y = Array.getDouble(Pose, 1);
+    double Angle = Array.getDouble(Pose, 2);
 
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(HorizonalMovement(Y))  
@@ -241,7 +238,11 @@ public class RobotContainer {
   
   }
 
-  public Command DriveToPoint(double X, double Y, double Angle, double Tolerance) {
+  public Command DriveToPoint(double[] Pose, double Tolerance) {
+
+    double X = Array.getDouble(Pose, 0);
+    double Y = Array.getDouble(Pose, 1);
+    double Angle = Array.getDouble(Pose, 2);
 
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(HorizonalMovement(Y, Tolerance))  
@@ -249,20 +250,11 @@ public class RobotContainer {
     .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
   
   }
- 
-  public Command DriveToPointLimelight(double X, double Y) {
-
-    return drivetrain.applyRequest(() -> drive
-    .withVelocityX(HorizonalMovement(Y))  
-    .withVelocityY(VerticalMovement(X)) 
-    .withRotationalRate(LimelightRotate()));
-  
-  }
 
   public Command ResetAutoOdom() {
 
     return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
-    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
+    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 1), Array.getDouble(PoseSelect.getSelected(), 0)), 
     Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2)))));
 
   }
