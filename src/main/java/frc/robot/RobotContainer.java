@@ -313,8 +313,8 @@ public class RobotContainer {
 
       return drivetrain.applyRequest(() -> driveRobotCentric
         .withVelocityX(0)  
-        .withVelocityY(limelight.HorizontalOffset() / 15)  
-        .withRotationalRate(0));  
+        .withVelocityY(0)  
+        .withRotationalRate(-limelight.HorizontalOffset() / 15));  
 
     } else if (limelight.HasValidTarget() == true) {
 
@@ -326,7 +326,7 @@ public class RobotContainer {
     } else {
 
       return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(0)  
+        .withVelocityX(1)  
         .withVelocityY(0)  
         .withRotationalRate(0));  
 
