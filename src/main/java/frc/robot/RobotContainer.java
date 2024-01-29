@@ -42,14 +42,17 @@ public class RobotContainer {
 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(2, 0, 0);
-  private PIDController AutoTurnPID = new PIDController(0.06, 0, 0);
+  private PIDController AutoTurnPID = new PIDController(0.1, 0, 0);
 
   // Commands
  
   // Objects for Tele-op Drive
-  public SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+  public SwerveRequest.FieldCentric driveFieldCentric = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.03).withRotationalDeadband(MaxAngularRate * 0.05) // Small deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+  public SwerveRequest.RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+      .withDeadband(MaxSpeed * 0.03).withRotationalDeadband(MaxAngularRate * 0.05) // Small deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I DONT want field-centric
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -58,16 +61,16 @@ public class RobotContainer {
 
     limelight.setDefaultCommand(null);
 
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(Deadband(-Player1.getLeftX()) * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
-        ));
+    drivetrain.setDefaultCommand( 
+        drivetrain.applyRequest(() -> driveFieldCentric
+        .withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed)  
+        .withVelocityY(Deadband(-Player1.getLeftX()) * MaxSpeed) 
+        .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) 
+    ));
 
-    Player1.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    Player1.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-Player1.getLeftY(), -Player1.getLeftX()))));
+    Player1.b().whileTrue(drivetrain.applyRequest(() -> brake));
+
+    Player1.a().whileTrue(DriveToGamePiece());
  
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
@@ -203,7 +206,7 @@ public class RobotContainer {
  
   }
 
-  public double Rotate(double TargetAngle) {
+  public double RotatePID(double TargetAngle) {
 
     double CurrentAngle = logger.returnPose().getRotation().getDegrees();
 
@@ -211,6 +214,51 @@ public class RobotContainer {
 
       return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
 
+    } else {
+
+      return 0;
+
+    }
+ 
+  }
+
+   public double Rotate(double Target) {
+
+    double CurrentAngle;  
+    double TargetAngle;
+
+    if (logger.returnPose().getRotation().getDegrees() < 0) {
+
+      CurrentAngle = 360 - logger.returnPose().getRotation().getDegrees();
+
+    } else {
+
+      CurrentAngle = logger.returnPose().getRotation().getDegrees();
+
+    }
+
+    if (Target < 0) {
+
+      TargetAngle = 360 - Target;
+
+    } else {
+
+      TargetAngle = Target;
+
+    }
+
+    if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+
+      if (Math.abs(TargetAngle - CurrentAngle) > Math.abs((TargetAngle + 360) - CurrentAngle) || Math.abs(TargetAngle - CurrentAngle) > Math.abs((TargetAngle - 360) - CurrentAngle)) {
+      
+        return AutoTurnPID.calculate(TargetAngle, CurrentAngle);
+
+      } else {
+
+        return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
+
+      }
+      
     } else {
 
       return 0;
@@ -231,10 +279,10 @@ public class RobotContainer {
     double Y = Array.getDouble(Pose, 1);
     double Angle = Array.getDouble(Pose, 2);
 
-    return drivetrain.applyRequest(() -> drive
+    return drivetrain.applyRequest(() -> driveFieldCentric
     .withVelocityX(HorizonalMovement(Y))  
     .withVelocityY(VerticalMovement(X)) 
-    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
+    .withRotationalRate(RotatePID(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
   
   }
 
@@ -244,10 +292,10 @@ public class RobotContainer {
     double Y = Array.getDouble(Pose, 1);
     double Angle = Array.getDouble(Pose, 2);
 
-    return drivetrain.applyRequest(() -> drive
+    return drivetrain.applyRequest(() -> driveFieldCentric
     .withVelocityX(HorizonalMovement(Y, Tolerance))  
     .withVelocityY(VerticalMovement(X, Tolerance)) 
-    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
+    .withRotationalRate(RotatePID(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
   
   }
 
@@ -256,6 +304,33 @@ public class RobotContainer {
     return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
     new Translation2d(Array.getDouble(PoseSelect.getSelected(), 1), Array.getDouble(PoseSelect.getSelected(), 0)), 
     Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2)))));
+
+  }
+
+  public Command DriveToGamePiece() {
+
+    if (Math.abs(limelight.HorizontalOffset()) > 3 && limelight.HasValidTarget() == true) {
+
+      return drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(0)  
+        .withVelocityY(limelight.HorizontalOffset() / 15)  
+        .withRotationalRate(0));  
+
+    } else if (limelight.HasValidTarget() == true) {
+
+      return drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(1)  
+        .withVelocityY(0)  
+        .withRotationalRate(0));  
+
+    } else {
+
+      return drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(0)  
+        .withVelocityY(0)  
+        .withRotationalRate(0));  
+
+    }
 
   }
 
