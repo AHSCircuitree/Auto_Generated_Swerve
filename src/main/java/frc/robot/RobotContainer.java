@@ -83,33 +83,34 @@ public class RobotContainer {
 
     // Push telemetry and selectors
     AutoSelect.setDefaultOption("Blue Right Steal", new SequentialCommandGroup(
+     
+      ResetAutoOdom().withTimeout(.1),
 
-    // Set starting pos to selected pos
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
-    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
-    Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2))))).withTimeout(.1),
+      DriveToPoint(
+      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0), 
+      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),
+      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2), 
+      .5),
 
-    DriveToPoint(
-    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0), // X, 
-    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),// Y, 
-    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2)), // Angle
+      DriveToPoint(
+      Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 0),
+      Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 1),  
+      Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 2)),
 
-    DriveToPoint(
-    Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 0), // X, 
-    Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 1),// Y, 
-    Array.getDouble(Constants.WayPoints.MiddleRing5FromBlue, 2)), // Angle
+      DriveToPoint(
+      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0),  
+      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),
+      Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2),
+      .5),
 
-    DriveToPoint(
-    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 0), // X, 
-    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 1),// Y, 
-    Array.getDouble(Constants.WayPoints.RightBlueStageLine, 2)), // Angle
-
-    DriveToPoint(
-    Array.getDouble(Constants.WayPoints.BlueStartingRight, 1), // X, 
-    Array.getDouble(Constants.WayPoints.BlueStartingRight, 0),// Y, 
-    Array.getDouble(Constants.WayPoints.BlueStartingRight, 2)) // Angle
- 
+      DriveToPoint(
+      Array.getDouble(Constants.WayPoints.BlueStartingRight, 1),
+      Array.getDouble(Constants.WayPoints.BlueStartingRight, 0),
+      Array.getDouble(Constants.WayPoints.BlueStartingRight, 2))
+      
     ));
+
+
     SmartDashboard.putData("Select Auto", AutoSelect);
 
     PoseSelect.setDefaultOption("Default", Constants.WayPoints.FieldCenter);
@@ -121,8 +122,7 @@ public class RobotContainer {
     PoseSelect.addOption("Red Right", Constants.WayPoints.RedStartingRight);
 
     SmartDashboard.putData("Select Starting Position", PoseSelect);
-    SmartDashboard.putNumber("PID Test", AutoTurnPID.calculate(-45, 90));
-
+ 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(
         new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
@@ -140,7 +140,7 @@ public class RobotContainer {
  
   }
  
-  public double VerticalMovement(double X, double speed) {
+  public double VerticalMovement(double X) {
  
     double OffsetTarget = X;
     double OffsetCurrent = logger.returnPose().getY();
@@ -158,7 +158,25 @@ public class RobotContainer {
  
   }
 
-  public double HorizonalMovement(double Y, double speed) {
+  public double VerticalMovement(double X, double Tolerance) {
+ 
+    double OffsetTarget = X;
+    double OffsetCurrent = logger.returnPose().getY();
+ 
+    if (Math.abs(OffsetCurrent - OffsetTarget) > Tolerance) {
+
+      //return 0;
+      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
+    
+    } else {
+
+      return 0;
+
+    }
+ 
+  }
+
+  public double HorizonalMovement(double Y) {
  
     double OffsetTarget = Y;
     double OffsetCurrent = logger.returnPose().getX();
@@ -175,7 +193,24 @@ public class RobotContainer {
  
   }
 
-  public double Rotate(double TargetAngle, boolean TurningRight) {
+  public double HorizonalMovement(double Y, double Tolerance) {
+ 
+    double OffsetTarget = Y;
+    double OffsetCurrent = logger.returnPose().getX();
+ 
+    if (Math.abs(OffsetCurrent - OffsetTarget) > Tolerance) {
+    
+      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
+ 
+    } else {
+
+      return 0;
+
+    }
+ 
+  }
+
+  public double Rotate(double TargetAngle) {
 
     double CurrentAngle = logger.returnPose().getRotation().getDegrees();
 
@@ -200,19 +235,36 @@ public class RobotContainer {
   public Command DriveToPoint(double X, double Y, double Angle) {
 
     return drivetrain.applyRequest(() -> drive
-    .withVelocityX(HorizonalMovement(Y, 0))  
-    .withVelocityY(VerticalMovement(X, 0)) 
-    .withRotationalRate(Rotate(Angle, true))).until(logger.CheckIfFinished(Y, X, Angle));
+    .withVelocityX(HorizonalMovement(Y))  
+    .withVelocityY(VerticalMovement(X)) 
+    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
   
   }
 
+  public Command DriveToPoint(double X, double Y, double Angle, double Tolerance) {
+
+    return drivetrain.applyRequest(() -> drive
+    .withVelocityX(HorizonalMovement(Y, Tolerance))  
+    .withVelocityY(VerticalMovement(X, Tolerance)) 
+    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
+  
+  }
+ 
   public Command DriveToPointLimelight(double X, double Y) {
 
     return drivetrain.applyRequest(() -> drive
-    .withVelocityX(HorizonalMovement(Y, 0))  
-    .withVelocityY(VerticalMovement(X, 0)) 
+    .withVelocityX(HorizonalMovement(Y))  
+    .withVelocityY(VerticalMovement(X)) 
     .withRotationalRate(LimelightRotate()));
   
+  }
+
+  public Command ResetAutoOdom() {
+
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
+    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
+    Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2)))));
+
   }
 
   public double Deadband(double value) {

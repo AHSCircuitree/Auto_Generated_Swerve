@@ -127,11 +127,19 @@ public class Telemetry {
   
     }
 
-     BooleanSupplier CheckIfFinishedNoAngle(double X, double Y) {
+    BooleanSupplier CheckIfFinished(double X, double Y, double Angle, double Tolerance) {
+
+        return () -> Math.abs(m_lastPose.getX() - X) <= Tolerance
+        && Math.abs(m_lastPose.getY() - Y) <= Tolerance
+        && Math.abs(returnPose().getRotation().getDegrees() - Angle) <= Constants.ANGLETOLERANCE;
+  
+    }
+
+    BooleanSupplier CheckIfFinished(double X, double Y) {
 
         return () -> Math.abs(m_lastPose.getX() - X) <= Constants.POSETOLERANCE
         && Math.abs(m_lastPose.getY() - Y) <= Constants.POSETOLERANCE;
   
-    }
+     }
  
 }
