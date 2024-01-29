@@ -70,7 +70,7 @@ public class RobotContainer {
 
     Player1.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
-    Player1.a().whileTrue(DriveToGamePiece());
+    Player1.rightBumper().whileTrue(DriveToGamePiece());
  
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
@@ -251,11 +251,11 @@ public class RobotContainer {
 
       if (Math.abs(TargetAngle - CurrentAngle) > Math.abs((TargetAngle + 360) - CurrentAngle) || Math.abs(TargetAngle - CurrentAngle) > Math.abs((TargetAngle - 360) - CurrentAngle)) {
       
-        return AutoTurnPID.calculate(TargetAngle, CurrentAngle);
+        return LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -.7, .7);
 
       } else {
 
-        return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
+        return LimitSpeed(AutoTurnPID.calculate(TargetAngle, CurrentAngle), -.7, .7);
 
       }
       
@@ -282,7 +282,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> driveFieldCentric
     .withVelocityX(HorizonalMovement(Y))  
     .withVelocityY(VerticalMovement(X)) 
-    .withRotationalRate(RotatePID(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
+    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
   
   }
 
@@ -295,7 +295,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> driveFieldCentric
     .withVelocityX(HorizonalMovement(Y, Tolerance))  
     .withVelocityY(VerticalMovement(X, Tolerance)) 
-    .withRotationalRate(RotatePID(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
+    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
   
   }
 
@@ -308,30 +308,12 @@ public class RobotContainer {
   }
 
   public Command DriveToGamePiece() {
-
-    if (Math.abs(limelight.HorizontalOffset()) > 3 && limelight.HasValidTarget() == true) {
-
-      return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(0)  
-        .withVelocityY(0)  
-        .withRotationalRate(-limelight.HorizontalOffset() / 15));  
-
-    } else if (limelight.HasValidTarget() == true) {
-
-      return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(1)  
-        .withVelocityY(0)  
-        .withRotationalRate(0));  
-
-    } else {
-
-      return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(1)  
-        .withVelocityY(0)  
-        .withRotationalRate(0));  
-
-    }
-
+   
+    return drivetrain.applyRequest(() -> driveRobotCentric
+      .withVelocityX(1)  
+      .withVelocityY(0)  
+      .withRotationalRate(-limelight.dbl_tx / 12));  
+    
   }
 
   public double Deadband(double value) {
@@ -348,6 +330,24 @@ public class RobotContainer {
 
       return value;
 
+    }
+
+  }
+
+  public double LimitSpeed(double speed, double min, double max) {
+
+    if (speed > max) {
+
+      return max;
+
+    } else if (speed < min) {
+
+      return min;
+
+    } else {
+
+      return speed;
+      
     }
 
   }
