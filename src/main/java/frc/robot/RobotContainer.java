@@ -203,7 +203,7 @@ public class RobotContainer {
  
   }
 
-  public double Rotate(double TargetAngle) {
+  public double RotatePID(double TargetAngle) {
 
     double CurrentAngle = logger.returnPose().getRotation().getDegrees();
 
@@ -211,6 +211,55 @@ public class RobotContainer {
 
       return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
 
+    } else {
+
+      return 0;
+
+    }
+ 
+  }
+
+   public double Rotate(double Target) {
+
+    double CurrentAngle;  
+    double TargetAngle = Target;
+
+    if (logger.returnPose().getRotation().getDegrees() < 0) {
+
+      CurrentAngle = 360 - logger.returnPose().getRotation().getDegrees();
+
+    } else {
+
+      CurrentAngle = logger.returnPose().getRotation().getDegrees();
+
+    }
+
+    if (Target < 0) {
+
+      TargetAngle = 360 - Target;
+
+    } else {
+
+      TargetAngle = Target;
+
+    }
+
+    if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
+
+      if (Math.abs(TargetAngle + 360 - CurrentAngle) < Math.abs(TargetAngle - CurrentAngle)) {
+
+        return AutoTurnPID.calculate(CurrentAngle, TargetAngle + 360);
+
+      } else if (Math.abs(TargetAngle - 360 - CurrentAngle) < Math.abs(TargetAngle - CurrentAngle)) {
+
+        return AutoTurnPID.calculate(CurrentAngle, TargetAngle - 360);
+
+      } else {
+
+        return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
+
+      }
+      
     } else {
 
       return 0;
@@ -234,7 +283,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(HorizonalMovement(Y))  
     .withVelocityY(VerticalMovement(X)) 
-    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
+    .withRotationalRate(RotatePID(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
   
   }
 
@@ -247,7 +296,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> drive
     .withVelocityX(HorizonalMovement(Y, Tolerance))  
     .withVelocityY(VerticalMovement(X, Tolerance)) 
-    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
+    .withRotationalRate(RotatePID(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
   
   }
 

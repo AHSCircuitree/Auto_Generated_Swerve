@@ -22,8 +22,8 @@ public class Constants {
         public static double RedStartingRight[] = {6.782, 16.002, -60};
 
         // Blue Side Rings
-        public static double BlueThreeShootStart1[] = {7.5104, 1.5654, 60};
-        public static double BlueThreeShootStart2[] = {7.5104, 2.5654, 170};
+        public static double BlueThreeShootStart1[] = {7.282, 0.610, -120};
+        public static double BlueThreeShootStart2[] = {7.282, 2.610, 180};
         public static double BlueLeftRing[] = {7.0104, 2.5654, 180};
         public static double BlueCenterRing[] = {5.5626, 2.5654, 180};
         public static double BlueRightRing[] = {4.0894, 2.5654, 180};
