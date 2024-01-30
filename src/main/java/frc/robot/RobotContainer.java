@@ -19,13 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 
 public class RobotContainer {
 
   // Variables
-  private static final double MaxSpeed = 2; // 6 meters per second desired top speed
+  private static final double MaxSpeed = 3; // 6 meters per second desired top speed
   private static final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
   private static double[] InitalPose;
  
@@ -42,7 +43,7 @@ public class RobotContainer {
 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(2, 0, 0);
-  private PIDController AutoTurnPID = new PIDController(0.1, 0, 0);
+  private PIDController AutoTurnPID = new PIDController(0.2, 0, 0);
 
   // Commands
  
@@ -85,7 +86,13 @@ public class RobotContainer {
     configureBindings();
 
     // Push telemetry and selectors
-    AutoSelect.setDefaultOption("Blue Right Steal", new SequentialCommandGroup(
+    AutoSelect.setDefaultOption("Check Position", new SequentialCommandGroup(
+     
+      ResetAutoOdom().withTimeout(.1)
+       
+    ));
+
+    AutoSelect.addOption("Blue Right Steal", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
       DriveToPoint(Constants.WayPoints.RightBlueStageLine, .3),
@@ -98,14 +105,19 @@ public class RobotContainer {
     AutoSelect.addOption("Blue Left Shoot Three", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
-      DriveToPoint(Constants.WayPoints.BlueThreeShootStart1),
-      DriveToPoint(Constants.WayPoints.BlueThreeShootStart2),
+      DriveToPoint(Constants.WayPoints.BlueThreeShootStart1, .8),
+      DriveToPoint(Constants.WayPoints.BlueThreeShootStart2, .8),
       DriveToPoint(Constants.WayPoints.BlueLeftRing),
+      DriveToPoint(Constants.WayPoints.BlueLeftRingShoot),
+      new WaitCommand(1), // Simulates Shooting
       DriveToPoint(Constants.WayPoints.BlueCenterRing),
-      DriveToPoint(Constants.WayPoints.BlueRightRing)
- 
+      new WaitCommand(1), // Simulates Shooting
+      DriveToPoint(Constants.WayPoints.BlueAboveRightRing, .3),
+      DriveToPoint(Constants.WayPoints.BlueRightRing),
+      DriveToPoint(Constants.WayPoints.BlueRightRingShoot1, .3),
+      DriveToPoint(Constants.WayPoints.BlueRightRingShoot2)
+       
     ));
-
 
     SmartDashboard.putData("Select Auto", AutoSelect);
 
@@ -229,7 +241,7 @@ public class RobotContainer {
 
     if (logger.returnPose().getRotation().getDegrees() < 0) {
 
-      CurrentAngle = 360 - logger.returnPose().getRotation().getDegrees();
+      CurrentAngle = 360 + logger.returnPose().getRotation().getDegrees();
 
     } else {
 
@@ -239,7 +251,7 @@ public class RobotContainer {
 
     if (Target < 0) {
 
-      TargetAngle = 360 - Target;
+      TargetAngle = 360 + Target;
 
     } else {
 
@@ -247,17 +259,25 @@ public class RobotContainer {
 
     }
 
+    SmartDashboard.putNumber("Going to Angle:", TargetAngle);
+    SmartDashboard.putNumber("Currently at Angle:", CurrentAngle);
+
     if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
 
-      if (Math.abs(TargetAngle - CurrentAngle) > Math.abs((TargetAngle + 360) - CurrentAngle) || Math.abs(TargetAngle - CurrentAngle) > Math.abs((TargetAngle - 360) - CurrentAngle)) {
-      
-        return LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -.7, .7);
+      if (Math.abs(TargetAngle - CurrentAngle) > Math.abs(TargetAngle - (CurrentAngle + 360))) {
+
+        return -LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -2, 2);
+
+      } else if (Math.abs(TargetAngle - CurrentAngle) > Math.abs(TargetAngle - (CurrentAngle - 360))) {
+
+        return -LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -2, 2);
 
       } else {
 
-        return LimitSpeed(AutoTurnPID.calculate(TargetAngle, CurrentAngle), -.7, .7);
+        return LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -2, 2);
 
       }
+      
       
     } else {
 
