@@ -98,10 +98,13 @@ public class RobotContainer {
       DriveToPoint(Constants.WayPoints.RightBlueStageLine, .3),
       DriveToPoint(Constants.WayPoints.MiddleRing5FromBlue), 
       DriveToPoint(Constants.WayPoints.RightBlueStageLine, .5), 
-      DriveToPoint(Constants.WayPoints.BlueStartingRight)
- 
+      DriveToPoint(Constants.WayPoints.BlueStartingRight),
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine),
+      DriveToPoint(Constants.WayPoints.MiddleRing4FromBlue),
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .5),
+      DriveToPoint(Constants.WayPoints.BlueRightRingShoot2)
+      
     ));
-
     AutoSelect.addOption("Blue Left Shoot Three", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),

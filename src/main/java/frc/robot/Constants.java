@@ -35,7 +35,17 @@ public class Constants {
         // Blue Right Steal
         public static double RightBlueStageLine[] = {0.7874, 5.8674, 120};
         public static double MiddleRing5FromBlue[] = {0.7874, 7.8232, 90};
-  
+        public static double MiddleRing4FromBlue[] = {2.4384,8.001,90};
+
+        //Red Side Rings
+        public static double RedLeftRing[] = {4.0894,13.9192,0};
+        public static double RedCenterRing[] = {5.588,13.9192,0};
+        public static double RedRightRing[] = {7.0104,13.9192,0};
+
+        // Red Right Steal
+        public static double RightRedStageLine[] = {6.7,10.7004,180};
+        public static double MiddleRing5FromRed[] = {0.7874, 7.8232, 270};
+        public static double MiddleRing4FromRed[] = {2.4384,8.001,270};
 
     }
     
