@@ -14,13 +14,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.RumbleOnTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
@@ -34,6 +35,7 @@ public class RobotContainer {
  
   // Controllers
   private final CommandXboxController Player1 = new CommandXboxController(0);
+  private final XboxController Player1Rum = new XboxController(0);
  
   // Subsystems
   private final Drivetrain drivetrain = TunerConstants.DriveTrain;  
@@ -59,10 +61,9 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
-
   private void configureBindings() {
 
-    limelight.setDefaultCommand(null);
+    limelight.setDefaultCommand(new RumbleOnTarget(limelight, Player1Rum));
 
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
