@@ -22,18 +22,18 @@ public class Limelight extends SubsystemBase {
   double m_LimelightSteerCommand = 0.0;
 
   // Local variables to store network values
-  boolean b_tv_SH = false;
-  boolean b_tv_LI = false;
-  boolean b_tv_RI = false;
-  double dbl_tv_SH;
-  double dbl_tv_LI;
-  double dbl_tv_RI;
-  double dbl_ta_SH;
-  double dbl_ta_LI;
-  double dbl_ta_RI;
+  boolean b_tv_sh = false;
+  boolean b_tv_li = false;
+  boolean b_tv_ri = false;
+  double dbl_tv_sh;
+  double dbl_tv_li;
+  double dbl_tv_ri;
+  double dbl_ta_sh;
+  double dbl_ta_li;
+  double dbl_ta_ri;
   double dbl_tx, dbl_tv, dbl_ty, dbl_ta, dbl_ts, dbl_thor, dbl_tvert, dbl_tshort, dbl_tlong;
-  double dbl_tx_LI;
-  double dbl_tx_RI;
+  public double dbl_tx_li;
+  public double dbl_tx_ri;
 
   //AprilTag specific values
   double[] dbl_botpose;
@@ -42,68 +42,68 @@ public class Limelight extends SubsystemBase {
   double dbl_tid;
  
   public boolean HasValidTargetShooter() {
-    return b_tv_SH;
+    return b_tv_sh;
   }
 
   public boolean HasValidTargetRightIntake() {
-    return b_tv_RI;
+    return b_tv_ri;
   }
 
   public boolean HasValidTargetLeftIntake() {
-    return b_tv_LI;
+    return b_tv_li;
   }
 
   public double HorizonalOffset_LI(){
 
-    return dbl_tx_LI;
+    return dbl_tx_li;
 
   }
 
   public double HorizonalOffset_RI(){
 
-    return dbl_tx_RI;
+    return dbl_tx_ri;
 
   }
 
   public void ReadNetworkTables() {
 
-    double dbl_tv_SH = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("tv").getDouble(0);
+    double dbl_tv_SH = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tv").getDouble(0);
     if (dbl_tv > 0) {
-      b_tv_SH = true;
+      b_tv_sh = true;
     } else {
-      b_tv_SH = false;
+      b_tv_sh = false;
     }
 
-    double dbl_tv_RI = NetworkTableInstance.getDefault().getTable("limelight_RI)").getEntry("tv").getDouble(0);
+    double dbl_tv_RI = NetworkTableInstance.getDefault().getTable("limelight-sh)").getEntry("tv").getDouble(0);
     if (dbl_tv > 0) {
-      b_tv_RI = true;
+      b_tv_ri = true;
     } else {
-      b_tv_RI = false;
+      b_tv_ri = false;
     }
 
-    double dbl_tv_LI = NetworkTableInstance.getDefault().getTable("limelight_LI").getEntry("tv").getDouble(0);
+    double dbl_tv_LI = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tv").getDouble(0);
     if (dbl_tv > 0) {
-      b_tv_LI = true;
+      b_tv_li = true;
     } else {
-      b_tv_RI = false;
+      b_tv_li = false;
     }
 
-    dbl_tx = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("tx").getDouble(0);
-    dbl_ty = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("ty").getDouble(0);
-    dbl_ta = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("ta").getDouble(0);
-    dbl_ts = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("ts").getDouble(0);
-    dbl_tshort = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("tshort").getDouble(0);
-    dbl_tlong = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("tlong").getDouble(0);
-    dbl_thor = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("thor").getDouble(0);
-    dbl_tvert = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("tvert").getDouble(0);
+    dbl_tx = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tx").getDouble(0);
+    dbl_ty = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("ty").getDouble(0);
+    dbl_ta = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("ta").getDouble(0);
+    dbl_ts = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("ts").getDouble(0);
+    dbl_tshort = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tshort").getDouble(0);
+    dbl_tlong = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tlong").getDouble(0);
+    dbl_thor = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("thor").getDouble(0);
+    dbl_tvert = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tvert").getDouble(0);
 
-    dbl_tx_LI = NetworkTableInstance.getDefault().getTable("limelight_LI").getEntry("tx").getDouble(0);
-    dbl_tx_RI = NetworkTableInstance.getDefault().getTable("limelight_RI").getEntry("ty").getDouble(0);
+    dbl_tx_li = NetworkTableInstance.getDefault().getTable("limelight-li").getEntry("tx").getDouble(0);
+    dbl_tx_ri = NetworkTableInstance.getDefault().getTable("limelight-ri").getEntry("tx").getDouble(0);
 
     //AprilTag specific calls
-    dbl_botpose = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("botpose").getDoubleArray(new double[6]);
-    dbl_campose = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("campose").getDoubleArray(new double[6]);
-    dbl_tid = NetworkTableInstance.getDefault().getTable("limelight_SH").getEntry("tid").getDouble(0);
+    dbl_botpose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("botpose").getDoubleArray(new double[6]);
+    dbl_campose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("campose").getDoubleArray(new double[6]);
+    dbl_tid = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tid").getDouble(0);
  
   }
 
@@ -114,12 +114,12 @@ public class Limelight extends SubsystemBase {
 
   public void EnableLED()
   {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3); //Set LEDs to current pipeline setting
+    NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("ledMode").setNumber(3); //Set LEDs to current pipeline setting
   }
 
   public void DisableLED()
   {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); //Set LEDs to current pipeline setting
+    NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("ledMode").setNumber(1); //Set LEDs to current pipeline setting
   }
 
   public void updateLimelightTracking() {
@@ -129,10 +129,10 @@ public class Limelight extends SubsystemBase {
     final double DESIRED_TARGET_AREA = 13.0; // Area of the target when the robot reaches the wall
     final double MAX_DRIVE = 0.7; // Simple speed limit so we don't drive too fast
 
-    double tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-    double tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    double ta = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+    double tv = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("tv").getDouble(0);
+    double tx = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("tx").getDouble(0);
+    double ty = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("ty").getDouble(0);
+    double ta = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("ta").getDouble(0);
     
     if (tv < 1.0) {
 

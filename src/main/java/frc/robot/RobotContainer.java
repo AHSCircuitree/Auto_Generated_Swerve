@@ -338,7 +338,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> driveRobotCentric
       .withVelocityX(1)  
       .withVelocityY(0)  
-      .withRotationalRate(-limelight.HorizonalOffset_LI() / 12));  
+      .withRotationalRate(-limelight.HorizonalOffset_RI() / 12));  
     
   }
 
