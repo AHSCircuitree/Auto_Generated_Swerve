@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 
 public class RobotContainer {
 
@@ -34,7 +36,7 @@ public class RobotContainer {
   private final CommandXboxController Player1 = new CommandXboxController(0);
  
   // Subsystems
-  private final SwerveTeleop drivetrain = TunerConstants.DriveTrain;  
+  private final Drivetrain drivetrain = TunerConstants.DriveTrain;  
   private final Limelight limelight = new Limelight();
 
   // Selectors
@@ -292,7 +294,7 @@ public class RobotContainer {
 
   public double LimelightRotate() {
 
-    return limelight.dbl_tx / 13;
+    return limelight.HorizonalOffset_LI() / 13;
  
   }
 
@@ -335,7 +337,7 @@ public class RobotContainer {
     return drivetrain.applyRequest(() -> driveRobotCentric
       .withVelocityX(1)  
       .withVelocityY(0)  
-      .withRotationalRate(-limelight.dbl_tx / 12));  
+      .withRotationalRate(-limelight.HorizonalOffset_LI() / 12));  
     
   }
 
