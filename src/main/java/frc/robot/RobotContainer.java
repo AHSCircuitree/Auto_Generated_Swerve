@@ -98,13 +98,13 @@ public class RobotContainer {
     AutoSelect.addOption("Blue Right Steal", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .3),
-      DriveToPoint(Constants.WayPoints.MiddleRing5FromBlue), 
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .5), 
-      DriveToPoint(Constants.WayPoints.BlueStealShootingLine),
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine),
-      DriveToPoint(Constants.WayPoints.MiddleRing4FromBlue),
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .5),
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .8),
+      DriveToPoint(Constants.WayPoints.MiddleRing5FromBlue, .2), 
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .6), 
+      DriveToPoint(Constants.WayPoints.BlueStealShootingLine, .1),
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .8),
+      DriveToPoint(Constants.WayPoints.MiddleRing4FromBlue, .2),
+      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .6),
       DriveToPoint(Constants.WayPoints.BlueStealShootingLine)
       
     ));
