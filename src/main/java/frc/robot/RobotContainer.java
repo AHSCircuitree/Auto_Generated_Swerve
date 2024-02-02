@@ -22,14 +22,16 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RumbleOnTarget;
+import frc.robot.commands.SetColor;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Limelight;
 
 public class RobotContainer {
 
   // Variables
-  private static final double MaxSpeed = 3; // 6 meters per second desired top speed
+  private static final double MaxSpeed = 2.5; // 6 meters per second desired top speed
   private static final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
   private static double[] InitalPose;
  
@@ -40,13 +42,14 @@ public class RobotContainer {
   // Subsystems
   private final Drivetrain drivetrain = TunerConstants.DriveTrain;  
   private final Limelight limelight = new Limelight();
+  private final Lights lights = new Lights();
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
   private final SendableChooser<double[]> PoseSelect = new SendableChooser<>();
 
   // PID Controllers
-  private PIDController AutoDrivePID = new PIDController(2, 0, 0);
+  private PIDController AutoDrivePID = new PIDController(2.3, 0, 0);
   private PIDController AutoTurnPID = new PIDController(0.2, 0, 0);
 
   // Commands
@@ -63,7 +66,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
   private void configureBindings() {
 
-    limelight.setDefaultCommand(new RumbleOnTarget(limelight, Player1Rum));
+    limelight.setDefaultCommand(new RumbleOnTarget(limelight,lights,  Player1Rum));
 
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric

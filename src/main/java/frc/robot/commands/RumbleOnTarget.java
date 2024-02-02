@@ -7,20 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Limelight;
 
 public class RumbleOnTarget extends Command {
 
   private Limelight limelight;
+  private Lights lights;
   private XboxController xbox;
-  private Boolean HasRumbled = false;
-
-  public RumbleOnTarget(Limelight Limelight, XboxController Xbox) {
+ 
+  public RumbleOnTarget(Limelight Limelight, Lights Lights, XboxController Xbox) {
 
     limelight = Limelight;
+    lights = Lights;
     xbox = Xbox;
 
-    addRequirements(Limelight);
+    addRequirements(Limelight, Lights);
  
   }
 
@@ -33,20 +35,16 @@ public class RumbleOnTarget extends Command {
   public void execute() {
 
     limelight.updateLimelightTracking();
-
-    if (limelight.HasValidTargetLeftIntake() == true || limelight.HasValidTargetRightIntake() == true ||
-    limelight.HasValidTargetShooter() == true) {
-
-      if (HasRumbled = false) {
-
-        xbox.setRumble(RumbleType.kLeftRumble, .5);
-        HasRumbled = true;
-
-      }
-
+    
+    if (limelight.HorizonalOffset_RI() != 0) {
+ 
+      xbox.setRumble(RumbleType.kLeftRumble, 0.5);
+      lights.SetColor(.73);
+       
     } else {
 
-      HasRumbled = false;
+      xbox.setRumble(RumbleType.kLeftRumble, 0.0);
+      lights.SetColor(.61);
 
     }
 
