@@ -22,9 +22,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RumbleOnTarget;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.SetColor;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Limelight;
 
@@ -43,6 +45,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = TunerConstants.DriveTrain;  
   private final Limelight limelight = new Limelight();
   private final Lights lights = new Lights();
+  private final Intake intake = new Intake();
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
@@ -76,6 +79,8 @@ public class RobotContainer {
     ));
 
     Player1.b().whileTrue(drivetrain.applyRequest(() -> brake));
+
+    Player1.y().whileTrue(new RunIntake(intake, .5));
 
     Player1.rightBumper().whileTrue(DriveToGamePiece());
  
