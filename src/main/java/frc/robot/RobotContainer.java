@@ -25,6 +25,7 @@ import frc.robot.commands.RumbleOnTarget;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.SetColor;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hooks;
 import frc.robot.subsystems.Intake;
@@ -48,6 +49,7 @@ public class RobotContainer {
   private final Lights lights = new Lights();
   private final Intake intake = new Intake();
   private final Hooks hooks = new Hooks();
+  private final Arm arm = new Arm();
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
@@ -71,7 +73,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
   private void configureBindings() {
 
-    limelight.setDefaultCommand(new RumbleOnTarget(limelight,lights,  Player1Rum));
+    limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
 
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
@@ -83,8 +85,6 @@ public class RobotContainer {
     Player1.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
     Player1.y().whileTrue(new RunIntake(intake, .5));
-
-  
 
     Player1.rightBumper().whileTrue(DriveToGamePiece());
  
