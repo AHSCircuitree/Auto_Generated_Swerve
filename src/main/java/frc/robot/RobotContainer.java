@@ -44,12 +44,12 @@ public class RobotContainer {
   private final XboxController Player1Rum = new XboxController(0);
  
   // Subsystems
-  private final Drivetrain drivetrain = TunerConstants.DriveTrain;  
-  private final Limelight limelight = new Limelight();
+  public final Drivetrain drivetrain = TunerConstants.DriveTrain;  
+  public final Limelight limelight = new Limelight();
   public final Lights lights = new Lights();
-  private final Intake intake = new Intake();
-  private final Hooks hooks = new Hooks();
-  private final Arm arm = new Arm();
+  public final Intake intake = new Intake();
+  public final Hooks hooks = new Hooks();
+  public final Arm arm = new Arm();
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();

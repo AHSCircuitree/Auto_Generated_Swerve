@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
@@ -17,6 +18,8 @@ public class Arm extends SubsystemBase {
   TalonFX AngleMotor;
   PIDController AnglePID;
   DutyCycleEncoder AngleEncoder;
+
+  public double AngleVoltage;
   
   public Arm() {
  
@@ -28,6 +31,10 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+   AngleVoltage = AngleMotor.getSupplyVoltage().getValueAsDouble();
+
+   SmartDashboard.getNumber("Angle Voltage", AngleVoltage);
+ 
     // This method will be called once per scheduler run
   }
 
@@ -42,5 +49,19 @@ public class Arm extends SubsystemBase {
     AngleMotor.set(AnglePID.calculate(AngleEncoder.getAbsolutePosition(), Setpoint));
  
   }
+  
+  public boolean AreAngleMotorsGood(){
 
+    if (
+      AngleVoltage < 9) {
+
+        return false;
+
+      } else {
+
+        return true;
+
+      }
+  }
+  
 }

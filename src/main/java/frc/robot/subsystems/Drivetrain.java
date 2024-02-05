@@ -21,7 +21,7 @@ import frc.robot.generated.TunerConstants;
  * so it can be used in command-based projects easily.
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
- 
+    
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -72,6 +72,26 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    public Boolean IsDriveTrainGood(){
+        
+        if (
+            TunerConstants.DriveTrain.getModule(0).getDriveMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(1).getDriveMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(2).getDriveMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(0).getDriveMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(1).getSteerMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(2).getSteerMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(0).getSteerMotor().getSupplyVoltage().getValue() < 9 ||
+            TunerConstants.DriveTrain.getModule(3).getSteerMotor().getSupplyVoltage().getValue() < 9 ) {
+
+                return false;
+                
+            } else {
+
+                return true;
+            }
     }
 
 }
