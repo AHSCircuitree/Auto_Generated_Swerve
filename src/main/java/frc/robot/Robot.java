@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
 
     CommandScheduler.getInstance().schedule(new StatusCheck(m_robotContainer.drivetrain, m_robotContainer.hooks,
-    m_robotContainer.arm, m_robotContainer.intake, m_robotContainer.lights));
+    m_robotContainer.arm, m_robotContainer.intake, m_robotContainer.lights, m_robotContainer.audio));
 
   }
 

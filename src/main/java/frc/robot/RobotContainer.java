@@ -26,6 +26,7 @@ import frc.robot.commands.RunIntake;
 import frc.robot.commands.SetColor;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Audio;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Hooks;
 import frc.robot.subsystems.Intake;
@@ -50,6 +51,7 @@ public class RobotContainer {
   public final Intake intake = new Intake();
   public final Hooks hooks = new Hooks();
   public final Arm arm = new Arm();
+  public final Audio audio = new Audio();
 
   // Selectors
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
