@@ -74,6 +74,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
+    intake.setDefaultCommand(null);
 
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric

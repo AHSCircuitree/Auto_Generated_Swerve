@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
@@ -33,11 +34,16 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Left Intake Voltage", LeftIntakeMotor.getBusVoltage());
+    SmartDashboard.putNumber("Right Intake Voltage", RightIntakeMotor.getBusVoltage());
+    SmartDashboard.putNumber("Front Intake Voltage", FrontIntakeMotor.getBusVoltage());
+    SmartDashboard.putNumber("Front Fly Voltage", FrontFlyMotor.getSupplyVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Back Fly Voltage", RearFlyMotor.getSupplyVoltage().getValueAsDouble());
+    
   }
 
   public void RunIntake(double speed) {
-
+    
       LeftIntakeMotor.set(speed);
       RightIntakeMotor.set(speed);
       FrontIntakeMotor.set(speed);
