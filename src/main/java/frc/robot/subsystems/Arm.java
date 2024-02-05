@@ -22,7 +22,7 @@ public class Arm extends SubsystemBase {
  
     AngleMotor = new TalonFX(31);
     AnglePID = new PIDController(.3, 0, 0);
-    AngleEncoder = new DutyCycleEncoder(0);
+    //AngleEncoder = new DutyCycleEncoder(0);
    
   }
 

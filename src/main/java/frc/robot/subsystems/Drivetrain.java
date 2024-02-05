@@ -14,15 +14,14 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.generated.TunerConstants;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements subsystem
  * so it can be used in command-based projects easily.
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
-
-    private TalonFX DummyFrontRightDrive = new TalonFX(3);
-
+ 
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -32,7 +31,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
- 
     }
     public Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
@@ -44,8 +42,17 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     @Override
     public void periodic() {
 
-        SmartDashboard.putNumber("Front Right Drive Voltage", DummyFrontRightDrive.getSupplyVoltage().getValueAsDouble());
- 
+        // FL = 0, FR = 1, RL = 2, RR = 3
+        SmartDashboard.putNumber("Front Left Drive Voltage", TunerConstants.DriveTrain.getModule(0).getDriveMotor().getSupplyVoltage().getValue());
+        SmartDashboard.putNumber("Front Right Drive Voltage", TunerConstants.DriveTrain.getModule(1).getDriveMotor().getSupplyVoltage().getValue());
+        SmartDashboard.putNumber("Rear Left Drive Voltage", TunerConstants.DriveTrain.getModule(2).getDriveMotor().getSupplyVoltage().getValue());
+        SmartDashboard.putNumber("Rear Right Drive Voltage", TunerConstants.DriveTrain.getModule(3).getDriveMotor().getSupplyVoltage().getValue());
+
+        SmartDashboard.putNumber("Front Left Turn Voltage", TunerConstants.DriveTrain.getModule(0).getSteerMotor().getSupplyVoltage().getValue());
+        SmartDashboard.putNumber("Front Right Turn Voltage", TunerConstants.DriveTrain.getModule(1).getSteerMotor().getSupplyVoltage().getValue());
+        SmartDashboard.putNumber("Rear Left Turn Voltage", TunerConstants.DriveTrain.getModule(2).getSteerMotor().getSupplyVoltage().getValue());
+        SmartDashboard.putNumber("Rear Right Turn Voltage", TunerConstants.DriveTrain.getModule(3).getSteerMotor().getSupplyVoltage().getValue());
+
     }
 
     private void startSimThread() {
