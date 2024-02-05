@@ -46,7 +46,7 @@ public class RobotContainer {
   // Subsystems
   private final Drivetrain drivetrain = TunerConstants.DriveTrain;  
   private final Limelight limelight = new Limelight();
-  private final Lights lights = new Lights();
+  public final Lights lights = new Lights();
   private final Intake intake = new Intake();
   private final Hooks hooks = new Hooks();
   private final Arm arm = new Arm();

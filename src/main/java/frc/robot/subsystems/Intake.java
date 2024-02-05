@@ -18,6 +18,13 @@ public class Intake extends SubsystemBase {
   CANSparkMax FrontIntakeMotor;
   TalonFX RearFlyMotor;
   TalonFX FrontFlyMotor;
+
+  public double LeftIntakeVoltage;
+  public double RightIntakeVoltage;
+  public double FrontIntakeVoltage;
+  public double RearFlyVoltage;
+  public double FrontFlyVoltage;
+
   /** Creates a new Intake. */
   public Intake() {
 
@@ -34,21 +41,46 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("Left Intake Voltage", LeftIntakeMotor.getBusVoltage());
-    SmartDashboard.putNumber("Right Intake Voltage", RightIntakeMotor.getBusVoltage());
-    SmartDashboard.putNumber("Front Intake Voltage", FrontIntakeMotor.getBusVoltage());
-    SmartDashboard.putNumber("Front Fly Voltage", FrontFlyMotor.getSupplyVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Back Fly Voltage", RearFlyMotor.getSupplyVoltage().getValueAsDouble());
+    LeftIntakeVoltage = LeftIntakeMotor.getBusVoltage();
+    RightIntakeVoltage = RightIntakeMotor.getBusVoltage();
+    FrontIntakeVoltage = FrontIntakeMotor.getBusVoltage();
+    FrontFlyVoltage = FrontFlyMotor.getSupplyVoltage().getValueAsDouble();
+    RearFlyVoltage = RearFlyMotor.getSupplyVoltage().getValueAsDouble();
+
+    SmartDashboard.putNumber("Left Intake Voltage", LeftIntakeVoltage);
+    SmartDashboard.putNumber("Right Intake Voltage", RightIntakeVoltage);
+    SmartDashboard.putNumber("Front Intake Voltage", FrontIntakeVoltage);
+    SmartDashboard.putNumber("Front Fly Voltage", FrontFlyVoltage);
+    SmartDashboard.putNumber("Back Fly Voltage", RearFlyVoltage);
     
   }
 
   public void RunIntake(double speed) {
     
-      LeftIntakeMotor.set(speed);
-      RightIntakeMotor.set(speed);
-      FrontIntakeMotor.set(speed);
-      FrontFlyMotor.set(speed);
-      RearFlyMotor.set(speed);
+    LeftIntakeMotor.set(speed);
+    RightIntakeMotor.set(speed);
+    FrontIntakeMotor.set(speed);
+    FrontFlyMotor.set(speed);
+    RearFlyMotor.set(speed);
+
+  }
+
+  public Boolean AreIntakeMotorsGood() {
+
+    if (
+    LeftIntakeVoltage < 9 ||
+    RightIntakeVoltage < 9 ||
+    FrontIntakeVoltage < 9 ||
+    FrontFlyVoltage < 9 ||
+    RearFlyVoltage < 9 ) {
+
+      return false;
+
+    } else {
+
+      return true;
+
+    }
 
   }
 

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
  
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -19,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
  * so it can be used in command-based projects easily.
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
+
+    private TalonFX DummyFrontRightDrive = new TalonFX(3);
+
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -35,6 +39,13 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+    }
+
+    @Override
+    public void periodic() {
+
+        SmartDashboard.putNumber("Front Right Drive Voltage", DummyFrontRightDrive.getSupplyVoltage().getValueAsDouble());
+ 
     }
 
     private void startSimThread() {
