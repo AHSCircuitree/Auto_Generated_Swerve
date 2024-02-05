@@ -25,7 +25,7 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void RunShoot(double speed) {
+  public void RunAngle(double speed) {
 
     AngleMotor.set(speed);
  

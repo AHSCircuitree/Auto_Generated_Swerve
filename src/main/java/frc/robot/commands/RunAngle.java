@@ -29,7 +29,7 @@ public class RunAngle extends Command {
   @Override
   public void execute() {
 
-    arm.RunShoot(speed);
+    arm.RunAngle(speed);
 
   }
 
@@ -37,7 +37,7 @@ public class RunAngle extends Command {
   @Override
   public void end(boolean interrupted) {
 
-    arm.RunShoot(0);
+    arm.RunAngle(0);
 
   }
 
