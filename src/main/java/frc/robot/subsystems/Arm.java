@@ -8,15 +8,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
  
   TalonFX AngleMotor;
+  PIDController AnglePID;
+  DutyCycleEncoder AngleEncoder;
   
   public Arm() {
  
     AngleMotor = new TalonFX(31);
+    AnglePID = new PIDController(.3, 0, 0);
+    AngleEncoder = new DutyCycleEncoder(0);
    
   }
 
@@ -28,6 +34,12 @@ public class Arm extends SubsystemBase {
   public void RunAngle(double speed) {
 
     AngleMotor.set(speed);
+ 
+  }
+
+  public void AnglePID(double Setpoint) {
+
+    AngleMotor.set(AnglePID.calculate(AngleEncoder.getAbsolutePosition(), Setpoint));
  
   }
 

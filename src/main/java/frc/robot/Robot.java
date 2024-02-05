@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    CommandScheduler.getInstance().setDefaultCommand(m_robotContainer.lights, new SetColor(m_robotContainer.lights, .5));
+    ;
 
   }
 
