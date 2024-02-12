@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.RumbleOnTarget;
 import frc.robot.commands.RunIntake;
+import frc.robot.commands.RunShooter;
 import frc.robot.commands.SetColor;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
@@ -76,8 +77,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
-    intake.setDefaultCommand(null);
-
+ 
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
         .withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed)  
@@ -85,12 +85,10 @@ public class RobotContainer {
         .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) 
     ));
 
-    Player1.b().whileTrue(drivetrain.applyRequest(() -> brake));
+    Player1.leftTrigger().onTrue(new SequentialCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
 
-    Player1.y().whileTrue(new RunIntake(intake, .5));
+    Player1.rightTrigger().onTrue(new RunShooter(arm, .5));
 
-    Player1.rightBumper().whileTrue(DriveToGamePiece());
- 
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
  
@@ -350,10 +348,29 @@ public class RobotContainer {
 
   public Command DriveToGamePiece() {
    
-    return drivetrain.applyRequest(() -> driveRobotCentric
-      .withVelocityX(1)  
-      .withVelocityY(0)  
-      .withRotationalRate(-limelight.HorizonalOffset_RI() / 12));  
+    if (limelight.HorizonalOffset_LI() != 0) {
+
+      return drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(0)  
+        .withVelocityY(1)  
+        .withRotationalRate(-limelight.HorizonalOffset_LI() / 12));  
+
+    } else if (limelight.HorizonalOffset_RI() != 0) {
+
+      return drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(0)  
+        .withVelocityY(-1)  
+        .withRotationalRate(-limelight.HorizonalOffset_RI() / 12));  
+
+    } else {
+
+      return drivetrain.applyRequest(() -> driveRobotCentric
+        .withVelocityX(0)  
+        .withVelocityY(0)  
+        .withRotationalRate(0));  
+
+    }
+
     
   }
 

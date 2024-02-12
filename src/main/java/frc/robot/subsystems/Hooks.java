@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Hooks extends SubsystemBase {
 
@@ -19,19 +20,19 @@ public class Hooks extends SubsystemBase {
   PIDController HookPID;
   DutyCycleEncoder HookEncoder;
 
-
   public double RightHookVoltage;
   public double LeftHookVoltage;
 
   /** Creates a new Hooks. */
   public Hooks() {
 
-    RightHookMotor = new TalonFX(29);
-    LeftHookMotor = new TalonFX(30);
+    RightHookMotor = new TalonFX(Constants.CAN_IDs.RightHookID);
+    LeftHookMotor = new TalonFX(Constants.CAN_IDs.LeftHookID);
+
     HookPID = new PIDController(.3, 0, 0);
-    //
+    
     HookEncoder = new DutyCycleEncoder(0);
-    // Use addRequirements() here to declare subsystem dependencies.
+ 
   }
   public void RunHooks(double speed) {
 
@@ -40,17 +41,21 @@ public class Hooks extends SubsystemBase {
 
   }
 
-  public void HookPID(double Setpoint){
+  public void HookPID(double Setpoint) {
+
     RightHookMotor.set(HookPID.calculate(HookEncoder.getAbsolutePosition(), Setpoint));
     LeftHookMotor.set(HookPID.calculate(HookEncoder.getAbsolutePosition(), Setpoint));
+
   }
    
-  public void periodic(){
+  public void periodic() {
+
     RightHookVoltage = RightHookMotor.getSupplyVoltage().getValueAsDouble();
     LeftHookVoltage = LeftHookMotor.getSupplyVoltage().getValueAsDouble();
     
     SmartDashboard.getNumber("Left Hook Voltage", LeftHookVoltage);
     SmartDashboard.getNumber("Right Hook Voltage", RightHookVoltage);
+
   }
 
   public boolean AreHookMotorsGood(){
