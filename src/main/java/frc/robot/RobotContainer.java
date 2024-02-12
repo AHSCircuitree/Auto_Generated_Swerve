@@ -352,14 +352,14 @@ public class RobotContainer {
 
       return drivetrain.applyRequest(() -> driveRobotCentric
         .withVelocityX(0)  
-        .withVelocityY(1)  
+        .withVelocityY(-1)  
         .withRotationalRate(-limelight.HorizonalOffset_LI() / 12));  
 
     } else if (limelight.HorizonalOffset_RI() != 0) {
 
       return drivetrain.applyRequest(() -> driveRobotCentric
         .withVelocityX(0)  
-        .withVelocityY(-1)  
+        .withVelocityY(1)  
         .withRotationalRate(-limelight.HorizonalOffset_RI() / 12));  
 
     } else {
