@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
@@ -28,13 +29,11 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
 
-    LeftIntakeMotor = new CANSparkMax(21, MotorType.kBrushless);
-    RightIntakeMotor = new CANSparkMax(22, MotorType.kBrushless);
-    FrontIntakeMotor = new CANSparkMax(23, MotorType.kBrushless);
-    RearFlyMotor = new TalonFX(24);
-    FrontFlyMotor = new TalonFX(25);
-
-    RightIntakeMotor.setInverted(true);
+    LeftIntakeMotor = new CANSparkMax(Constants.CAN_IDs.LeftIntakeID, MotorType.kBrushless);
+    RightIntakeMotor = new CANSparkMax(Constants.CAN_IDs.RightIntakeID, MotorType.kBrushless);
+    FrontIntakeMotor = new CANSparkMax(Constants.CAN_IDs.FrontIntakeID, MotorType.kBrushless);
+    RearFlyMotor = new TalonFX(Constants.CAN_IDs.RearFlyID);
+    FrontFlyMotor = new TalonFX(Constants.CAN_IDs.FrontFlyID);
 
   }
 

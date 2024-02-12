@@ -83,8 +83,8 @@ public class Telemetry {
         Pose2d pose = state.Pose;
         fieldTypePub.set("Field2d");
         fieldPub.set(new double[] {
-                pose.getX() + Constants.XOFFSET,
-                pose.getY() + Constants.YOFFSET,
+                pose.getX(),
+                pose.getY(),
                 pose.getRotation().getDegrees()
         });
 
