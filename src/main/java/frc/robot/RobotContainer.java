@@ -81,14 +81,14 @@ public class RobotContainer {
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed)  
-        .withVelocityY(Deadband(-Player1.getLeftX()) * MaxSpeed) 
+        .withVelocityX(Deadband(Player1.getLeftY()) * MaxSpeed)  
+        .withVelocityY(Deadband(Player1.getLeftX()) * MaxSpeed) 
         .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) 
     ));
 
-    Player1.leftTrigger().onTrue(new ParallelCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
+    Player1.a().onTrue(new ParallelCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
 
-    Player1.rightTrigger().onTrue(new RunShooter(arm, .5));
+    Player1.b().onTrue(new RunShooter(arm, .5));
 
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
