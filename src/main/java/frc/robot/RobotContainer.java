@@ -122,6 +122,7 @@ public class RobotContainer {
       DriveToPoint(Constants.WayPoints.BlueStealShootingLine)
       
     ));
+
     AutoSelect.addOption("Blue Left Shoot Three", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
@@ -138,6 +139,25 @@ public class RobotContainer {
       DriveToPoint(Constants.WayPoints.BlueRightRingShoot2)
        
     ));
+
+     AutoSelect.addOption("Blue Left Steal", new SequentialCommandGroup(
+     
+      ResetAutoOdom().withTimeout(.1),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp1, .4),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealRing1, .3),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
+      new WaitCommand(1), // Simulates Shooting
+      DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp2, .4),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealRing2, .3),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
+      new WaitCommand(1), // Simulates Shooting
+      DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp3, .4),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealRing3, .3),
+      DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
+      new WaitCommand(1) // Simulates Shooting
+       
+    ));
+
 
     SmartDashboard.putData("Select Auto", AutoSelect);
 

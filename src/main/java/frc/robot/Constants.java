@@ -76,15 +76,20 @@ public class Constants {
         public static double MiddleRing5FromBlue[] = {0.5874, 8.2, 90};
         public static double MiddleRing4FromBlue[] = {2.6384, 8.2, 90};
 
+        // Blue Left Steal
+        public static double BlueLeftStealLineUp1[] = {7, 2, -120};
+        public static double BlueLeftStealRing1[] = {7.0104, 2.8 + .2, -90};
+        public static double BlueLeftStealRingShoot[] = {7.0104, 2.8 + .2, -150};
+        public static double BlueLeftStealLineUp2[] = {7.46, 5.82, -90};
+        public static double BlueLeftStealRing2[] = {7.46, 8.2 + .2, -90};
+        public static double BlueLeftStealLineUp3[] = {6.14, 5.82, -90};
+        public static double BlueLeftStealRing3[] = {5.76, 8.2 + .2, -90};
+      
+
         //Red Side Rings
         public static double RedLeftRing[] = {4.0894,13.9192,0};
         public static double RedCenterRing[] = {5.588,13.9192,0};
         public static double RedRightRing[] = {7.0104,13.9192,0};
-
-        // Red Right Steal
-        public static double RightRedStageLine[] = {6.7,10.7004,180};
-        public static double MiddleRing5FromRed[] = {0.7874, 7.8232, 270};
-        public static double MiddleRing4FromRed[] = {2.4384,8.001,270};
 
     }
 
