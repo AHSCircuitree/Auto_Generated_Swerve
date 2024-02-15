@@ -14,9 +14,9 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
 
-  CANSparkMax LeftIntakeMotor;
-  CANSparkMax RightIntakeMotor;
-  CANSparkMax FrontIntakeMotor;
+  TalonFX LeftIntakeMotor;
+  TalonFX RightIntakeMotor;
+  TalonFX FrontIntakeMotor;
   TalonFX RearFlyMotor;
   TalonFX FrontFlyMotor;
 
@@ -29,9 +29,9 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
 
-    LeftIntakeMotor = new CANSparkMax(Constants.CAN_IDs.LeftIntakeID, MotorType.kBrushless);
-    RightIntakeMotor = new CANSparkMax(Constants.CAN_IDs.RightIntakeID, MotorType.kBrushless);
-    FrontIntakeMotor = new CANSparkMax(Constants.CAN_IDs.FrontIntakeID, MotorType.kBrushless);
+    LeftIntakeMotor = new TalonFX(Constants.CAN_IDs.LeftIntakeID);
+    RightIntakeMotor = new TalonFX(Constants.CAN_IDs.RightIntakeID);
+    FrontIntakeMotor = new TalonFX(Constants.CAN_IDs.FrontIntakeID);
     RearFlyMotor = new TalonFX(Constants.CAN_IDs.RearFlyID);
     FrontFlyMotor = new TalonFX(Constants.CAN_IDs.FrontFlyID);
 
@@ -40,9 +40,9 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
 
-    LeftIntakeVoltage = LeftIntakeMotor.getBusVoltage();
-    RightIntakeVoltage = RightIntakeMotor.getBusVoltage();
-    FrontIntakeVoltage = FrontIntakeMotor.getBusVoltage();
+    LeftIntakeVoltage = LeftIntakeMotor.getSupplyVoltage().getValueAsDouble();
+    RightIntakeVoltage = RightIntakeMotor.getSupplyVoltage().getValueAsDouble();
+    FrontIntakeVoltage = FrontIntakeMotor.getSupplyVoltage().getValueAsDouble();
     FrontFlyVoltage = FrontFlyMotor.getSupplyVoltage().getValueAsDouble();
     RearFlyVoltage = RearFlyMotor.getSupplyVoltage().getValueAsDouble();
 

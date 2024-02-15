@@ -128,7 +128,11 @@ public class Constants {
         public static double Grey = .95;
         public static double DarkGrey = .97;
         public static double Black = .99;
-
-    }
+        public static double BlueShot = -.83;
+        public static double RedShot = -.85; 
+        public static double RainbowRainbowPalette = -.99;
+        public static double RedLarsonScanner = -.35;
+        public static double GrayLarsonScanner = -.33;
+            }
         
 }

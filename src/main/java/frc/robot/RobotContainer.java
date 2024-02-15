@@ -5,7 +5,6 @@
 package frc.robot;
 
 import java.lang.reflect.Array;
-import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -23,8 +22,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.RumbleOnTarget;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
@@ -78,62 +75,21 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
-
   private void configureBindings() {
 
-    // Button Setup
-    JoystickButton driver1A = new JoystickButton(Player1Rum, XboxController.Button.kA.value);
-    JoystickButton driver1B = new JoystickButton(Player1Rum, XboxController.Button.kB.value);
-    JoystickButton driver1X = new JoystickButton(Player1Rum, XboxController.Button.kX.value);
-    JoystickButton driver1Y = new JoystickButton(Player1Rum, XboxController.Button.kY.value);
-    JoystickButton driver1LB = new JoystickButton(Player1Rum, XboxController.Button.kLeftBumper.value);
-    JoystickButton driver1RB = new JoystickButton(Player1Rum, XboxController.Button.kRightBumper.value);
-    JoystickButton driver1LS = new JoystickButton(Player1Rum, XboxController.Button.kLeftStick.value);
-    JoystickButton driver1RS = new JoystickButton(Player1Rum, XboxController.Button.kRightStick.value);
-    JoystickButton driver1Start = new JoystickButton(Player1Rum, XboxController.Button.kStart.value);
-    JoystickButton driver1Back = new JoystickButton(Player1Rum, XboxController.Button.kBack.value);
-
-    //Trigger Setup
-    BooleanSupplier driver1LTSupplier = new BooleanSupplier() {
-
-      @Override
-      public boolean getAsBoolean() {
-        if(Player1Rum.getLeftTriggerAxis() > 0.2){
-          return true;
-        }
-        else{
-          return false;
-        }
-      }
-    };
-    Trigger driver1LT = new Trigger(driver1LTSupplier);
-
-    BooleanSupplier driver1RTSupplier = new BooleanSupplier() {
-
-      @Override
-      public boolean getAsBoolean() {
-        if(Player1Rum.getRightTriggerAxis() > 0.2){
-          return true;
-        }
-        else{
-          return false;
-        }
-      }
-    };
-    Trigger driver1RT = new Trigger(driver1RTSupplier);
-
-    //Default Commands
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
+ 
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed)  
-        .withVelocityY(Deadband(-Player1.getLeftX()) * MaxSpeed) 
+        .withVelocityX(Deadband(Player1.getLeftY()) * MaxSpeed)  
+        .withVelocityY(Deadband(Player1.getLeftX()) * MaxSpeed) 
         .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) 
     ));
 
-    driver1LT.onTrue(new RunIntake(intake, .5));
-    driver1RT.onTrue(new RunShooter(arm, .5));
-   
+    Player1.a().onTrue(new ParallelCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
+
+    Player1.b().onTrue(new RunShooter(arm, .5));
+
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
  
@@ -166,6 +122,7 @@ public class RobotContainer {
       DriveToPoint(Constants.WayPoints.BlueStealShootingLine)
       
     ));
+
     AutoSelect.addOption("Blue Left Shoot Three", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
@@ -183,7 +140,7 @@ public class RobotContainer {
        
     ));
 
-    AutoSelect.addOption("Blue Left Steal", new SequentialCommandGroup(
+     AutoSelect.addOption("Blue Left Steal", new SequentialCommandGroup(
      
       ResetAutoOdom().withTimeout(.1),
       DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp1, .4),
@@ -198,9 +155,8 @@ public class RobotContainer {
       DriveToPoint(Constants.WayPoints.BlueLeftStealRing3, .3),
       DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
       new WaitCommand(1) // Simulates Shooting
-     
+       
     ));
-
 
 
     SmartDashboard.putData("Select Auto", AutoSelect);

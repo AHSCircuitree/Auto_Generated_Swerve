@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Audio;
 import frc.robot.subsystems.Drivetrain;
@@ -40,12 +41,11 @@ public class StatusCheck extends InstantCommand {
 
     if (drivetrain.IsDriveTrainGood() == false) {
 
-      lights.SetColor(.89);
-      audio.playAudio(1, 1);
-
+      lights.SetColor(Constants.Colors.Red);
+ 
     } else {
 
-      lights.SetColor(.73);
+      lights.SetColor(Constants.Colors.Green);
 
     }
 

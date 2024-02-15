@@ -22,6 +22,16 @@ import frc.robot.generated.TunerConstants;
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     
+    // Voltage Variables
+    public double FrontLeftDriveVoltage;
+    public double FrontRightDriveVoltage;
+    public double BackLeftDriveVoltage;
+    public double BackRightDriveVoltage;
+    public double FrontLeftTurnVoltage;
+    public double FrontRightTurnVoltage;
+    public double BackLeftTurnVoltage;
+    public double BackRightTurnVoltage;
+
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -41,6 +51,16 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     @Override
     public void periodic() {
+
+        FrontLeftDriveVoltage = TunerConstants.DriveTrain.getModule(0).getDriveMotor().getSupplyVoltage().getValue();
+        FrontRightDriveVoltage = TunerConstants.DriveTrain.getModule(1).getDriveMotor().getSupplyVoltage().getValue();
+        BackLeftDriveVoltage = TunerConstants.DriveTrain.getModule(2).getDriveMotor().getSupplyVoltage().getValue();
+        BackRightDriveVoltage = TunerConstants.DriveTrain.getModule(3).getDriveMotor().getSupplyVoltage().getValue();
+        FrontLeftTurnVoltage = TunerConstants.DriveTrain.getModule(0).getSteerMotor().getSupplyVoltage().getValue();
+        FrontRightTurnVoltage = TunerConstants.DriveTrain.getModule(1).getSteerMotor().getSupplyVoltage().getValue();
+        BackLeftTurnVoltage = TunerConstants.DriveTrain.getModule(2).getSteerMotor().getSupplyVoltage().getValue();
+        BackRightTurnVoltage = TunerConstants.DriveTrain.getModule(3).getSteerMotor().getSupplyVoltage().getValue();
+
 
         // FL = 0, FR = 1, RL = 2, RR = 3
         SmartDashboard.putNumber("Front Left Drive Voltage", TunerConstants.DriveTrain.getModule(0).getDriveMotor().getSupplyVoltage().getValue());
