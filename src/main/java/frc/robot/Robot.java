@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.SetColor;
 import frc.robot.commands.StatusCheck;
+import frc.robot.commands.StatusCheck2;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
@@ -69,7 +70,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
 
-    CommandScheduler.getInstance().schedule(new StatusCheck(m_robotContainer.drivetrain, m_robotContainer.hooks,
+    CommandScheduler.getInstance().schedule(new StatusCheck2(m_robotContainer.drivetrain, m_robotContainer.hooks,
     m_robotContainer.arm, m_robotContainer.intake, m_robotContainer.lights, m_robotContainer.audio));
 
   }

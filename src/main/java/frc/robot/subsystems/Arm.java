@@ -26,6 +26,9 @@ public class Arm extends SubsystemBase {
   DutyCycleEncoder AngleEncoder;
 
   public double AngleVoltage;
+  public double BottomShootingVoltage;
+  public double CentralShootingVoltage;
+  public double TopShootingVoltage;
   
   public Arm() {
  
@@ -36,7 +39,7 @@ public class Arm extends SubsystemBase {
 
     AnglePID = new PIDController(.3, 0, 0);
 
-    //AngleEncoder = new DutyCycleEncoder(0);
+    AngleEncoder = new DutyCycleEncoder(6);
    
   }
 
