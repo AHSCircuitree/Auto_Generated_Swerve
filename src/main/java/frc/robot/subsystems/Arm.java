@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -39,8 +40,12 @@ public class Arm extends SubsystemBase {
 
     AnglePID = new PIDController(.3, 0, 0);
 
-    AngleEncoder = new DutyCycleEncoder(6);
-   
+    if (Utils.isSimulation() == false) {
+
+      AngleEncoder = new DutyCycleEncoder(6);
+
+    }
+    
   }
 
   @Override

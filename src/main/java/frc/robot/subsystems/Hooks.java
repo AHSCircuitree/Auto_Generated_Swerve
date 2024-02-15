@@ -18,7 +18,6 @@ public class Hooks extends SubsystemBase {
   TalonFX RightHookMotor;
   TalonFX LeftHookMotor;
   PIDController HookPID;
-  DutyCycleEncoder HookEncoder;
 
   public double RightHookVoltage;
   public double LeftHookVoltage;
@@ -30,8 +29,6 @@ public class Hooks extends SubsystemBase {
     LeftHookMotor = new TalonFX(Constants.CAN_IDs.LeftHookID);
 
     HookPID = new PIDController(.3, 0, 0);
-    
-    HookEncoder = new DutyCycleEncoder(0);
  
   }
   public void RunHooks(double speed) {
@@ -43,8 +40,8 @@ public class Hooks extends SubsystemBase {
 
   public void HookPID(double Setpoint) {
 
-    RightHookMotor.set(HookPID.calculate(HookEncoder.getAbsolutePosition(), Setpoint));
-    LeftHookMotor.set(HookPID.calculate(HookEncoder.getAbsolutePosition(), Setpoint));
+    RightHookMotor.set(HookPID.calculate(LeftHookMotor.getPosition().getValueAsDouble(), Setpoint));
+    LeftHookMotor.set(HookPID.calculate(LeftHookMotor.getPosition().getValueAsDouble(), Setpoint));
 
   }
    
