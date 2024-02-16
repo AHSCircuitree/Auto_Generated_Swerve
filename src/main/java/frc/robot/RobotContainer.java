@@ -20,6 +20,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController;
@@ -49,7 +54,6 @@ public class RobotContainer {
   // Variables
   private static final double MaxSpeed = 2.5; // 6 meters per second desired top speed
   private static final double MaxAngularRate = Math.PI; // Half a rotation per second max angular velocity
-  private static double[] InitalPose;
  
   // Controllers
   private final CommandXboxController Player1 = new CommandXboxController(0);
@@ -65,8 +69,7 @@ public class RobotContainer {
   public final Audio audio = new Audio();
 
   // Selectors
-  private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
-  private final SendableChooser<double[]> PoseSelect = new SendableChooser<>();
+  private final SendableChooser<String> AutoSelect = new SendableChooser<>();
 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(0, 0, 0);
@@ -90,9 +93,9 @@ public class RobotContainer {
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Deadband(Player1.getLeftY()) * MaxSpeed)  
-        .withVelocityY(Deadband(Player1.getLeftX()) * MaxSpeed) 
-        .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) 
+        .withVelocityX(Player1.getLeftY() * MaxSpeed)  
+        .withVelocityY(Player1.getLeftX()* MaxSpeed) 
+        .withRotationalRate((-Player1.getRightX() * MaxAngularRate)) 
     ));
 
     Player1.a().onTrue(new ParallelCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
@@ -110,275 +113,46 @@ public class RobotContainer {
     
     // Set the button bindings
     configureBindings();
-
-    // Push telemetry and selectors
-    AutoSelect.setDefaultOption("Check Position", new SequentialCommandGroup(
-     
-      ResetAutoOdom().withTimeout(.1)
-       
-    ));
-
-    AutoSelect.addOption("Blue Right Steal", new SequentialCommandGroup(
-     
-      ResetAutoOdom().withTimeout(.1),
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .8),
-      DriveToPoint(Constants.WayPoints.MiddleRing5FromBlue, .2), 
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .6), 
-      DriveToPoint(Constants.WayPoints.BlueStealShootingLine, .1),
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .8),
-      DriveToPoint(Constants.WayPoints.MiddleRing4FromBlue, .2),
-      DriveToPoint(Constants.WayPoints.RightBlueStageLine, .6),
-      DriveToPoint(Constants.WayPoints.BlueStealShootingLine)
-      
-    ));
-
-    AutoSelect.addOption("Blue Left Shoot Three", new SequentialCommandGroup(
-     
-      ResetAutoOdom().withTimeout(.1),
-      DriveToPoint(Constants.WayPoints.BlueThreeShootStart1, .8),
-      DriveToPoint(Constants.WayPoints.BlueThreeShootStart2, .8),
-      DriveToPoint(Constants.WayPoints.BlueLeftRing),
-      DriveToPoint(Constants.WayPoints.BlueLeftRingShoot),
-      new WaitCommand(1), // Simulates Shooting
-      DriveToPoint(Constants.WayPoints.BlueCenterRing),
-      new WaitCommand(1), // Simulates Shooting
-      DriveToPoint(Constants.WayPoints.BlueAboveRightRing, .3),
-      DriveToPoint(Constants.WayPoints.BlueRightRing),
-      DriveToPoint(Constants.WayPoints.BlueRightRingShoot1, .3),
-      DriveToPoint(Constants.WayPoints.BlueRightRingShoot2)
-       
-    ));
-
-     AutoSelect.addOption("Blue Left Steal", new SequentialCommandGroup(
-     
-      ResetAutoOdom().withTimeout(.1),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp1, .4),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealRing1, .3),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
-      new WaitCommand(1), // Simulates Shooting
-      DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp2, .4),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealRing2, .3),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
-      new WaitCommand(1), // Simulates Shooting
-      DriveToPoint(Constants.WayPoints.BlueLeftStealLineUp3, .4),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealRing3, .3),
-      DriveToPoint(Constants.WayPoints.BlueLeftStealRingShoot),
-      new WaitCommand(1) // Simulates Shooting
-       
-    ));
-
-
-    SmartDashboard.putData("Select Auto", AutoSelect);
-
-    PoseSelect.setDefaultOption("Default", Constants.WayPoints.FieldCenter);
-    PoseSelect.addOption("Blue Left", Constants.WayPoints.BlueStartingLeft);
-    PoseSelect.addOption("Blue Center", Constants.WayPoints.BlueStartingCenter);
-    PoseSelect.addOption("Blue Right", Constants.WayPoints.BlueStartingRight);
-    PoseSelect.addOption("Red Left", Constants.WayPoints.RedStartingLeft);
-    PoseSelect.addOption("Red Center", Constants.WayPoints.RedStartingCenter);
-    PoseSelect.addOption("Red Right", Constants.WayPoints.RedStartingRight);
-
-    SmartDashboard.putNumber("Current Position", logger.returnPose().getX());
-    SmartDashboard.putNumber("Target Position", Choreo.getTrajectory("Note").getFinalPose().getX());
  
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(Choreo.getTrajectory("Note").getInitialPose());
+    
+    drivetrain.seedFieldRelative(Choreo.getTrajectory("Note").getInitialPose());
+    //drivetrain.seedFieldRelative(new Pose2d());
+
+    for (int i = 0; i < Constants.UsableTrajectories.length; i++) {
+
+      if (i == 1) {
+
+        AutoSelect.setDefaultOption(Constants.UsableTrajectories[i], Constants.UsableTrajectories[i]);
+
+      } else {
+
+        AutoSelect.addOption(Constants.UsableTrajectories[i], Constants.UsableTrajectories[i]);
+
+      }
+
     }
 
-    InitalPose = PoseSelect.getSelected();
-   
+    SmartDashboard.putData("Select Auto", AutoSelect);
+ 
   }
 
   public Command getAutonomousCommand() {
 
     return Choreo.choreoSwerveCommand(
     Choreo.getTrajectory("Note"), 
-    logger.PoseSupplier(), 
+    () -> (drivetrain.getState().Pose), 
     AutoDrivePID, AutoDrivePID, AutoTurnPID, 
     (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-    () -> false, 
+    () -> DriverStation.getAlliance().equals(Alliance.Red), 
     drivetrain
     );
     
   }
-
-  public double VerticalMovement(double X) {
  
-    double OffsetTarget = X;
-    double OffsetCurrent = logger.returnPose().getY();
- 
-    if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
-
-      //return 0;
-      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
-    
-    } else {
-
-      return 0;
-
-    }
- 
-  }
-
-  public double VerticalMovement(double X, double Tolerance) {
- 
-    double OffsetTarget = X;
-    double OffsetCurrent = logger.returnPose().getY();
- 
-    if (Math.abs(OffsetCurrent - OffsetTarget) > Tolerance) {
-
-      //return 0;
-      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
-    
-    } else {
-
-      return 0;
-
-    }
- 
-  }
-
-  public double HorizonalMovement(double Y) {
- 
-    double OffsetTarget = Y;
-    double OffsetCurrent = logger.returnPose().getX();
- 
-    if (Math.abs(OffsetCurrent - OffsetTarget) > Constants.POSETOLERANCE) {
-    
-      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
- 
-    } else {
-
-      return 0;
-
-    }
- 
-  }
-
-  public double HorizonalMovement(double Y, double Tolerance) {
- 
-    double OffsetTarget = Y;
-    double OffsetCurrent = logger.returnPose().getX();
- 
-    if (Math.abs(OffsetCurrent - OffsetTarget) > Tolerance) {
-    
-      return AutoDrivePID.calculate(OffsetCurrent, OffsetTarget);
- 
-    } else {
-
-      return 0;
-
-    }
- 
-  }
-
-  public double RotatePID(double TargetAngle) {
-
-    double CurrentAngle = logger.returnPose().getRotation().getDegrees();
-
-    if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
-
-      return AutoTurnPID.calculate(CurrentAngle, TargetAngle);
-
-    } else {
-
-      return 0;
-
-    }
- 
-  }
-
-   public double Rotate(double Target) {
-
-    double CurrentAngle;  
-    double TargetAngle;
-
-    if (logger.returnPose().getRotation().getDegrees() < 0) {
-
-      CurrentAngle = 360 + logger.returnPose().getRotation().getDegrees();
-
-    } else {
-
-      CurrentAngle = logger.returnPose().getRotation().getDegrees();
-
-    }
-
-    if (Target < 0) {
-
-      TargetAngle = 360 + Target;
-
-    } else {
-
-      TargetAngle = Target;
-
-    }
-
-    SmartDashboard.putNumber("Going to Angle:", TargetAngle);
-    SmartDashboard.putNumber("Currently at Angle:", CurrentAngle);
-
-    if (Math.abs(TargetAngle - CurrentAngle) > Constants.ANGLETOLERANCE) {
-
-      if (Math.abs(TargetAngle - CurrentAngle) > Math.abs(TargetAngle - (CurrentAngle + 360))) {
-
-        return -LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -2, 2);
-
-      } else if (Math.abs(TargetAngle - CurrentAngle) > Math.abs(TargetAngle - (CurrentAngle - 360))) {
-
-        return -LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -2, 2);
-
-      } else {
-
-        return LimitSpeed(AutoTurnPID.calculate(CurrentAngle, TargetAngle), -2, 2);
-
-      }
-      
-      
-    } else {
-
-      return 0;
-
-    }
- 
-  }
-
   public double LimelightRotate() {
 
     return limelight.HorizonalOffset_LI() / 13;
  
-  }
-
-  public Command DriveToPoint(double[] Pose) {
-
-    double X = Array.getDouble(Pose, 0);
-    double Y = Array.getDouble(Pose, 1);
-    double Angle = Array.getDouble(Pose, 2);
-
-    return drivetrain.applyRequest(() -> driveFieldCentric
-    .withVelocityX(HorizonalMovement(Y))  
-    .withVelocityY(VerticalMovement(X)) 
-    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle));
-  
-  }
-
-  public Command DriveToPoint(double[] Pose, double Tolerance) {
-
-    double X = Array.getDouble(Pose, 0);
-    double Y = Array.getDouble(Pose, 1);
-    double Angle = Array.getDouble(Pose, 2);
-
-    return drivetrain.applyRequest(() -> driveFieldCentric
-    .withVelocityX(HorizonalMovement(Y, Tolerance))  
-    .withVelocityY(VerticalMovement(X, Tolerance)) 
-    .withRotationalRate(Rotate(Angle))).until(logger.CheckIfFinished(Y, X, Angle, Tolerance));
-  
-  }
-
-  public Command ResetAutoOdom() {
-
-    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
-    new Translation2d(Array.getDouble(PoseSelect.getSelected(), 1), Array.getDouble(PoseSelect.getSelected(), 0)), 
-    Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2)))));
-
   }
 
   public Command DriveToGamePiece() {
@@ -405,44 +179,7 @@ public class RobotContainer {
         .withRotationalRate(0));  
 
     }
-
     
-  }
-
-  public double Deadband(double value) {
-
-    if (value < .1 && value > 0) {
-
-      return 0;
-
-    } else if (value > -.1 && value < 0) {
-
-      return 0;
-
-    } else {
-
-      return value;
-
-    }
-
-  }
-
-  public double LimitSpeed(double speed, double min, double max) {
-
-    if (speed > max) {
-
-      return max;
-
-    } else if (speed < min) {
-
-      return min;
-
-    } else {
-
-      return speed;
-      
-    }
-
   }
 
 }

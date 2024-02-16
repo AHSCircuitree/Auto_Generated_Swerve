@@ -48,51 +48,17 @@ public class Constants {
 
     }
 
-    public class WayPoints {
+    public static String[] UsableTrajectories  = {
 
-        // Initial Points
-        public static double FieldCenter[] = {0, 0, 0};
-        public static double BlueStartingLeft[] = {6.782, 0.610, -120};
-        public static double BlueStartingCenter[] = {5.639, 1.372, 178};
-        public static double BlueStartingRight[] = {4.369, 0.610, 120};
-        public static double RedStartingLeft[] = {4.369, 16.002, 60};
-        public static double RedStartingCenter[] = {5.639, 15.189, 0};
-        public static double RedStartingRight[] = {6.782, 16.002, -60};
+        // The FIRST in the list is the DEFAULT OPTION
+        "Note",
+        "DriveStraight",
+        "vsm",
+        "dqawknilo",
+        "klfncew"
 
-        // Blue Side Rings
-        public static double BlueThreeShootStart1[] = {7.5104, 1.5654, -120};
-        public static double BlueThreeShootStart2[] = {7.5104, 2, -90};
-        public static double BlueLeftRing[] = {7.0104, 2.8, -90};
-        public static double BlueLeftRingShoot[] = {7.0104, 2.9654, -160};
-        public static double BlueCenterRing[] = {5.5626, 2.8, 178};
-        public static double BlueAboveRightRing[] = {3.9894, 1.8, 90};
-        public static double BlueRightRing[] = {3.9494, 2.6654, 90};
-        public static double BlueRightRingShoot1[] = {4.2894, 2.2, 90};
-        public static double BlueRightRingShoot2[] = {4.2894, 2.2, 150};
-
-        // Blue Right Steal
-        public static double BlueStealShootingLine[] = {3.282, 2.110, 120};
-        public static double RightBlueStageLine[] = {0.7874, 5.8674, 120};
-        public static double MiddleRing5FromBlue[] = {0.5874, 8.2, 90};
-        public static double MiddleRing4FromBlue[] = {2.6384, 8.2, 90};
-
-        // Blue Left Steal
-        public static double BlueLeftStealLineUp1[] = {7, 2, -120};
-        public static double BlueLeftStealRing1[] = {7.0104, 2.8 + .2, -90};
-        public static double BlueLeftStealRingShoot[] = {7.0104, 2.8 + .2, -150};
-        public static double BlueLeftStealLineUp2[] = {7.46, 5.82, -90};
-        public static double BlueLeftStealRing2[] = {7.46, 8.2 + .2, -90};
-        public static double BlueLeftStealLineUp3[] = {6.14, 5.82, -90};
-        public static double BlueLeftStealRing3[] = {5.76, 8.2 + .2, -90};
-      
-
-        //Red Side Rings
-        public static double RedLeftRing[] = {4.0894,13.9192,0};
-        public static double RedCenterRing[] = {5.588,13.9192,0};
-        public static double RedRightRing[] = {7.0104,13.9192,0};
-
-    }
-
+    };
+    
     public class Colors {
 
         // Fixed Patterns
