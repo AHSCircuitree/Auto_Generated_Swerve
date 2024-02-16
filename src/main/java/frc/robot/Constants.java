@@ -51,8 +51,8 @@ public class Constants {
     public static String[] UsableTrajectories  = {
 
         // The FIRST in the list is the DEFAULT OPTION
-        "Note",
-        "DriveStraight",
+        "StealTwo",
+        "TurningTest",
         "vsm",
         "dqawknilo",
         "klfncew"

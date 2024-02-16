@@ -72,7 +72,7 @@ public class RobotContainer {
   private final SendableChooser<String> AutoSelect = new SendableChooser<>();
 
   // PID Controllers
-  private PIDController AutoDrivePID = new PIDController(0, 0, 0);
+  private PIDController AutoDrivePID = new PIDController(.8, 0, 0);
   private PIDController AutoTurnPID = new PIDController(0, 0, 0);
 
   // Commands
@@ -113,14 +113,10 @@ public class RobotContainer {
     
     // Set the button bindings
     configureBindings();
- 
-    
-    drivetrain.seedFieldRelative(Choreo.getTrajectory("Note").getInitialPose());
-    //drivetrain.seedFieldRelative(new Pose2d());
 
     for (int i = 0; i < Constants.UsableTrajectories.length; i++) {
-
-      if (i == 1) {
+ 
+      if (i == 0) {
 
         AutoSelect.setDefaultOption(Constants.UsableTrajectories[i], Constants.UsableTrajectories[i]);
 
@@ -133,17 +129,23 @@ public class RobotContainer {
     }
 
     SmartDashboard.putData("Select Auto", AutoSelect);
+
+    drivetrain.seedFieldRelative(Choreo.getTrajectory(AutoSelect.getSelected()).getInitialPose());
+    //drivetrain.seedFieldRelative(new Pose2d());
  
   }
 
   public Command getAutonomousCommand() {
 
-    return Choreo.choreoSwerveCommand(
-    Choreo.getTrajectory("Note"), 
+    drivetrain.seedFieldRelative(Choreo.getTrajectory(AutoSelect.getSelected()).getInitialPose());
+
+    return  
+    Choreo.choreoSwerveCommand(
+    Choreo.getTrajectory(AutoSelect.getSelected()), 
     () -> (drivetrain.getState().Pose), 
     AutoDrivePID, AutoDrivePID, AutoTurnPID, 
     (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-    () -> DriverStation.getAlliance().equals(Alliance.Red), 
+    () -> false, 
     drivetrain
     );
     
