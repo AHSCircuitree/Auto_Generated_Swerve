@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
@@ -118,7 +119,16 @@ public class Telemetry {
         return m_lastPose;
 
     }
+
+    public Supplier<Pose2d> PoseSupplier() {
+
+        Supplier<Pose2d> PoseSupplier = () -> returnPose();
+
+        return PoseSupplier;
+
+    }
  
+
     BooleanSupplier CheckIfFinished(double X, double Y, double Angle) {
 
         return () -> Math.abs(m_lastPose.getX() - X) <= Constants.POSETOLERANCE

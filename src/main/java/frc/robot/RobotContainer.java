@@ -5,7 +5,12 @@
 package frc.robot;
 
 import java.lang.reflect.Array;
+import java.util.Optional;
+import java.util.function.Supplier;
 
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoControlFunction;
+import com.choreo.lib.ChoreoTrajectory;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
@@ -14,10 +19,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -60,8 +69,8 @@ public class RobotContainer {
   private final SendableChooser<double[]> PoseSelect = new SendableChooser<>();
 
   // PID Controllers
-  private PIDController AutoDrivePID = new PIDController(2.3, 0, 0);
-  private PIDController AutoTurnPID = new PIDController(0.2, 0, 0);
+  private PIDController AutoDrivePID = new PIDController(0, 0, 0);
+  private PIDController AutoTurnPID = new PIDController(0, 0, 0);
 
   // Commands
  
@@ -169,12 +178,11 @@ public class RobotContainer {
     PoseSelect.addOption("Red Center", Constants.WayPoints.RedStartingCenter);
     PoseSelect.addOption("Red Right", Constants.WayPoints.RedStartingRight);
 
-    SmartDashboard.putData("Select Starting Position", PoseSelect);
+    SmartDashboard.putNumber("Current Position", logger.returnPose().getX());
+    SmartDashboard.putNumber("Target Position", Choreo.getTrajectory("Note").getFinalPose().getX());
  
     if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(
-        new Translation2d(Array.getDouble(PoseSelect.getSelected(), 0), Array.getDouble(PoseSelect.getSelected(), 1)), 
-        Rotation2d.fromDegrees(Array.getDouble(PoseSelect.getSelected(), 2))));
+      drivetrain.seedFieldRelative(Choreo.getTrajectory("Note").getInitialPose());
     }
 
     InitalPose = PoseSelect.getSelected();
@@ -183,11 +191,17 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
 
-    // [0] = X, [1] = Y, [2] = Rotation
-    return AutoSelect.getSelected();
- 
+    return Choreo.choreoSwerveCommand(
+    Choreo.getTrajectory("Note"), 
+    logger.PoseSupplier(), 
+    AutoDrivePID, AutoDrivePID, AutoTurnPID, 
+    (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
+    () -> false, 
+    drivetrain
+    );
+    
   }
- 
+
   public double VerticalMovement(double X) {
  
     double OffsetTarget = X;
