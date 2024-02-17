@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -20,6 +21,8 @@ public class Intake extends SubsystemBase {
   TalonFX RearFlyMotor;
   TalonFX FrontFlyMotor;
 
+  WPI_TalonSRX LeftIntake;
+
   public double LeftIntakeVoltage;
   public double RightIntakeVoltage;
   public double FrontIntakeVoltage;
@@ -29,12 +32,12 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
 
-    LeftIntakeMotor = new TalonFX(Constants.CAN_IDs.LeftIntakeID);
-    RightIntakeMotor = new TalonFX(Constants.CAN_IDs.RightIntakeID);
-    FrontIntakeMotor = new TalonFX(Constants.CAN_IDs.FrontIntakeID);
-    RearFlyMotor = new TalonFX(Constants.CAN_IDs.RearFlyID);
-    FrontFlyMotor = new TalonFX(Constants.CAN_IDs.FrontFlyID);
-
+    LeftIntakeMotor = new TalonFX(Constants.CAN_IDs.LeftIntakeID, "FRC 1599");
+    RightIntakeMotor = new TalonFX(Constants.CAN_IDs.RightIntakeID, "FRC 1599");
+    FrontIntakeMotor = new TalonFX(Constants.CAN_IDs.FrontIntakeID, "FRC 1599");
+    RearFlyMotor = new TalonFX(Constants.CAN_IDs.RearFlyID, "FRC 1599");
+    FrontFlyMotor = new TalonFX(Constants.CAN_IDs.FrontFlyID, "FRC 1599");
+ 
   }
 
   @Override
@@ -57,7 +60,7 @@ public class Intake extends SubsystemBase {
   public void RunIntake(double speed) {
     
     //LeftIntakeMotor.set(speed);
-    //RightIntakeMotor.set(speed);
+    RightIntakeMotor.set(speed);
     //FrontIntakeMotor.set(speed);
     FrontFlyMotor.set(speed);
     RearFlyMotor.set(speed);

@@ -6,6 +6,13 @@ public class Constants {
     public static double POSETOLERANCE = .1;
     public static double ANGLETOLERANCE = 2;
 
+    public class Limits {
+
+        public static final int TopAngleLimit = 60;
+        public static final int BottomAngleLimit = -60;
+
+    }
+
     public class CAN_IDs {
 
         public static final int FrontLeftDriveID = 1;

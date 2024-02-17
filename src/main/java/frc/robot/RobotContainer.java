@@ -22,7 +22,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ChangeAngle;
 import frc.robot.commands.RumbleOnTarget;
+import frc.robot.commands.RunAnglePID;
+import frc.robot.commands.RunHooks;
+import frc.robot.commands.RunHooksToAngle;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.SetColor;
@@ -44,7 +48,9 @@ public class RobotContainer {
  
   // Controllers
   private final CommandXboxController Player1 = new CommandXboxController(0);
+  private final CommandXboxController Player2 = new CommandXboxController(1);
   private final XboxController Player1Rum = new XboxController(0);
+  private final XboxController Player2Rum = new XboxController(1);
  
   // Subsystems
   public final Drivetrain drivetrain = TunerConstants.DriveTrain;  
@@ -78,21 +84,26 @@ public class RobotContainer {
   private void configureBindings() {
 
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
+    arm.setDefaultCommand(new RunAnglePID(arm, Player1Rum));
+    //hooks.setDefaultCommand(new RunHooks(hooks, .1));
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Deadband(Player1.getLeftY()) * MaxSpeed)  
-        .withVelocityY(Deadband(Player1.getLeftX()) * MaxSpeed) 
+        .withVelocityX(Deadband(-Player1.getLeftY()) * MaxSpeed)  
+        .withVelocityY(Deadband(-Player1.getLeftX()) * MaxSpeed) 
         .withRotationalRate((Deadband(-Player1.getRightX()) * MaxAngularRate)) 
     ));
 
-    Player1.a().onTrue(new ParallelCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
-
-    Player1.b().onTrue(new RunShooter(arm, .5));
-
-    // reset the field-centric heading on left bumper press
-    Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
+    //Player1.leftTrigger().whileTrue(new RunIntake(intake, 1));
+    //Player1.rightTrigger().whileTrue(new RunShooter(arm, .8));
  
+    // reset the field-centric heading on left bumper press
+    
+    
+    Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
+    Player1.leftTrigger().whileTrue(new RunHooks(hooks, -.75));
+    Player1.rightTrigger().whileTrue(new RunHooks(hooks, .75));
+
     drivetrain.registerTelemetry(logger::telemeterize);
 
   }

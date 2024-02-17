@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hooks;
 import frc.robot.subsystems.Intake;
@@ -12,13 +13,14 @@ public class RunHooks extends Command {
   /** Creates a new RunHooks. */
 
   Hooks hooks;
+  XboxController xbox;
   double speed;
 
   public RunHooks(Hooks Hooks, double Speed) {
     
     hooks = Hooks;
     speed = Speed;
-
+ 
     addRequirements(Hooks);
       
   }

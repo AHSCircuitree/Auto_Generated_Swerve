@@ -25,6 +25,10 @@ public class Arm extends SubsystemBase {
 
   DutyCycleEncoder AngleEncoder;
 
+  public double CurrentTicks;
+  public double CurrentAngle;
+  public double TargetAngle;
+
   public double AngleVoltage;
   public double BottomShootingVoltage;
   public double CentralShootingVoltage;
@@ -32,15 +36,21 @@ public class Arm extends SubsystemBase {
   
   public Arm() {
  
-    AngleMotor = new TalonFX(Constants.CAN_IDs.AngleID);
-    BottomShootingMotor = new TalonFX(Constants.CAN_IDs.BottomShootingID);
-    CentralShootingMotor = new TalonFX(Constants.CAN_IDs.CentralShootingID);
-    TopShootingMotor = new TalonFX(Constants.CAN_IDs.TopShootingID);
+    AngleMotor = new TalonFX(Constants.CAN_IDs.AngleID,"FRC 1599");
+    BottomShootingMotor = new TalonFX(Constants.CAN_IDs.BottomShootingID,"FRC 1599");
+    CentralShootingMotor = new TalonFX(Constants.CAN_IDs.CentralShootingID,"FRC 1599");
+    TopShootingMotor = new TalonFX(Constants.CAN_IDs.TopShootingID,"FRC 1599");
 
-    AnglePID = new PIDController(.3, 0, 0);
+    AnglePID = new PIDController(.02, 0, 0);
 
     AngleEncoder = new DutyCycleEncoder(6);
-   
+
+    AngleEncoder.setPositionOffset(.828);
+
+    TargetAngle = 65;
+
+    SmartDashboard.putNumber("Custom Angle", 0);
+
   }
 
   @Override
@@ -48,8 +58,22 @@ public class Arm extends SubsystemBase {
 
     AngleVoltage = AngleMotor.getSupplyVoltage().getValueAsDouble();
 
+    if (AngleEncoder.getAbsolutePosition() < .4) {
+
+      CurrentTicks = AngleEncoder.getAbsolutePosition() + 1;
+
+    } else {
+
+      CurrentTicks = AngleEncoder.getAbsolutePosition();
+
+    }
+
+    CurrentAngle = -(CurrentTicks / (.072 / 28) - 322);
+
     SmartDashboard.getNumber("Angle Voltage", AngleVoltage);
-  
+    SmartDashboard.putNumber("Angle Encoder Ticks", AngleEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Angle Encoder Degrees", -(AngleEncoder.getAbsolutePosition() / (.072 / 28) - 322));
+
   }
 
   public void RunAngle(double speed) {
@@ -58,11 +82,29 @@ public class Arm extends SubsystemBase {
  
   }
 
+  public void RunAngleWithLimits(double speed) {
+
+    AngleMotor.set(-speed);
+ 
+  }
+
+  public void ChangeAngleThroughPID() {
+
+    RunAngleWithLimits(AnglePID.calculate(CurrentAngle, TargetAngle));
+
+  }
+
+  public void ChangeTarget(double Target) {
+
+    TargetAngle = Target;
+
+  }
+
   public void RunShooter(double speed) {
 
-    BottomShootingMotor.set(speed);
-    CentralShootingMotor.set(speed);
-    TopShootingMotor.set(speed);
+    BottomShootingMotor.set(-speed);
+    CentralShootingMotor.set(-speed);
+    TopShootingMotor.set(-speed);
 
   }
 
