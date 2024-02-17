@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.lang.reflect.Array;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.choreo.lib.Choreo;
@@ -36,6 +37,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.RumbleOnTarget;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
@@ -87,20 +90,59 @@ public class RobotContainer {
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final Telemetry logger = new Telemetry(MaxSpeed);
+
   private void configureBindings() {
 
+    JoystickButton driver1A = new JoystickButton(Player1Rum, XboxController.Button.kA.value);
+    JoystickButton driver1B = new JoystickButton(Player1Rum, XboxController.Button.kB.value);
+    JoystickButton driver1X = new JoystickButton(Player1Rum, XboxController.Button.kX.value);
+    JoystickButton driver1Y = new JoystickButton(Player1Rum, XboxController.Button.kY.value);
+    JoystickButton driver1LB = new JoystickButton(Player1Rum, XboxController.Button.kLeftBumper.value);
+    JoystickButton driver1RB = new JoystickButton(Player1Rum, XboxController.Button.kRightBumper.value);
+    JoystickButton driver1LS = new JoystickButton(Player1Rum, XboxController.Button.kLeftStick.value);
+    JoystickButton driver1RS = new JoystickButton(Player1Rum, XboxController.Button.kRightStick.value);
+    JoystickButton driver1Start = new JoystickButton(Player1Rum, XboxController.Button.kStart.value);
+    JoystickButton driver1Back = new JoystickButton(Player1Rum, XboxController.Button.kBack.value);
+
+    //Trigger Setup
+    BooleanSupplier driver1LTSupplier = new BooleanSupplier() {
+
+      @Override
+      public boolean getAsBoolean() {
+        if(Player1.getLeftTriggerAxis() > 0.2){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+    };
+    Trigger driver1LT = new Trigger(driver1LTSupplier);
+
+    BooleanSupplier driver1RTSupplier = new BooleanSupplier() {
+
+      @Override
+      public boolean getAsBoolean() {
+        if(Player1.getRightTriggerAxis() > 0.2){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+    };
+    Trigger driver1RT = new Trigger(driver1RTSupplier);
+
+    driver1LT.onTrue(new RunIntake(intake, 1));
+
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
- 
+
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
         .withVelocityX(Player1.getLeftY() * MaxSpeed)  
         .withVelocityY(Player1.getLeftX()* MaxSpeed) 
         .withRotationalRate((-Player1.getRightX() * MaxAngularRate)) 
     ));
-
-    Player1.a().onTrue(new ParallelCommandGroup(new RunIntake(intake, .5), DriveToGamePiece()));
-
-    Player1.b().onTrue(new RunShooter(arm, .5));
 
     // reset the field-centric heading on left bumper press
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));

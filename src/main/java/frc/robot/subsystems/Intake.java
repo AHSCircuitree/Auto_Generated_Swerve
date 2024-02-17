@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -54,13 +56,31 @@ public class Intake extends SubsystemBase {
     
   }
 
-  public void RunIntake(double speed) {
+  public void RunIntakeVelocity(double speed) {
+
+    VelocityVoltage velocity = new VelocityVoltage(0);
+
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kV = 0.12;
+    slot0Configs.kP = 0.11;
+    slot0Configs.kI = 0.48;
+    slot0Configs.kD = 0.01;
+
+    LeftIntakeMotor.getConfigurator().apply(slot0Configs, 0.050);
+    RightIntakeMotor.getConfigurator().apply(slot0Configs, 0.050);
+    FrontIntakeMotor.getConfigurator().apply(slot0Configs, 0.050);
+    FrontFlyMotor.getConfigurator().apply(slot0Configs, 0.050);
+    RearFlyMotor.getConfigurator().apply(slot0Configs, 0.050);
+
+    // periodic, run velocity control with slot 0 configs,
+    // target velocity of 50 rps
+    velocity.Slot = 0;
     
-    //LeftIntakeMotor.set(speed);
-    //RightIntakeMotor.set(speed);
-    //FrontIntakeMotor.set(speed);
-    FrontFlyMotor.set(speed);
-    RearFlyMotor.set(speed);
+    LeftIntakeMotor.setControl(velocity.withFeedForward(speed));
+    RightIntakeMotor.setControl(velocity.withFeedForward(speed));
+    FrontIntakeMotor.setControl(velocity.withFeedForward(speed));
+    FrontFlyMotor.setControl(velocity.withFeedForward(speed));
+    RearFlyMotor.setControl(velocity.withFeedForward(speed));
 
   }
 
