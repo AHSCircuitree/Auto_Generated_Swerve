@@ -59,11 +59,11 @@ public class Intake extends SubsystemBase {
 
   public void RunIntake(double speed) {
     
-    //LeftIntakeMotor.set(speed);
-    RightIntakeMotor.set(speed);
-    //FrontIntakeMotor.set(speed);
-    FrontFlyMotor.set(speed);
-    RearFlyMotor.set(speed);
+    LeftIntakeMotor.set(-speed);
+    //RightIntakeMotor.set(speed);
+    FrontIntakeMotor.set(speed);
+    FrontFlyMotor.set(speed * 10);
+    RearFlyMotor.set(speed * 10);
 
   }
 

@@ -7,19 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Limelight;
 
 public class RunAnglePID extends Command {
   /** Creates a new RunAngle. */
-  Arm arm;
+  Arm m_arm;
   XboxController xbox;
  
   public RunAnglePID(Arm Arm, XboxController Xbox) {
 
-    arm = Arm;
+    m_arm = Arm;
     xbox = Xbox;
 
-    addRequirements(Arm);
+    addRequirements(Arm );
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,7 +30,8 @@ public class RunAnglePID extends Command {
   @Override
   public void initialize() {
 
-    arm.ChangeTarget(65);
+    // Climb is -110
+    m_arm.ChangeTarget(70);
 
   }
 
@@ -37,36 +41,36 @@ public class RunAnglePID extends Command {
 
     if (xbox.getYButton() == true) {
 
-      arm.ChangeTarget(-55);
+      m_arm.ChangeTarget(-65);
 
     } 
     
     if (xbox.getBButton() == true) {
 
-      arm.ChangeTarget(0);
+      m_arm.ChangeTarget(0);
 
     }
     
     if (xbox.getAButton() == true) {
 
-      arm.ChangeTarget(65);
+      m_arm.ChangeTarget(70);
 
     } 
 
     if (xbox.getXButton() == true) {
 
-      arm.ChangeTarget(SmartDashboard.getNumber("Custom Angle", 0));
+      m_arm.ChangeTarget(SmartDashboard.getNumber("Custom Angle", 0));
 
     } 
-
-    arm.ChangeAngleThroughPID();
+ 
+    m_arm.ChangeAngleThroughPID();
  
   }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    arm.RunAngle(0);
+    m_arm.RunAngle(0);
 
   }
 
