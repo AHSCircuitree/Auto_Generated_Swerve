@@ -13,13 +13,13 @@ public class RunShooter extends Command {
   /** Creates a new RunAngle. */
   Arm arm;
   double speed;
-  Timer topDelay;
+  Timer Spinup;
 
   public RunShooter(Arm Arm, double Speed) {
 
     arm = Arm;
     speed = Speed;
-    topDelay = new Timer();
+    Spinup = new Timer();
 
     addRequirements(Arm);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,7 +29,7 @@ public class RunShooter extends Command {
   @Override
   public void initialize() {
 
-    topDelay.restart();
+    Spinup.restart();
 
     speed = SmartDashboard.getNumber("Custom Speed", .5);
 
@@ -39,7 +39,7 @@ public class RunShooter extends Command {
   @Override
   public void execute() {
 
-    if (topDelay.get() > .5) {
+    if (Spinup.get() > .5) {
 
       arm.RunBottom(speed);
 
@@ -55,8 +55,8 @@ public class RunShooter extends Command {
 
     arm.RunShooter(0);
     arm.RunBottom(0);
-    topDelay.stop();
-    topDelay.reset();
+    Spinup.stop();
+    Spinup.reset();
 
   }
 

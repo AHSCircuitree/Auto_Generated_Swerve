@@ -142,7 +142,7 @@ public class RobotContainer {
     
     Trigger driver1RT = new Trigger(driver1RTSupplier);
 
-    driver1LT.onTrue(new RunIntake(intake, arm, 1));
+    driver1LT.onTrue(new RunIntake(intake, arm, lights, 1));
 
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
  
@@ -158,10 +158,6 @@ public class RobotContainer {
     //Player1.leftTrigger().whileTrue(new RunIntake(intake,arm, .5));
     //Player1.rightTrigger().whileTrue(new RunShooter(arm, SmartDashboard.getNumber("Custom Speed", .5)));
  
-    // reset the field-centric heading on left bumper press
-    //Player1.b().whileTrue(new RunAngleSimple(arm, -.5));   
-    //Player1.a().whileTrue(new RunAngleSimple(arm, .5));   
-    
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
     Player1.leftTrigger().whileTrue(new RunHooks(hooks, -.75));
     Player1.rightTrigger().whileTrue(new RunHooks(hooks, .75));

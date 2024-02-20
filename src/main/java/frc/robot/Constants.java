@@ -6,6 +6,15 @@ public class Constants {
     public static double POSETOLERANCE = .1;
     public static double ANGLETOLERANCE = 2;
 
+    public enum RobotState {
+
+        NO_RING,
+        RING_DETECTED,
+        RING_COLLECTED,
+        VALID_TARGET
+    
+    }
+
     public static int[] ShootAngle = {
         0, // 0 Meters 
         0, 
