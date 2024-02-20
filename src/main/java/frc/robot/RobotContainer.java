@@ -37,6 +37,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChangeAngle;
  
 import frc.robot.commands.RumbleOnTarget;
@@ -137,14 +139,14 @@ public class RobotContainer {
         }
       }
     };
+    
     Trigger driver1RT = new Trigger(driver1RTSupplier);
 
-    driver1LT.onTrue(new RunIntake(intake, 1));
+    driver1LT.onTrue(new RunIntake(intake, arm, 1));
 
     limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
  
     arm.setDefaultCommand(new RunAnglePID(arm, Player1Rum));
-    //hooks.setDefaultCommand(new RunHooks(hooks, .1));
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric

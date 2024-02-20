@@ -22,9 +22,7 @@ public class Intake extends SubsystemBase {
   TalonFX FrontIntakeMotor;
   TalonFX RearFlyMotor;
   TalonFX FrontFlyMotor;
-
-  WPI_TalonSRX LeftIntake;
-
+ 
   public double LeftIntakeVoltage;
   public double RightIntakeVoltage;
   public double FrontIntakeVoltage;
@@ -59,27 +57,9 @@ public class Intake extends SubsystemBase {
     
   }
 
-  public void RunIntakeVelocity(double speed) {
+  public void RunIntake(double speed) {
 
-    VelocityVoltage velocity = new VelocityVoltage(0);
-
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kV = 0.12;
-    slot0Configs.kP = 0.11;
-    slot0Configs.kI = 0.48;
-    slot0Configs.kD = 0.01;
-
-    LeftIntakeMotor.getConfigurator().apply(slot0Configs, 0.050);
-    RightIntakeMotor.getConfigurator().apply(slot0Configs, 0.050);
-    FrontIntakeMotor.getConfigurator().apply(slot0Configs, 0.050);
-    FrontFlyMotor.getConfigurator().apply(slot0Configs, 0.050);
-    RearFlyMotor.getConfigurator().apply(slot0Configs, 0.050);
-
-    // periodic, run velocity control with slot 0 configs,
-    // target velocity of 50 rps
-    velocity.Slot = 0;
- 
-    LeftIntakeMotor.set(-speed);
+    //LeftIntakeMotor.set(-speed);
     //RightIntakeMotor.set(speed);
     FrontIntakeMotor.set(speed);
     FrontFlyMotor.set(speed * 10);
