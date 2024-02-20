@@ -194,56 +194,21 @@ public class Limelight extends SubsystemBase {
   }
 
 
-  public double getDistanceToTarget(){
-
-    double ty = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("ty").getDouble(0);
-  
-    double targetOffsetAngle_Vertical = ty;
-
-    //how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = -30;//was30
-
-    //distance from the center of the Limelight lens to the floor
-    double limelightHeightInches = 48.0;
-
-    //distance from the target to the floor
-    double goalHeightInches = 14.625;
-
-    double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-
-    //calculate distance
-    double distanceFromLimelightToGoalInches = (goalHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
-    double distanceFromLimelighttoGoalMeters = distanceFromLimelightToGoalInches / 39.37;
-
-    //return in meters
-    if (HasValidTargetShooter() == false) {
-
-      return 0;
-
-    } else {
-
-      return distanceFromLimelighttoGoalMeters;
-
-    }
-
-  }
-
-
+ 
   public double getDistanceToAprilTag(){
 
-    double ty = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("ty").getDouble(0);
+    double ty = dbl_ty;
   
     double targetOffsetAngle_Vertical = ty;
 
     //how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 25;//was30
+    double limelightMountAngleDegrees = 21.33;//was30
 
     //distance from the center of the Limelight lens to the floor
-    double limelightHeightInches = 23.75;
+    double limelightHeightInches = 24.5;
 
     //distance from the low tags to the floor
-    double tagHeightInches = 53;
+    double tagHeightInches = 58;
  
     double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);

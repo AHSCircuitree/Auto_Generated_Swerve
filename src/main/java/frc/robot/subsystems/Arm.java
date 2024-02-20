@@ -56,12 +56,6 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Custom Angle", 0);
     SmartDashboard.putNumber("Custom Speed",0);
  
-    if (Utils.isSimulation() == false) {
-
-      AngleEncoder = new DutyCycleEncoder(6);
-
-    }
- 
   }
 
   @Override
@@ -114,6 +108,7 @@ public class Arm extends SubsystemBase {
 
   public void RunShooter(double speed) {
  
+    BottomShootingMotor.set(-speed);
     CentralShootingMotor.set(-speed);
     TopShootingMotor.set(-speed);
 

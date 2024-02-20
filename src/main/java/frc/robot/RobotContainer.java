@@ -40,7 +40,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChangeAngle;
- 
+import frc.robot.commands.ChangeLightsBasedOffState;
 import frc.robot.commands.RumbleOnTarget;
 import frc.robot.commands.RunAnglePID;
 import frc.robot.commands.RunAngleSimple;
@@ -144,10 +144,10 @@ public class RobotContainer {
     
     Trigger driver1RT = new Trigger(driver1RTSupplier);
 
-    driver1LT.onTrue(new RunIntake(intake, arm, lights, 1));
+    driver1LT.onTrue(new RunIntake(intake, arm, lights, .6));
 
-    limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
- 
+    //limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
+    lights.setDefaultCommand(new ChangeLightsBasedOffState(lights, limelight, Player1Rum));
     arm.setDefaultCommand(new RunAnglePID(arm, Player1Rum));
  
     drivetrain.setDefaultCommand( 
@@ -157,12 +157,12 @@ public class RobotContainer {
         .withRotationalRate((-Player1.getRightX() * MaxAngularRate)) 
     ));
 
-    //Player1.leftTrigger().whileTrue(new RunIntake(intake,arm, .5));
-    //Player1.rightTrigger().whileTrue(new RunShooter(arm, SmartDashboard.getNumber("Custom Speed", .5)));
+    Player1.leftTrigger().whileTrue(new RunIntake(intake, arm, lights, .5));
+    Player1.rightTrigger().whileTrue(new RunShooter(arm, SmartDashboard.getNumber("Custom Speed", .5)));
  
-    Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0)))));
-    Player1.leftTrigger().whileTrue(new RunHooks(hooks, -.75));
-    Player1.rightTrigger().whileTrue(new RunHooks(hooks, .75));
+    Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));
+    Player1.start().whileTrue(new RunHooks(hooks, -.75));
+    Player1.back().whileTrue(new RunHooks(hooks, .75));
 
     drivetrain.registerTelemetry(logger::telemeterize);
 

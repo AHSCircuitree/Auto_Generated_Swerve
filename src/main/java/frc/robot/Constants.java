@@ -16,11 +16,11 @@ public class Constants {
     }
 
     public static int[] ShootAngle = {
-        0, // 0 Meters 
-        0, 
-        0, 
-        0, 
-        0, 
+        65, // 0 Meters 
+        65, 
+        65, 
+        65, 
+        65, 
         2, 
         2, 
         0,

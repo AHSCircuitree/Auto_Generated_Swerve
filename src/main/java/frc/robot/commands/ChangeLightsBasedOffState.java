@@ -34,7 +34,7 @@ public class ChangeLightsBasedOffState extends Command {
   @Override
   public void execute() {
 
-    if ((m_limelight.HasValidTargetLeftIntake() == true || m_limelight.HasValidTargetLeftIntake() == true) && m_lights.GetState() == Constants.RobotState.NO_RING) {
+    if ((m_limelight.HorizonalOffset_LI() != 0 || m_limelight.HorizonalOffset_LI() != 0) && m_lights.GetState() == Constants.RobotState.NO_RING) {
 
       m_lights.ChangeState(Constants.RobotState.RING_DETECTED);
 

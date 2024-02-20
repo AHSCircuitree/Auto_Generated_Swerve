@@ -29,10 +29,7 @@ public class RunAnglePID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    // Climb is -110
-    m_arm.ChangeTarget(70);
-
+ 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
