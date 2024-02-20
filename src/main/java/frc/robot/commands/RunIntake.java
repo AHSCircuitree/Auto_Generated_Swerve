@@ -5,17 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 public class RunIntake extends Command {
   /** Creates a new RunIntake. */
 
   Intake intake;
+  Arm arm;
   double speed;
 
-  public RunIntake(Intake Intake, double Speed) {
+  public RunIntake(Intake Intake, Arm Arm, double Speed) {
     
     intake = Intake;
+    arm = Arm;
     speed = Speed;
 
     addRequirements(Intake);
@@ -30,13 +33,19 @@ public class RunIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.RunIntakeVelocity(speed);
+ 
+    intake.RunIntake(speed);
+    arm.RunBottom(speed / 3);
+ 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.RunIntakeVelocity(0);
+ 
+    intake.RunIntake(0);
+    arm.RunBottom(0);
+ 
   }
 
   // Returns true when the command should end.

@@ -189,7 +189,6 @@ public class Limelight extends SubsystemBase {
     ReadNetworkTables();
     limelightDashboard = "Limelight Horizontal/" + dbl_tx + ";";
     limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_ty + ";";
-    limelightDashboard = limelightDashboard + "Theoretical Distance To Target/" + getDistanceToTarget() + ";";
     SmartDashboard.putNumber("Limelight Distance", getDistanceToAprilTag());
 
   }
@@ -197,7 +196,7 @@ public class Limelight extends SubsystemBase {
 
   public double getDistanceToTarget(){
 
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    double ty = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("ty").getDouble(0);
   
     double targetOffsetAngle_Vertical = ty;
 
@@ -233,18 +232,18 @@ public class Limelight extends SubsystemBase {
 
   public double getDistanceToAprilTag(){
 
-    double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    double ty = NetworkTableInstance.getDefault().getTable("limelight_sh").getEntry("ty").getDouble(0);
   
     double targetOffsetAngle_Vertical = ty;
 
     //how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 0;//was30
+    double limelightMountAngleDegrees = 25;//was30
 
     //distance from the center of the Limelight lens to the floor
-    double limelightHeightInches = 46.0;
+    double limelightHeightInches = 23.75;
 
     //distance from the low tags to the floor
-    double tagHeightInches = 56;
+    double tagHeightInches = 53;
  
     double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
     double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
@@ -255,17 +254,9 @@ public class Limelight extends SubsystemBase {
     distanceFromLimelightToGoalInches = (tagHeightInches - limelightHeightInches)/Math.tan(angleToGoalRadians);
  
     double distanceFromLimelighttoGoalMeters = distanceFromLimelightToGoalInches / 39.37;
-    //return in meters
-    if (HasValidTargetShooter() == false) {
-
-      return 0;
-
-    } else {
-
+ 
       return distanceFromLimelighttoGoalMeters;
-
-    }
-
+ 
   }
  
 }

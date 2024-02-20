@@ -7,43 +7,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
-public class RunAngle extends Command {
+public class ChangeAngle extends Command {
   /** Creates a new RunAngle. */
   Arm arm;
-  double speed;
-
-  public RunAngle(Arm Arm, double Speed) {
+  double target;
+ 
+  public ChangeAngle(Arm Arm, double Target) {
 
     arm = Arm;
-    speed = Speed;
-
+    target = Target;
+ 
     addRequirements(Arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-
-    arm.RunAngle(speed);
+    arm.ChangeTarget(target);
 
   }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-
-    arm.RunAngle(0);
-
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+ 
 }

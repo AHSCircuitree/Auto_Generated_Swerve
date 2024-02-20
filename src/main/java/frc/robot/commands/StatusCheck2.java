@@ -76,7 +76,7 @@ public class StatusCheck2 extends InstantCommand {
       lights.SetColor(Constants.Colors.BlueViolet);
  
     } else if (intake.LeftIntakeVoltage < 9) {
-
+ 
       lights.SetColor(Constants.Colors.HotPink);
  
       } else if (intake.RightIntakeVoltage < 9) {

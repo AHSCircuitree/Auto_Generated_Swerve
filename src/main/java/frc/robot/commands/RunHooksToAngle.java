@@ -4,24 +4,24 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hooks;
 
-public class RunShooter extends Command {
+public class RunHooksToAngle extends Command {
   /** Creates a new RunAngle. */
-  Arm arm;
-  double speed;
-  Timer topDelay;
+  Hooks hooks;
+  XboxController xbox;
+  double ClimbState;
+ 
+  public RunHooksToAngle(Hooks Hooks, XboxController Xbox) {
 
-  public RunShooter(Arm Arm, double Speed) {
+    hooks = Hooks;
+    xbox = Xbox;
 
-    arm = Arm;
-    speed = Speed;
-    topDelay = new Timer();
-
-    addRequirements(Arm);
+    addRequirements(Hooks);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,9 +29,8 @@ public class RunShooter extends Command {
   @Override
   public void initialize() {
 
-    topDelay.restart();
-
-    speed = SmartDashboard.getNumber("Custom Speed", .5);
+    hooks.SetTarget(-15);
+    ClimbState = 1;
 
   }
 
@@ -39,24 +38,44 @@ public class RunShooter extends Command {
   @Override
   public void execute() {
 
-    if (topDelay.get() > .5) {
+    if (ClimbState == 1 && xbox.getRightBumper() == true) {
 
-      arm.RunBottom(speed);
+      ClimbState = 2;
 
     }
 
-    arm.RunShooter(speed);
+    if (ClimbState == 2 && hooks.RightHookRelative > 200 && xbox.getRightBumper() == true) {
 
+      ClimbState = 3;
+
+    }
+
+    if (ClimbState == 1) {
+
+      hooks.SetTarget(-15);
+      hooks.RunHooksToAngle();      
+
+    } else if (ClimbState == 2) {
+
+      hooks.RunHooksToRelative();
+
+    } else if (ClimbState == 3) {
+
+      hooks.SetTarget(-80);
+      hooks.RunHooksToAngle();   
+
+    } else {
+
+
+
+    }
+  
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    arm.RunShooter(0);
-    arm.RunBottom(0);
-    topDelay.stop();
-    topDelay.reset();
+    hooks.RunHooks(0);
 
   }
 

@@ -6,6 +6,57 @@ public class Constants {
     public static double POSETOLERANCE = .1;
     public static double ANGLETOLERANCE = 2;
 
+    public static int[] ShootAngle = {
+        0, // 0 Meters 
+        0, 
+        0, 
+        0, 
+        0, 
+        2, 
+        2, 
+        0,
+        0,
+        0,
+        0,  // 1 Meter
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        48,
+        0,
+        0,  // 2 Meter
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,  // 3 Meter
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,  // 4 Meter
+    }; 
+ 
+    public class Limits {
+
+        public static final int TopAngleLimit = 60;
+        public static final int BottomAngleLimit = -60;
+
+    }
+
     public class CAN_IDs {
 
         public static final int FrontLeftDriveID = 1;

@@ -4,24 +4,25 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Limelight;
 
-public class RunShooter extends Command {
+public class RunAnglePID extends Command {
   /** Creates a new RunAngle. */
-  Arm arm;
-  double speed;
-  Timer topDelay;
+  Arm m_arm;
+  XboxController xbox;
+ 
+  public RunAnglePID(Arm Arm, XboxController Xbox) {
 
-  public RunShooter(Arm Arm, double Speed) {
+    m_arm = Arm;
+    xbox = Xbox;
 
-    arm = Arm;
-    speed = Speed;
-    topDelay = new Timer();
-
-    addRequirements(Arm);
+    addRequirements(Arm );
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,9 +30,8 @@ public class RunShooter extends Command {
   @Override
   public void initialize() {
 
-    topDelay.restart();
-
-    speed = SmartDashboard.getNumber("Custom Speed", .5);
+    // Climb is -110
+    m_arm.ChangeTarget(70);
 
   }
 
@@ -39,24 +39,38 @@ public class RunShooter extends Command {
   @Override
   public void execute() {
 
-    if (topDelay.get() > .5) {
+    if (xbox.getYButton() == true) {
 
-      arm.RunBottom(speed);
+      m_arm.ChangeTarget(-65);
+
+    } 
+    
+    if (xbox.getBButton() == true) {
+
+      m_arm.ChangeTarget(0);
 
     }
+    
+    if (xbox.getAButton() == true) {
 
-    arm.RunShooter(speed);
+      m_arm.ChangeTarget(70);
 
+    } 
+
+    if (xbox.getXButton() == true) {
+
+      m_arm.ChangeTarget(SmartDashboard.getNumber("Custom Angle", 0));
+
+    } 
+ 
+    m_arm.ChangeAngleThroughPID();
+ 
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    arm.RunShooter(0);
-    arm.RunBottom(0);
-    topDelay.stop();
-    topDelay.reset();
+    m_arm.RunAngle(0);
 
   }
 
