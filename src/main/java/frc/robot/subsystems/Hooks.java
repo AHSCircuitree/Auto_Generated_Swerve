@@ -72,8 +72,8 @@ public class Hooks extends SubsystemBase {
     SmartDashboard.getNumber("Left Hook Voltage", LeftHookVoltage);
     SmartDashboard.getNumber("Right Hook Voltage", RightHookVoltage);
 
-    SmartDashboard.putNumber("Left Hook Absolute", LeftHookEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("Right Hook Absolute", RightHookEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Left Hook Absolute", -(LeftHookEncoder.getAbsolutePosition() / (.072 / 28)) + 397 + 23 - 4);
+    SmartDashboard.putNumber("Right Hook Absolute", -(RightHookEncoder.getAbsolutePosition() / (.072 / 28)) + 247 + 45 + 4);
 
     SmartDashboard.putNumber("Left Hook Relative", LeftHookMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Right Hook Relative", RightHookMotor.getPosition().getValueAsDouble());

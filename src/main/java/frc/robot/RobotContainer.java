@@ -148,7 +148,7 @@ public class RobotContainer {
 
     //limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
     lights.setDefaultCommand(new ChangeLightsBasedOffState(lights, limelight, Player1Rum));
-    arm.setDefaultCommand(new RunAnglePID(arm, Player1Rum));
+    arm.setDefaultCommand(new RunAnglePID(arm, hooks, Player1Rum));
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric

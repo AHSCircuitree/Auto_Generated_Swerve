@@ -73,7 +73,7 @@ public class Arm extends SubsystemBase {
 
     }
 
-    CurrentAngle = -(CurrentTicks / (.072 / 28) - 328);
+    CurrentAngle = -(CurrentTicks / (.072 / 28) - 328) - 14;
 
     SmartDashboard.getNumber("Angle Voltage", AngleVoltage);
     SmartDashboard.putNumber("Angle Encoder Ticks", AngleEncoder.getAbsolutePosition());
