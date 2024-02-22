@@ -152,8 +152,8 @@ public class RobotContainer {
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Player1.getLeftY() * MaxSpeed)  
-        .withVelocityY(Player1.getLeftX()* MaxSpeed) 
+        .withVelocityX(Player1.getLeftY() * MaxSpeed*.7)  
+        .withVelocityY(Player1.getLeftX()* MaxSpeed*.7) 
         .withRotationalRate((-Player1.getRightX() * MaxAngularRate)) 
     ));
 
@@ -161,6 +161,7 @@ public class RobotContainer {
     Player1.rightTrigger().whileTrue(new RunShooter(arm, SmartDashboard.getNumber("Custom Speed", .5)));
  
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));
+    Player1.rightBumper().onTrue(DriveToGamePiece());
     Player1.start().whileTrue(new RunHooks(hooks, -.75));
     Player1.back().whileTrue(new RunHooks(hooks, .75));
 
@@ -218,18 +219,14 @@ public class RobotContainer {
 
   public Command DriveToGamePiece() {
    
-    if (limelight.HorizonalOffset_LI() != 0) {
+    
+  
+
+     if (limelight.HorizonalOffset_RI() != 0) {
 
       return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(0)  
-        .withVelocityY(-1)  
-        .withRotationalRate(-limelight.HorizonalOffset_LI() / 12));  
-
-    } else if (limelight.HorizonalOffset_RI() != 0) {
-
-      return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(0)  
-        .withVelocityY(1)  
+        .withVelocityX(1)  
+        .withVelocityY(0)  
         .withRotationalRate(-limelight.HorizonalOffset_RI() / 12));  
 
     } else {

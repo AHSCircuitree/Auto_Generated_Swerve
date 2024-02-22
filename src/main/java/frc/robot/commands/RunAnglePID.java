@@ -9,17 +9,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hooks;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Limelight;
 
 public class RunAnglePID extends Command {
   /** Creates a new RunAngle. */
   Arm m_arm;
+  Hooks m_hooks;
   XboxController xbox;
  
-  public RunAnglePID(Arm Arm, XboxController Xbox) {
+  public RunAnglePID(Arm Arm, Hooks Hooks, XboxController Xbox) {
 
     m_arm = Arm;
+    m_hooks = Hooks;
     xbox = Xbox;
 
     addRequirements(Arm );
@@ -58,7 +61,21 @@ public class RunAnglePID extends Command {
 
       m_arm.ChangeTarget(SmartDashboard.getNumber("Custom Angle", 0));
 
-    } 
+    }
+    
+    if (m_hooks.RightHookDegrees < 70 && m_arm.TargetAngle < 20 && m_arm.CurrentAngle > 20) {
+
+      m_arm.ChangeTarget(m_arm.CurrentAngle);
+
+    }
+
+    if (m_hooks.RightHookDegrees < 70 && m_arm.TargetAngle > 20 && m_arm.CurrentAngle < 20) {
+
+      m_arm.ChangeTarget(m_arm.CurrentAngle);
+
+    }
+
+
  
     m_arm.ChangeAngleThroughPID();
  
