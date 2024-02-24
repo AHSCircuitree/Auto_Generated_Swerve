@@ -34,13 +34,17 @@ public class ChangeLightsBasedOffState extends Command {
   @Override
   public void execute() {
 
-    if ((m_limelight.HorizonalOffset_LI() != 0 || m_limelight.HorizonalOffset_LI() != 0) && m_lights.GetState() == Constants.RobotState.NO_RING) {
+    if ((m_limelight.dbl_tx_li != 0 || m_limelight.dbl_tx_ri != 0) && m_lights.GetState() == Constants.RobotState.NO_RING) {
 
       m_lights.ChangeState(Constants.RobotState.RING_DETECTED);
 
-    }
+    } else if ((m_limelight.dbl_tx_li != 0 && m_limelight.dbl_tx_ri != 0) && m_lights.GetState() == Constants.RobotState.RING_DETECTED) {
 
-    if ((m_limelight.HasValidTargetShooter() == true && m_lights.GetState() == Constants.RobotState.RING_COLLECTED)) {
+      m_lights.ChangeState(Constants.RobotState.NO_RING);
+
+    } 
+
+    if ((m_limelight.dbl_tx != 0 && m_lights.GetState() == Constants.RobotState.RING_COLLECTED)) {
 
       m_lights.ChangeState(Constants.RobotState.VALID_TARGET);
 

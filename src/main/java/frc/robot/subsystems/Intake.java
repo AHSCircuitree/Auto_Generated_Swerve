@@ -69,7 +69,7 @@ public class Intake extends SubsystemBase {
 
   public boolean CheckIntakeForPiece() {
 
-    if (FrontFlyMotor.getMotorVoltage().getValueAsDouble() < 7.5) {
+    if (FrontFlyMotor.getMotorVoltage().getValueAsDouble() < 9) {
 
       return true;
 

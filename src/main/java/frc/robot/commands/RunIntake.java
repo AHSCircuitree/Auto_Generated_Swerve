@@ -50,7 +50,7 @@ public class RunIntake extends Command {
 
     if (Spinup.get() > .5) {
 
-      if (lights.GetState() == Constants.RobotState.NO_RING && intake.CheckIntakeForPiece() == true) {
+      if (lights.GetState() == Constants.RobotState.RING_DETECTED && intake.CheckIntakeForPiece() == true) {
 
         lights.ChangeState(Constants.RobotState.RING_COLLECTED);
 

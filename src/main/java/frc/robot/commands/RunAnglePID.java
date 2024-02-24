@@ -32,7 +32,9 @@ public class RunAnglePID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
- 
+
+ m_arm.ChangeTarget(m_arm.CurrentAngle);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,16 +46,21 @@ public class RunAnglePID extends Command {
       m_arm.ChangeTarget(-65);
 
     } 
+     if (xbox.getLeftStickButtonPressed() == true) {
+
+     //m_arm.ChangeTarget(-100);
+
+     }
     
     if (xbox.getBButton() == true) {
 
-      m_arm.ChangeTarget(0);
+      m_arm.ChangeTarget(m_arm.CurrentAngle);
 
     }
     
     if (xbox.getAButton() == true) {
 
-      m_arm.ChangeTarget(70);
+      m_arm.ChangeTarget(58);
 
     } 
 
@@ -63,18 +70,6 @@ public class RunAnglePID extends Command {
 
     }
     
-    if (m_hooks.RightHookDegrees < 70 && m_arm.TargetAngle < 20 && m_arm.CurrentAngle > 20) {
-
-      m_arm.ChangeTarget(m_arm.CurrentAngle);
-
-    }
-
-    if (m_hooks.RightHookDegrees < 70 && m_arm.TargetAngle > 20 && m_arm.CurrentAngle < 20) {
-
-      m_arm.ChangeTarget(m_arm.CurrentAngle);
-
-    }
-
 
  
     m_arm.ChangeAngleThroughPID();

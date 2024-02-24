@@ -114,11 +114,18 @@ public class Arm extends SubsystemBase {
 
   }
 
+  public void Spinup(double speed) {
+
+    TopShootingMotor.set(-speed);
+
+  }
+
   public void RunBottom(double speed) {
 
     BottomShootingMotor.set(-speed);
 
   }
+
 
   public void AnglePID(double Setpoint) {
 

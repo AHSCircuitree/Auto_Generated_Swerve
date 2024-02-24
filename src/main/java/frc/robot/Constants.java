@@ -30,17 +30,17 @@ public class Constants {
         0,
         0,
         0,
+        50, //good
         0,
+        47, //good
         0,
-        0,
-        0,
-        48,
+        42, //good
         0,
         0,  // 2 Meter
         0,
         0,
         0,
-        0,
+        0, // 34
         0,
         0,
         0,

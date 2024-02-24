@@ -119,7 +119,7 @@ public class RobotContainer {
 
       @Override
       public boolean getAsBoolean() {
-        if(Player1.getLeftTriggerAxis() > 0.2){
+        if(Player1.getLeftTriggerAxis() > 0.5){
           return true;
         }
         else{
@@ -133,7 +133,7 @@ public class RobotContainer {
 
       @Override
       public boolean getAsBoolean() {
-        if(Player1.getRightTriggerAxis() > 0.2){
+        if(Player1.getRightTriggerAxis() > 0.5){
           return true;
         }
         else{
@@ -158,12 +158,13 @@ public class RobotContainer {
     ));
 
     Player1.leftTrigger().whileTrue(new RunIntake(intake, arm, lights, .5));
-    Player1.rightTrigger().whileTrue(new RunShooter(arm, SmartDashboard.getNumber("Custom Speed", .5)));
- 
+    Player1.rightTrigger().whileTrue(new RunShooter(arm, lights, SmartDashboard.getNumber("Custom Speed", .5)));
+    Player1.rightStick().whileTrue(new RunIntake(intake, arm, lights, -.5));
+
     Player1.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));
-    Player1.rightBumper().onTrue(DriveToGamePiece());
-    Player1.start().whileTrue(new RunHooks(hooks, -.75));
-    Player1.back().whileTrue(new RunHooks(hooks, .75));
+    Player1.rightBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
+    Player1.start().whileTrue(new RunHooks(hooks, arm, -.75));
+    Player1.back().whileTrue(new RunHooks(hooks, arm, .75));
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -219,15 +220,12 @@ public class RobotContainer {
 
   public Command DriveToGamePiece() {
    
-    
-  
-
-     if (limelight.HorizonalOffset_RI() != 0) {
+    if (1 != 0) {
 
       return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(1)  
+        .withVelocityX(2)  
         .withVelocityY(0)  
-        .withRotationalRate(-limelight.HorizonalOffset_RI() / 12));  
+        .withRotationalRate(-limelight.dbl_tx_ri / 16));  
 
     } else {
 

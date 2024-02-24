@@ -7,18 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lights;
 
 public class RunShooter extends Command {
   /** Creates a new RunAngle. */
   Arm arm;
+  Lights lights;
   double speed;
   Timer Spinup;
 
-  public RunShooter(Arm Arm, double Speed) {
+  public RunShooter(Arm Arm, Lights Lights, double Speed) {
 
     arm = Arm;
     speed = Speed;
+    lights = Lights;
     Spinup = new Timer();
 
     addRequirements(Arm);
@@ -41,11 +45,11 @@ public class RunShooter extends Command {
 
     if (Spinup.get() > .5) {
 
-      arm.RunBottom(speed);
+      arm.RunShooter(speed);
 
     }
 
-    arm.RunShooter(speed);
+    arm.Spinup(speed);
 
   }
 
@@ -53,8 +57,9 @@ public class RunShooter extends Command {
   @Override
   public void end(boolean interrupted) {
 
+    lights.ChangeState(Constants.RobotState.NO_RING);
     arm.RunShooter(0);
-    arm.RunBottom(0);
+    arm.Spinup(0);
     Spinup.stop();
     Spinup.reset();
 

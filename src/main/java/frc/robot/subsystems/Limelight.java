@@ -29,9 +29,9 @@ public class Limelight extends SubsystemBase {
   double dbl_tv_li;
   double dbl_tv_ri;
   double dbl_ta_sh;
-  double dbl_ta_li;
-  double dbl_ta_ri;
-  double dbl_tx, dbl_tv, dbl_ty, dbl_ta, dbl_ts, dbl_thor, dbl_tvert, dbl_tshort, dbl_tlong;
+  public double dbl_ta_li;
+  public double dbl_ta_ri;
+  public double dbl_tx, dbl_tv, dbl_ty, dbl_ta, dbl_ts, dbl_thor, dbl_tvert, dbl_tshort, dbl_tlong;
   public double dbl_tx_li;
   public double dbl_tx_ri;
 
