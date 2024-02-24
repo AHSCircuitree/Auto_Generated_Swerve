@@ -47,7 +47,7 @@ public class Arm extends SubsystemBase {
 
     AngleMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    AnglePID = new PIDController(.07, 0, 0);
+    AnglePID = new PIDController(.03, 0, 0);
 
     AngleEncoder = new DutyCycleEncoder(6);
 
@@ -117,7 +117,12 @@ public class Arm extends SubsystemBase {
   public void Spinup(double speed) {
 
     TopShootingMotor.set(-speed);
+    CentralShootingMotor.set(-speed);
+  }
 
+  public void SpinupAuto(double speed) {
+ 
+    CentralShootingMotor.set(-speed);
   }
 
   public void RunBottom(double speed) {

@@ -16,47 +16,47 @@ public class Constants {
     }
 
     public static int[] ShootAngle = {
-        65, // 0 Meters 
-        65, 
-        65, 
-        65, 
-        65, 
-        2, 
-        2, 
-        0,
-        0,
-        0,
-        0,  // 1 Meter
-        0,
-        0,
-        0,
-        50, //good
-        0,
-        47, //good
-        0,
-        42, //good
-        0,
-        0,  // 2 Meter
-        0,
-        0,
-        0,
-        0, // 34
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,  // 3 Meter
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,  // 4 Meter
+        55, // 0 Meters 
+        55, 
+        55, 
+        55, 
+        55, 
+        55, 
+        55, 
+        55,
+        54,
+        53,
+        48,  // 1 Meter
+        48,
+        48,
+        48,
+        47, //50
+        47,
+        44, //47
+        42,
+        39, //42
+        37,
+        36,  // 2 Meter
+        36,
+        35,
+        34,
+        33, // 34
+        32,
+        31,
+        30,
+        29,
+        29,
+        29,  // 3 Meter
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,  // 4 Meter
     }; 
  
     public class Limits {
@@ -113,6 +113,7 @@ public class Constants {
         // The FIRST in the list is the DEFAULT OPTION
         "StealTwo",
         "TurningTest",
+        "RotateTest",
         "vsm",
         "dqawknilo",
         "klfncew"

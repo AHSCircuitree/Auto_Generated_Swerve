@@ -11,14 +11,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lights;
 
-public class RunShooter extends Command {
+public class RunShooterAuto extends Command {
   /** Creates a new RunAngle. */
   Arm arm;
   Lights lights;
   double speed;
   Timer Spinup;
 
-  public RunShooter(Arm Arm, Lights Lights, double Speed) {
+  public RunShooterAuto(Arm Arm, Lights Lights, double Speed) {
 
     arm = Arm;
     speed = Speed;
@@ -47,11 +47,6 @@ public class RunShooter extends Command {
 
       arm.RunBottom(-.05);
 
-    } else if (Spinup.get() < 0.3) {
-
-      arm.RunBottom(0);
-      arm.Spinup(speed);
-
     } else {
 
       arm.RunShooter(speed);
@@ -65,8 +60,8 @@ public class RunShooter extends Command {
   public void end(boolean interrupted) {
 
     lights.ChangeState(Constants.RobotState.NO_RING);
-    arm.RunShooter(0);
-    arm.Spinup(0);
+    arm.RunBottom(0);
+    arm.SpinupAuto(0);
     Spinup.stop();
     Spinup.reset();
 

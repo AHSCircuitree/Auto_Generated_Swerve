@@ -34,11 +34,11 @@ public class ChangeLightsBasedOffState extends Command {
   @Override
   public void execute() {
 
-    if ((m_limelight.dbl_tx_li != 0 || m_limelight.dbl_tx_ri != 0) && m_lights.GetState() == Constants.RobotState.NO_RING) {
+    if ((Math.abs(m_limelight.dbl_tx_li) < 1 || Math.abs(m_limelight.dbl_tx_ri) < 1) && m_lights.GetState() == Constants.RobotState.NO_RING) {
 
       m_lights.ChangeState(Constants.RobotState.RING_DETECTED);
 
-    } else if ((m_limelight.dbl_tx_li != 0 && m_limelight.dbl_tx_ri != 0) && m_lights.GetState() == Constants.RobotState.RING_DETECTED) {
+    } else if ((Math.abs(m_limelight.dbl_tx_li) < 1 && Math.abs(m_limelight.dbl_tx_ri) < 1) && m_lights.GetState() == Constants.RobotState.RING_DETECTED) {
 
       m_lights.ChangeState(Constants.RobotState.NO_RING);
 

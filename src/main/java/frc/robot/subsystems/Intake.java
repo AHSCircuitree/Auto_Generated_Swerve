@@ -60,7 +60,7 @@ public class Intake extends SubsystemBase {
   public void RunIntake(double speed) {
 
     //LeftIntakeMotor.set(-speed);
-    RightIntakeMotor.set(speed);
+    //RightIntakeMotor.set(speed);
     FrontIntakeMotor.set(speed);
     FrontFlyMotor.set(speed * 10);
     RearFlyMotor.set(speed * 10);
@@ -69,7 +69,7 @@ public class Intake extends SubsystemBase {
 
   public boolean CheckIntakeForPiece() {
 
-    if (FrontFlyMotor.getMotorVoltage().getValueAsDouble() < 9) {
+    if (FrontFlyMotor.getMotorVoltage().getValueAsDouble() < 8) {
 
       return true;
 
