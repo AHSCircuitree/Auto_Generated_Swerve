@@ -19,7 +19,8 @@ public class RunAnglePID extends Command {
   Limelight m_limelight;
   Hooks m_hooks;
   Lights m_lights;
-  XboxController xbox;
+  XboxController xbox1;
+  XboxController xbox2;
 
   public enum ToggleLimelight {
 
@@ -31,12 +32,13 @@ public class RunAnglePID extends Command {
   public ToggleLimelight TrackingStatus = ToggleLimelight.TOGGLE_OFF;
   public boolean HasGoneBackToIntake = false;
  
-  public RunAnglePID(Arm Arm, Hooks Hooks, XboxController Xbox, Limelight Limelight, Lights Lights) {
+  public RunAnglePID(Arm Arm, Hooks Hooks, XboxController Xbox1, XboxController Xbox2, Limelight Limelight, Lights Lights) {
 
     m_arm = Arm;
     m_hooks = Hooks;
     m_lights = Lights;
-    xbox = Xbox;
+    xbox1 = Xbox1;
+    xbox2 = Xbox2;
     m_limelight = Limelight;
 
     addRequirements(Arm, Lights);
@@ -56,50 +58,60 @@ public class RunAnglePID extends Command {
   @Override
   public void execute() {
 
-    if (xbox.getYButton() == true) {
+    if (xbox1.getXButton() == true) {
+
+      m_arm.ChangeTarget(-65);
+      TrackingStatus = ToggleLimelight.TOGGLE_OFF;
+
+    } 
+
+    if (xbox2.getXButton() == true) {
 
       m_arm.ChangeTarget(-65);
       TrackingStatus = ToggleLimelight.TOGGLE_OFF;
 
     } 
  
-    if (xbox.getBButton() == true) {
+    if (xbox1.getBButton() == true) {
 
       m_arm.ChangeTarget(m_arm.CurrentAngle);
       TrackingStatus = ToggleLimelight.TOGGLE_OFF;
 
     }
 
-    if (xbox.getLeftStickButton() == true) {
 
-      m_arm.ChangeTarget(-110);
+    
+
+    if (xbox2.getBButton() == true) {
+
+      m_arm.ChangeTarget(m_arm.CurrentAngle);
       TrackingStatus = ToggleLimelight.TOGGLE_OFF;
 
     }
     
-    if (xbox.getAButton() == true) {
+    if (xbox1.getAButton() == true) {
 
       m_arm.ChangeTarget(55);
       TrackingStatus = ToggleLimelight.TOGGLE_OFF;
 
     } 
 
-    if (xbox.getXButton() == true) {
+    if (xbox2.getYButton() == true) {
 
-      m_arm.ChangeTarget(SmartDashboard.getNumber("Custom Angle", 0));
+      m_arm.ChangeTarget(-117);
       TrackingStatus = ToggleLimelight.TOGGLE_OFF;
 
     }
 
-    // Right DPad
-    if (xbox.getPOV() < 100 && xbox.getPOV() > 80) {
+    // turns on limelight adjustment
+    if (xbox1.getRightBumper() == true) {
 
      TrackingStatus = ToggleLimelight.TOGGLE_ON;
 
     }
 
     // Left DPad
-    if (xbox.getPOV() < 280 && xbox.getPOV() > 260) {
+    if (xbox1.getPOV() < 280 && xbox1.getPOV() > 260) {
 
      TrackingStatus = ToggleLimelight.TOGGLE_OFF;
 

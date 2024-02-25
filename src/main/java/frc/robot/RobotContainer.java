@@ -107,7 +107,6 @@ public class RobotContainer {
   private void configureBindings() {
 
     //Button Configurations for Controller 1
-
     JoystickButton driver1A = new JoystickButton(Player1Rum, XboxController.Button.kA.value);
     JoystickButton driver1B = new JoystickButton(Player1Rum, XboxController.Button.kB.value);
     JoystickButton driver1X = new JoystickButton(Player1Rum, XboxController.Button.kX.value);
@@ -118,6 +117,18 @@ public class RobotContainer {
     JoystickButton driver1RS = new JoystickButton(Player1Rum, XboxController.Button.kRightStick.value);
     JoystickButton driver1Start = new JoystickButton(Player1Rum, XboxController.Button.kStart.value);
     JoystickButton driver1Back = new JoystickButton(Player1Rum, XboxController.Button.kBack.value);
+
+    //Button Configurations for Controller 1
+    JoystickButton driver2A = new JoystickButton(Player2Rum, XboxController.Button.kA.value);
+    JoystickButton driver2B = new JoystickButton(Player2Rum, XboxController.Button.kB.value);
+    JoystickButton driver2X = new JoystickButton(Player2Rum, XboxController.Button.kX.value);
+    JoystickButton driver2Y = new JoystickButton(Player2Rum, XboxController.Button.kY.value);
+    JoystickButton driver2LB = new JoystickButton(Player2Rum, XboxController.Button.kLeftBumper.value);
+    JoystickButton driver2RB = new JoystickButton(Player2Rum, XboxController.Button.kRightBumper.value);
+    JoystickButton driver2LS = new JoystickButton(Player2Rum, XboxController.Button.kLeftStick.value);
+    JoystickButton driver2RS = new JoystickButton(Player2Rum, XboxController.Button.kRightStick.value);
+    JoystickButton driver2Start = new JoystickButton(Player2Rum, XboxController.Button.kStart.value);
+    JoystickButton driver2Back = new JoystickButton(Player2Rum, XboxController.Button.kBack.value);
 
     //Trigger Setup
     BooleanSupplier driver1LTSupplier = new BooleanSupplier() {
@@ -149,14 +160,44 @@ public class RobotContainer {
     
     Trigger driver1RT = new Trigger(driver1RTSupplier);
 
+     //Trigger Setup
+    BooleanSupplier driver2LTSupplier = new BooleanSupplier() {
+
+      @Override
+      public boolean getAsBoolean() {
+        if(Player2.getLeftTriggerAxis() > 0.5){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+    };
+    Trigger driver2LT = new Trigger(driver1LTSupplier);
+
+    BooleanSupplier driver2RTSupplier = new BooleanSupplier() {
+
+      @Override
+      public boolean getAsBoolean() {
+        if(Player2.getRightTriggerAxis() > 0.5){
+          return true;
+        }
+        else{
+          return false;
+        }
+      }
+    };
+    
+    Trigger driver2RT = new Trigger(driver1RTSupplier);
+
     driver1LT.onTrue(new RunIntake(intake, arm, lights, .6));
  
-    arm.setDefaultCommand(new RunAnglePID(arm, hooks, Player1Rum, limelight, lights));
+    arm.setDefaultCommand(new RunAnglePID(arm, hooks, Player1Rum, Player2Rum, limelight, lights));
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Player1.getLeftY() * MaxSpeed * .8)  
-        .withVelocityY(Player1.getLeftX()* MaxSpeed * .8) 
+        .withVelocityX(Player1.getLeftY() * MaxSpeed * .6)  
+        .withVelocityY(Player1.getLeftX()* MaxSpeed * .6) 
         .withRotationalRate((-Player1.getRightX() * MaxAngularRate)) 
     ));
 
@@ -172,22 +213,33 @@ public class RobotContainer {
     Player1.rightStick().whileTrue(new RunShooter(arm, lights, -.2));
 
     //Reverse Feed
-    Player1.leftBumper().whileTrue(new RunIntake(intake, arm, lights, -.5));
+    Player1.y().whileTrue(new RunIntake(intake, arm, lights, -.5));
 
     //Reset Field Orientation
-    Player1.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));//James changed from Leftbumper 2/24/2024
+    Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));//James changed from Leftbumper 2/24/2024
     
     //Locks on to Note
-    Player1.rightBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
+    Player1.leftBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
     
     //Hooks go Up?????
-    Player1.start().whileTrue(new RunHooks(hooks, arm, -.75));
+    Player2.leftBumper().whileTrue(new RunHooks(hooks, arm, .75));
 
     //Hooks go Down?????
-    Player1.back().whileTrue(new RunHooks(hooks, arm, .75));
+    Player2.rightBumper().whileTrue(new RunHooks(hooks, arm, -.75));
+
+    // Shooting into the trap
+    Player2.start().whileTrue(new RunShooter(arm, lights, -.2));
 
     //Registers the Telemetry
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    // Limelight target
+    Player1.rightBumper().whileTrue( 
+        drivetrain.applyRequest(() -> driveFieldCentric
+        .withVelocityX(Player1.getLeftY() * MaxSpeed * .6)  
+        .withVelocityY(Player1.getLeftX()* MaxSpeed * .6) 
+        .withRotationalRate((-Player1.getRightX() * MaxAngularRate - (limelight.dbl_tx / 12))) 
+    ));
 
   }
 
@@ -277,6 +329,41 @@ public class RobotContainer {
       DriveTrajectory("LineupLeft")
  
     ));
+
+    // Steal Right
+    AutoSelect.addOption("Steal Right", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("StealRight"),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the second note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("StealRight")
+
+      ).withTimeout(4),
+ 
+      // Take the second shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseRight")
+
+      ).withTimeout(4.3),
+
+      // Take the third shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+ 
+      DriveTrajectory("LineupRight")
+ 
+    ));
  
     // Publish the selectors
     SmartDashboard.putData(AutoSelect);
@@ -301,7 +388,7 @@ public class RobotContainer {
   public Command DriveToGamePiece() {
    
     return drivetrain.applyRequest(() -> driveRobotCentric
-      .withVelocityX(.7)  
+      .withVelocityX(1.5)  
       .withVelocityY(0)  
       .withRotationalRate(-limelight.dbl_tx_ri / 16));  
  
