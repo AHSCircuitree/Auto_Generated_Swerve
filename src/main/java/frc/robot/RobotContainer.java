@@ -88,7 +88,7 @@ public class RobotContainer {
   private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
  
   // PID Controllers
-  private PIDController AutoDrivePID = new PIDController(1, 0, 0);
+  private PIDController AutoDrivePID = new PIDController(1, 0.001, 0);
   private PIDController AutoTurnPID = new PIDController(2, 0, 0);
 
   // Commands
@@ -196,8 +196,8 @@ public class RobotContainer {
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
-        .withVelocityX(Player1.getLeftY() * MaxSpeed * .6)  
-        .withVelocityY(Player1.getLeftX()* MaxSpeed * .6) 
+        .withVelocityX(Player1.getLeftY() * MaxSpeed * .85)  
+        .withVelocityY(Player1.getLeftX()* MaxSpeed * .85) 
         .withRotationalRate((-Player1.getRightX() * MaxAngularRate)) 
     ));
 
@@ -228,7 +228,7 @@ public class RobotContainer {
     Player2.rightBumper().whileTrue(new RunHooks(hooks, arm, -.75));
 
     // Shooting into the trap
-    Player2.start().whileTrue(new RunShooter(arm, lights, -.2));
+    Player2.start().whileTrue(new RunShooter(arm, lights, -.05));
 
     //Registers the Telemetry
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -279,6 +279,41 @@ public class RobotContainer {
       ).withTimeout(4.3),
 
       // Take the third shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the fourth note
+      new ParallelCommandGroup(
+
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot3")
+
+      ).withTimeout(4.3),
+
+      // Take the fourth shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50)
+
+    ));
+
+     // Close Notes Triple
+    AutoSelect.addOption("Close Notes Triple", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CenterShoot"),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the second note
+      new ParallelCommandGroup(
+        
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot")
+
+      ).withTimeout(4),
+ 
+      // Take the second shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the fourth note
