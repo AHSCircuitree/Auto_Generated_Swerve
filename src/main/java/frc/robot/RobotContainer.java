@@ -85,8 +85,8 @@ public class RobotContainer {
   public final Audio audio = new Audio();
 
   // Selectors
-  private final SendableChooser<String> AutoSelect = new SendableChooser<>();
-
+  private final SendableChooser<Command> AutoSelect = new SendableChooser<>();
+ 
   // PID Controllers
   private PIDController AutoDrivePID = new PIDController(1, 0, 0);
   private PIDController AutoTurnPID = new PIDController(2, 0, 0);
@@ -150,9 +150,7 @@ public class RobotContainer {
     Trigger driver1RT = new Trigger(driver1RTSupplier);
 
     driver1LT.onTrue(new RunIntake(intake, arm, lights, .6));
-
-    //limelight.setDefaultCommand(new RumbleOnTarget(limelight, lights,  Player1Rum));
-    //lights.setDefaultCommand(new ChangeLightsBasedOffState(lights, limelight, Player1Rum));
+ 
     arm.setDefaultCommand(new RunAnglePID(arm, hooks, Player1Rum, limelight, lights));
  
     drivetrain.setDefaultCommand( 
@@ -198,53 +196,21 @@ public class RobotContainer {
     // Set the button bindings
     configureBindings();
 
-    for (int i = 0; i < Constants.UsableTrajectories.length; i++) {
- 
-      if (i == 0) {
-
-        AutoSelect.setDefaultOption(Constants.UsableTrajectories[i], Constants.UsableTrajectories[i]);
-
-      } else {
-
-        AutoSelect.addOption(Constants.UsableTrajectories[i], Constants.UsableTrajectories[i]);
-
-      }
-
-    }
-
-    SmartDashboard.putData("Select Auto", AutoSelect);
-
-    drivetrain.seedFieldRelative(Choreo.getTrajectory(AutoSelect.getSelected()).getInitialPose());
-    //drivetrain.seedFieldRelative(new Pose2d());
- 
-  }
-  //Field Orientation Reset
-  public Command getAutonomousCommand() {
-
-    // Seeds the orientation
-    drivetrain.seedFieldRelative(Choreo.getTrajectory("CenterShoot").getInitialPose());
-
-    // The auto command
-    SequentialCommandGroup CenterShootFront = new SequentialCommandGroup( 
+    // Close Notes
+    AutoSelect.setDefaultOption("Close Notes", new SequentialCommandGroup( 
     
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CenterShoot"),
+
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
- 
-      // Run intake and drive
+
+      // Run intake and drive for the second note
       new ParallelCommandGroup(
-
-      // Intake
-      new RunIntake(intake, arm, lights, .5),
-
-      // Drive to second ring
-      Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory("CenterShoot"), 
-      () -> (drivetrain.getState().Pose), 
-      AutoDrivePID, AutoDrivePID, AutoTurnPID, 
-      (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-      () -> false, 
-      drivetrain
-      )
+        
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot")
 
       ).withTimeout(4),
  
@@ -254,78 +220,73 @@ public class RobotContainer {
       // Run intake and drive for the third note
       new ParallelCommandGroup(
 
-      // Intake
-      new RunIntake(intake, arm, lights, .5),
-
-      // Drive
-      Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory("CenterShoot2"), 
-      () -> (drivetrain.getState().Pose), 
-      AutoDrivePID, AutoDrivePID, AutoTurnPID, 
-      (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-      () -> false, 
-      drivetrain
-      )
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot2")
 
       ).withTimeout(4.3),
 
-      // Shoot the third note
+      // Take the third shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the fourth note
       new ParallelCommandGroup(
 
-      // Intake
-      new RunIntake(intake, arm, lights, .5),
-
-      // Drive
-      Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory("CenterShoot3"), 
-      () -> (drivetrain.getState().Pose), 
-      AutoDrivePID, AutoDrivePID, AutoTurnPID, 
-      (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-      () -> false, 
-      drivetrain
-      )
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot3")
 
       ).withTimeout(4.3),
 
       // Take the fourth shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50)
 
-    );
+    ));
 
-     // The auto command
-    SequentialCommandGroup CenterShootBack = new SequentialCommandGroup( 
+    // Steal Left
+    AutoSelect.addOption("Steal Left", new SequentialCommandGroup( 
     
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("StealLeft"),
+
       // Initial Shot
-      new RunShooter(arm, lights, 1).withTimeout(1),
- 
-      // Run intake and drive
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the second note
       new ParallelCommandGroup(
-
-      // Intake
-      new RunIntake(intake, arm, lights, .5),
-
-      // Drive
-      Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory("CenterShootBack"), 
-      () -> (drivetrain.getState().Pose), 
-      AutoDrivePID, AutoDrivePID, AutoTurnPID, 
-      (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-      () -> false, 
-      drivetrain
-      )
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("StealLeft")
 
       ).withTimeout(4),
  
       // Take the second shot
-      new RunShooter(arm, lights, 1).withTimeout(.85)
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-    );
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeft")
+
+      ).withTimeout(4.3),
+
+      // Take the third shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+ 
+      DriveTrajectory("LineupLeft")
+ 
+    ));
+ 
+    // Publish the selectors
+    SmartDashboard.putData(AutoSelect);
+ 
+  }
+  //Field Orientation Reset
+  public Command getAutonomousCommand() {
 
     // What auto are we running
-    return CenterShootFront;
+    return AutoSelect.getSelected();
     
   }
  
@@ -339,22 +300,50 @@ public class RobotContainer {
   //Locks on to target when it's spotted
   public Command DriveToGamePiece() {
    
-    if (1 != 0) {
+    return drivetrain.applyRequest(() -> driveRobotCentric
+      .withVelocityX(.7)  
+      .withVelocityY(0)  
+      .withRotationalRate(-limelight.dbl_tx_ri / 16));  
+ 
+  }
 
-      return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(.7)  
-        .withVelocityY(0)  
-        .withRotationalRate(-limelight.dbl_tx_ri / 16));  
+  // Trajectory command generator
+  public Command DriveTrajectory(String Trajectory) {
 
+    Optional<Alliance> RobotAlliance;
+    RobotAlliance = DriverStation.getAlliance();
+
+    return Choreo.choreoSwerveCommand(
+      Choreo.getTrajectory(Trajectory), 
+      () -> (drivetrain.getState().Pose), 
+      AutoDrivePID, AutoDrivePID, AutoTurnPID, 
+      (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
+      () -> RobotAlliance.get() == Alliance.Red, 
+      drivetrain
+      );
+
+  }
+
+  // Pose reset function that flips on color
+  public Command ResetAutoPoseOnAlliance(String Trajectory) {
+ 
+    Optional<Alliance> RobotAlliance;
+    RobotAlliance = DriverStation.getAlliance();
+
+    if (RobotAlliance.get() == Alliance.Red) {
+ 
+      return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
+      16.565 - Choreo.getTrajectory(Trajectory).getInitialPose().getX(),
+      Choreo.getTrajectory(Trajectory).getInitialPose().getY(),
+     // Choreo.getTrajectory(Trajectory).getInitialPose().getRotation().minus(new Rotation2d(3.1415)))));
+      new Rotation2d(-Math.PI).minus(Choreo.getTrajectory(Trajectory).getInitialPose().getRotation()))));
+    
     } else {
-
-      return drivetrain.applyRequest(() -> driveRobotCentric
-        .withVelocityX(0)  
-        .withVelocityY(0)  
-        .withRotationalRate(0));  
+ 
+      return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(Choreo.getTrajectory(Trajectory).getInitialPose()));
 
     }
-    
+ 
   }
 
 }

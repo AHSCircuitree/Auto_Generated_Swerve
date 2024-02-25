@@ -107,19 +107,7 @@ public class Constants {
         public final String CANBUS_NAME = "FRC 1599";
 
     }
-
-    public static String[] UsableTrajectories  = {
-
-        // The FIRST in the list is the DEFAULT OPTION
-        "StealTwo",
-        "TurningTest",
-        "RotateTest",
-        "vsm",
-        "dqawknilo",
-        "klfncew"
-
-    };
-    
+ 
     public class Colors {
 
         // Fixed Patterns
