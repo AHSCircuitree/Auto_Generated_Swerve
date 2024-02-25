@@ -378,10 +378,25 @@ public class RobotContainer {
       new ParallelCommandGroup(
         //Drive and intake
         new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("StealRight")
+        DriveTrajectory("StealRight1")
 
       ).withTimeout(4),
+
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveToGamePiece()
+
+      ).withTimeout(3),
  
+        // Run intake and drive for the second note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("StealRight2")
+
+      ).withTimeout(4),
+
       // Take the second shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
@@ -436,7 +451,7 @@ public class RobotContainer {
     RobotAlliance = DriverStation.getAlliance();
 
     return Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory(Trajectory), 
+      Choreo.getTrajectory("CenterShoot"), 
       () -> (drivetrain.getState().Pose), 
       AutoDrivePID, AutoDrivePID, AutoTurnPID, 
       (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
