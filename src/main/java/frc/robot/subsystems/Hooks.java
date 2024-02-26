@@ -121,6 +121,7 @@ public class Hooks extends SubsystemBase {
 
       } else {
 
+        LeftHookMotor.setPosition(0);
         HookMessage = "Angled: Please move the hook up to calibrate";
 
       }
