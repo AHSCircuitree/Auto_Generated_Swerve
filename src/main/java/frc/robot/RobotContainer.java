@@ -225,6 +225,9 @@ public class RobotContainer {
     //Reset Field Orientation
     Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));//James changed from Leftbumper 2/24/2024
     
+    //Test limelight pose
+    Player1.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh"))));//James changed from Leftbumper 2/24/2024
+
     //Locks on to Note
     Player1.leftBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
     
@@ -418,7 +421,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     // What auto are we running
-    return AutoSelect.getSelected();
+    //return AutoSelect.getSelected();
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh")));
     
   }
  
