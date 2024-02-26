@@ -48,7 +48,7 @@ public class Hooks extends SubsystemBase {
 
   /** Creates a new Hooks. */
   public Hooks() {
-
+ 
     RightHookMotor = new TalonFX(Constants.CAN_IDs.RightHookID,"FRC 1599");
     LeftHookMotor = new TalonFX(Constants.CAN_IDs.LeftHookID,"FRC 1599");
 
