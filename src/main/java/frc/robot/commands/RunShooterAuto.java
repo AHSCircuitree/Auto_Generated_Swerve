@@ -47,9 +47,13 @@ public class RunShooterAuto extends Command {
 
       arm.RunBottom(-.05);
 
-    } else {
+    } else if (Spinup.get() < 0.4) {
 
       arm.RunShooter(speed);
+
+    } else {
+
+      end(true);
 
     }
 

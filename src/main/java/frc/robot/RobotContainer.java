@@ -18,8 +18,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -42,16 +45,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChangeAngle;
 import frc.robot.commands.ChangeLightsBasedOffState;
+import frc.robot.commands.DisableIntake;
+import frc.robot.commands.EnableIntake;
 import frc.robot.commands.LimelightTarget;
 import frc.robot.commands.RumbleOnTarget;
 import frc.robot.commands.RunAnglePID;
 import frc.robot.commands.RunAngleSimple;
 import frc.robot.commands.RunHooks;
-import frc.robot.commands.RunHooksToAngle;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterAuto;
 import frc.robot.commands.SetColor;
+import frc.robot.commands.UpdateTracking;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Audio;
@@ -193,6 +198,8 @@ public class RobotContainer {
     driver1LT.onTrue(new RunIntake(intake, arm, lights, .6));
  
     arm.setDefaultCommand(new RunAnglePID(arm, hooks, Player1Rum, Player2Rum, limelight, lights));
+
+    limelight.setDefaultCommand(new UpdateTracking(limelight));
  
     drivetrain.setDefaultCommand( 
         drivetrain.applyRequest(() -> driveFieldCentric
@@ -258,37 +265,25 @@ public class RobotContainer {
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the second note
-      new ParallelCommandGroup(
-        
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CenterShoot")
-
-      ).withTimeout(4),
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("CenterShoot"),
+      new DisableIntake(intake, arm, lights),
  
       // Take the second shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the third note
-      new ParallelCommandGroup(
-
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CenterShoot2")
-
-      ).withTimeout(4.3),
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("CenterShoot2"),
+      new DisableIntake(intake, arm, lights),
 
       // Take the third shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the fourth note
-      new ParallelCommandGroup(
-
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CenterShoot3")
-
-      ).withTimeout(4.3),
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("CenterShoot3"),
+      new DisableIntake(intake, arm, lights),
 
       // Take the fourth shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50)
@@ -481,6 +476,14 @@ public class RobotContainer {
 
     }
  
+  }
+
+  public Command ResetPoseOnLimelight() {
+
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(
+    new Pose2d(new Translation2d(limelight.dbl_botpose[0], limelight.dbl_botpose[1]), 
+    new Rotation2d(limelight.dbl_botpose[3], limelight.dbl_botpose[4]))));
+
   }
 
 }

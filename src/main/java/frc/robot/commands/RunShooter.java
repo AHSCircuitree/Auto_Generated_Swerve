@@ -52,9 +52,9 @@ public class RunShooter extends Command {
       arm.RunBottom(0);
       arm.Spinup(speed);
 
-    } else {
+    } else if (Spinup.get() < 0.7) {
 
-      arm.RunShooter(speed);
+      end(true);
 
     }
 
