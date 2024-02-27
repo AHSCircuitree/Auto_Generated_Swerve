@@ -36,13 +36,9 @@ public class RunHooks extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
- //   if (m_arms.CurrentAngle < 0) {
+
+    hooks.UpdateHookState();
     hooks.RunHooks(speed);
-
-   // } else {
-    //hooks.RunHooks(0);
-
-    //}
     
   }
 

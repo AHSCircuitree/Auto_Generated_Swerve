@@ -79,9 +79,6 @@ public class RunAnglePID extends Command {
 
     }
 
-
-    
-
     if (xbox2.getBButton() == true) {
 
       m_arm.ChangeTarget(m_arm.CurrentAngle);
@@ -119,7 +116,16 @@ public class RunAnglePID extends Command {
 
     if (TrackingStatus == ToggleLimelight.TOGGLE_ON) {
 
-      m_lights.SetColor(Constants.Colors.Green);
+      if (m_limelight.dbl_tx != 0) {
+
+        m_lights.SetColor(Constants.Colors.Green);
+
+      } else {
+
+        m_lights.SetColor(Constants.Colors.Yellow);
+
+      } 
+
       int distance = (int) Math.round(m_limelight.getDistanceToAprilTag() * 10);
       m_arm.ChangeTarget(Constants.ShootAngle[distance]);
       SmartDashboard.putNumber("Expected Angle", Constants.ShootAngle[distance]);
@@ -130,7 +136,16 @@ public class RunAnglePID extends Command {
 
     if (TrackingStatus == ToggleLimelight.TOGGLE_OFF) {
 
-      m_lights.SetColor(Constants.Colors.HotPink);
+      if (m_limelight.dbl_tx != 0) {
+
+        m_lights.SetColor(Constants.Colors.BlueGreen);
+
+      } else {
+
+        m_lights.SetColor(Constants.Colors.HotPink);
+
+      }
+    
 
       if (HasGoneBackToIntake == true) {
 

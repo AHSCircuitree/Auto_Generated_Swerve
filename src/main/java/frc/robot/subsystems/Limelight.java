@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  
 public class Limelight extends SubsystemBase {
@@ -39,7 +40,7 @@ public class Limelight extends SubsystemBase {
   public double dbl_tx_ri;
 
   //AprilTag specific values
-  double[] dbl_botpose;
+  public double[] dbl_botpose;
   double[] dbl_botpose_rear_limelight;
   double[] dbl_campose;
   double dbl_tid;
@@ -104,6 +105,8 @@ public class Limelight extends SubsystemBase {
     dbl_tx_ri = NetworkTableInstance.getDefault().getTable("limelight-ri").getEntry("tx").getDouble(0);
 
     //AprilTag specific calls
+    dbl_botpose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+
     dbl_campose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("campose").getDoubleArray(new double[6]);
     dbl_tid = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tid").getDouble(0);
  
@@ -197,6 +200,7 @@ public class Limelight extends SubsystemBase {
     Pose2d Limepose = new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[4]));
     double[] Limearray = {Limepose.getX(), Limepose.getY(), Limepose.getRotation().getDegrees()}; 
     SmartDashboard.putNumber("Limelight Distance", getDistanceToAprilTag());
+
     SmartDashboard.putNumberArray("Limelight Array", Limearray);
 
   }
@@ -204,6 +208,10 @@ public class Limelight extends SubsystemBase {
   public Pose2d GetPose() {
 
     return new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[4]));
+
+  }
+   {
+    SmartDashboard.putNumberArray("Limelight Pose", dbl_botpose);
 
   }
 

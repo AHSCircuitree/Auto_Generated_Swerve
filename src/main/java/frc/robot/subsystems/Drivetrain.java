@@ -65,8 +65,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         FrontRightTurnVoltage = TunerConstants.DriveTrain.getModule(1).getSteerMotor().getSupplyVoltage().getValue();
         BackLeftTurnVoltage = TunerConstants.DriveTrain.getModule(2).getSteerMotor().getSupplyVoltage().getValue();
         BackRightTurnVoltage = TunerConstants.DriveTrain.getModule(3).getSteerMotor().getSupplyVoltage().getValue();
-
-
+ 
         // FL = 0, FR = 1, RL = 2, RR = 3
         SmartDashboard.putNumber("Front Left Drive Voltage", TunerConstants.DriveTrain.getModule(0).getDriveMotor().getSupplyVoltage().getValue());
         SmartDashboard.putNumber("Front Right Drive Voltage", TunerConstants.DriveTrain.getModule(1).getDriveMotor().getSupplyVoltage().getValue());

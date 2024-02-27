@@ -7,76 +7,41 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hooks;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Limelight;
 
-public class RunHooksToAngle extends Command {
+public class UpdateTracking extends Command {
   /** Creates a new RunAngle. */
-  Hooks hooks;
-  XboxController xbox;
-  double ClimbState;
- 
-  public RunHooksToAngle(Hooks Hooks, XboxController Xbox) {
+  Limelight m_limelight;
+  
+  public UpdateTracking(Limelight Limelight) {
 
-    hooks = Hooks;
-    xbox = Xbox;
+    m_limelight = Limelight;
 
-    addRequirements(Hooks);
+    addRequirements(Limelight);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    hooks.SetTarget(-15);
-    ClimbState = 1;
-
+ 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if (ClimbState == 1 && xbox.getRightBumper() == true) {
-
-      ClimbState = 2;
-
-    }
-
-    if (ClimbState == 2 && hooks.RightHookRelative > 200 && xbox.getRightBumper() == true) {
-
-      ClimbState = 3;
-
-    }
-
-    if (ClimbState == 1) {
-
-      hooks.SetTarget(-15);
-      hooks.RunHooksToAngle();      
-
-    } else if (ClimbState == 2) {
-
-      hooks.RunHooksToRelative();
-
-    } else if (ClimbState == 3) {
-
-      hooks.SetTarget(-80);
-      hooks.RunHooksToAngle();   
-
-    } else {
-
-
-
-    }
-  
+ 
+    m_limelight.ReadNetworkTables();
+ 
   }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
-    hooks.RunHooks(0);
-
+ 
   }
 
   // Returns true when the command should end.
