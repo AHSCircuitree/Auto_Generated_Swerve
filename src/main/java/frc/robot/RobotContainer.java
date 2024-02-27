@@ -216,8 +216,10 @@ public class RobotContainer {
     Player1.y().whileTrue(new RunIntake(intake, arm, lights, -.5));
 
     //Reset Field Orientation
-    Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180)))));//James changed from Leftbumper 2/24/2024
+    //Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Ronew Pose2d(new Translation2d(), Rotationtation2d.fromDegrees(180)))));//James changed from Leftbumper 2/24/2024
     
+    Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(limelight.GetPose())));//James changed from Leftbumper 2/24/2024
+
     //Locks on to Note
     Player1.leftBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
     

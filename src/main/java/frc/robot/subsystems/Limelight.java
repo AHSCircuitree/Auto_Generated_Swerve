@@ -9,6 +9,9 @@ package frc.robot.subsystems;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  
@@ -101,7 +104,6 @@ public class Limelight extends SubsystemBase {
     dbl_tx_ri = NetworkTableInstance.getDefault().getTable("limelight-ri").getEntry("tx").getDouble(0);
 
     //AprilTag specific calls
-    dbl_botpose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("botpose").getDoubleArray(new double[6]);
     dbl_campose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("campose").getDoubleArray(new double[6]);
     dbl_tid = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("tid").getDouble(0);
  
@@ -186,13 +188,24 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
 
+     //AprilTag specific calls
+    dbl_botpose = NetworkTableInstance.getDefault().getTable("limelight-sh").getEntry("botpose_wpiblue").getDoubleArray(new double[6]);
+
     ReadNetworkTables();
     limelightDashboard = "Limelight Horizontal/" + dbl_tx + ";";
     limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_ty + ";";
+    Pose2d Limepose = new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[4]));
+    double[] Limearray = {Limepose.getX(), Limepose.getY(), Limepose.getRotation().getDegrees()}; 
     SmartDashboard.putNumber("Limelight Distance", getDistanceToAprilTag());
+    SmartDashboard.putNumberArray("Limelight Array", Limearray);
 
   }
 
+  public Pose2d GetPose() {
+
+    return new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[4]));
+
+  }
 
  
   public double getDistanceToAprilTag(){
