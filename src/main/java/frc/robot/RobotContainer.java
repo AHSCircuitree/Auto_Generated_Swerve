@@ -55,6 +55,7 @@ import frc.robot.commands.RunHooks;
 import frc.robot.commands.RunIntake;
 import frc.robot.commands.RunShooter;
 import frc.robot.commands.RunShooterAuto;
+import frc.robot.commands.ScoreTrap;
 import frc.robot.commands.SetColor;
 import frc.robot.commands.UpdateTracking;
 import frc.robot.generated.TunerConstants;
@@ -213,7 +214,7 @@ public class RobotContainer {
     //Regular Feed
     Player1.leftTrigger().whileTrue(new RunIntake(intake, arm, lights, .5));
    
-   //Normal Shooter
+    //Normal Shooter
     Player1.rightTrigger().whileTrue(new RunShooter(arm, lights, 1));
     
     // Trap Shooter
@@ -232,6 +233,9 @@ public class RobotContainer {
     //Locks on to Note
     Player1.leftBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
     
+    //Drives to shoot
+    Player1.leftStick().whileTrue(DriveToShootTeleop());
+
     //Hooks go Up?????
     Player2.leftBumper().whileTrue(new RunHooks(hooks, arm, .75));
 
@@ -239,7 +243,7 @@ public class RobotContainer {
     Player2.rightBumper().whileTrue(new RunHooks(hooks, arm, -.75));
 
     // Shooting into the trap
-    Player2.start().whileTrue(new RunShooter(arm, lights, -.07));
+    Player2.start().whileTrue(new ScoreTrap(arm));
 
     //Registers the Telemetry
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -263,7 +267,7 @@ public class RobotContainer {
     AutoSelect.setDefaultOption("Close Notes", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      ResetPoseOnLimelight().withTimeout(.05),
+      ResetAutoPoseOnAlliance("CenterShoot"),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
@@ -485,7 +489,15 @@ public class RobotContainer {
 
   public Command ResetPoseOnLimelight() {
 
-    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(limelight.GetPose()));
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh")));
+
+  }
+
+  public SequentialCommandGroup DriveToShootTeleop() {
+
+    return new SequentialCommandGroup(
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh"))), 
+    DriveTrajectory("TeleopShoot"));
 
   }
 
