@@ -226,9 +226,8 @@ public class RobotContainer {
     //Reset Field Orientation
     Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), new Rotation2d(180)))));//James changed from Leftbumper 2/24/2024
     
-   // Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(limelight.GetPose())));//James changed from Leftbumper 2/24/2024
     //Test limelight pose
-    Player1.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh"))));//James changed from Leftbumper 2/24/2024
+    Player1.back().onTrue(ResetPoseOnLimelight());//James changed from Leftbumper 2/24/2024
 
     //Locks on to Note
     Player1.leftBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
@@ -236,10 +235,10 @@ public class RobotContainer {
     //Drives to shoot
     Player1.leftStick().whileTrue(DriveToShootTeleop());
 
-    //Hooks go Up?????
+    //Hooks go Up
     Player2.leftBumper().whileTrue(new RunHooks(hooks, arm, .75));
 
-    //Hooks go Down?????
+    //Hooks go Down
     Player2.rightBumper().whileTrue(new RunHooks(hooks, arm, -.75));
 
     // Shooting into the trap
@@ -489,14 +488,20 @@ public class RobotContainer {
 
   public Command ResetPoseOnLimelight() {
 
-    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh")));
+    Pose2d LimelightPose = new Pose2d(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getX(), 
+    LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getY(), drivetrain.getPigeon2().getRotation2d());
+      
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightPose));
 
   }
 
   public SequentialCommandGroup DriveToShootTeleop() {
 
+    Pose2d LimelightPose = new Pose2d(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getX(), 
+    LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getY(), drivetrain.getPigeon2().getRotation2d());
+
     return new SequentialCommandGroup(
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh"))), 
+    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightPose)), 
     DriveTrajectory("TeleopShoot"));
 
   }
