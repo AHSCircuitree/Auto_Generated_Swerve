@@ -103,13 +103,14 @@ public class Hooks extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Rotational Velocity", RotationalVelocity);
+    SmartDashboard.putNumber("Hook Relative", LeftHookMotor.getPosition().getValueAsDouble());
     SmartDashboard.putString("Hook State", HookMessage);
 
   }
   
   public void UpdateHookState() {
 
-    if (RotationalVelocity > 2 && CurrentState != HookState.CALIBRATED) {
+    if (RotationalVelocity > 3 && CurrentState != HookState.CALIBRATED) {
 
       if (CurrentState == HookState.STRAIGHT) {
 
@@ -127,7 +128,7 @@ public class Hooks extends SubsystemBase {
 
     }
 
-    if (RotationalVelocity < 2 && CurrentState != HookState.CALIBRATED) {
+    if (RotationalVelocity < 3 && CurrentState != HookState.CALIBRATED) {
  
       if (CurrentState == HookState.ON_ANGLE) {
 

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
@@ -17,12 +18,14 @@ public class RunHooks extends Command {
   Arm m_arms;
   XboxController xbox;
   double speed;
+  Timer Spinup;
 
   public RunHooks(Hooks Hooks, Arm Arms, double Speed) {
     
     hooks = Hooks;
     m_arms = Arms;
     speed = Speed;
+    Spinup = new Timer();
  
     addRequirements(Hooks);
       
@@ -31,13 +34,22 @@ public class RunHooks extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+    Spinup.start();
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    hooks.UpdateHookState();
+    if (Spinup.get() > .5) {
+
+      hooks.UpdateHookState();
+
+    }
+ 
     hooks.RunHooks(speed);
     
   }
