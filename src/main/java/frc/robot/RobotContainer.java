@@ -263,10 +263,11 @@ public class RobotContainer {
     configureBindings();
 
     // Close Notes
-    AutoSelect.setDefaultOption("Close Notes", new SequentialCommandGroup( 
+    AutoSelect.setDefaultOption("Close All From Center", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      ResetAutoPoseOnAlliance("CenterShoot"),
+      //ResetAutoPoseOnAlliance("CenterShoot"),
+      ResetPoseOnLimelight(),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
@@ -297,8 +298,33 @@ public class RobotContainer {
 
     ));
 
-     // Close Notes Triple
-    AutoSelect.addOption("Close Notes Triple", new SequentialCommandGroup( 
+    
+    // Close Notes
+    AutoSelect.addOption("Close Amp", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CloseLeft"),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the second note
+      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
+      DriveTrajectory("CloseLeft"),
+      new DisableIntake(intake, arm, lights),
+ 
+      // Take the second shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+       // Run intake and drive for the third note
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("LineupLeft"),
+      new DisableIntake(intake, arm, lights)
+
+    ));
+  
+    // Center Shoot
+    AutoSelect.addOption("Close Open", new SequentialCommandGroup( 
     
       // Reset Field Orientation
       ResetAutoPoseOnAlliance("CenterShoot"),
@@ -307,119 +333,69 @@ public class RobotContainer {
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the second note
-      new ParallelCommandGroup(
+      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
+      DriveTrajectory("CenterShoot"),
+      new DisableIntake(intake, arm, lights),
+ 
+      // Take the second shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+       // Run intake and drive for the third note
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("LineupMiddle"),
+      new DisableIntake(intake, arm, lights)
+
+    ));
+
+    // Close Right
+    AutoSelect.addOption("Close Right", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CloseRight"),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the second note
+      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
+      DriveTrajectory("CloseRight"),
+      new DisableIntake(intake, arm, lights),
+ 
+      // Take the second shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+       // Run intake and drive for the third note
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("LineupRight"),
+      new DisableIntake(intake, arm, lights)
+
+    ));
+    
+    AutoSelect.addOption("Close Right and Middle", new SequentialCommandGroup(
         
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CenterShoot")
+      //Reset Field Orientation 
+      ResetAutoPoseOnAlliance("CloseRight"),
 
-      ).withTimeout(4),
- 
-      // Take the second shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
-
-      // Run intake and drive for the fourth note
-      new ParallelCommandGroup(
-
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CenterShoot3")
-
-      ).withTimeout(4.3),
-
-      // Take the fourth shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50)
-
-    ));
-
-    // Steal Left
-    AutoSelect.addOption("Steal Left", new SequentialCommandGroup( 
-    
-      // Reset Field Orientation
-      ResetAutoPoseOnAlliance("StealLeft"),
-
-      // Initial Shot
+      //Inital shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the second note
-      new ParallelCommandGroup(
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("StealLeft")
+      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
+      DriveTrajectory("CloseRight"),
+      new DisableIntake(intake, arm, lights),
 
-      ).withTimeout(4),
- 
-      // Take the second shot
+      //Shoot 2nd note
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the third note
-      new ParallelCommandGroup(
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CloseLeft")
+       // Run intake and drive for the third note
+      new EnableIntake(intake, arm, lights, .5),
+      DriveTrajectory("CloseRightMiddle"),
+      new DisableIntake(intake, arm, lights)
 
-      ).withTimeout(4.3),
 
-      // Take the third shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
- 
-      DriveTrajectory("LineupLeft")
- 
-    ));
+      ));
 
-    // Steal Right
-    AutoSelect.addOption("Steal Right", new SequentialCommandGroup( 
-    
-      // Reset Field Orientation
-      ResetAutoPoseOnAlliance("StealRight"),
-
-      // Initial Shot
-      new RunShooter(arm, lights, 1).withTimeout(.50),
-
-      // Run intake and drive for the second note
-      new ParallelCommandGroup(
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("StealRight1")
-
-      ).withTimeout(4),
-
-      new ParallelCommandGroup(
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveToGamePiece()
-
-      ).withTimeout(3),
- 
-        // Run intake and drive for the second note
-      new ParallelCommandGroup(
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("StealRight2")
-
-      ).withTimeout(4),
-
-      // Take the second shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
-
-      // Run intake and drive for the third note
-      new ParallelCommandGroup(
-        //Drive and intake
-        new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CloseRight")
-
-      ).withTimeout(4.3),
-
-      // Take the third shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
- 
-      DriveTrajectory("LineupRight")
- 
-    ));
- 
-    // Publish the selectors
-    SmartDashboard.putData(AutoSelect);
- 
+      SmartDashboard.putData("Select Auto", AutoSelect);
   }
   //Field Orientation Reset
   public Command getAutonomousCommand() {
@@ -488,8 +464,7 @@ public class RobotContainer {
 
   public Command ResetPoseOnLimelight() {
 
-    Pose2d LimelightPose = new Pose2d(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getX(), 
-    LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getY(), drivetrain.getPigeon2().getRotation2d());
+    Pose2d LimelightPose =  LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh");
       
     return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightPose));
 
@@ -498,10 +473,10 @@ public class RobotContainer {
   public SequentialCommandGroup DriveToShootTeleop() {
 
     Pose2d LimelightPose = new Pose2d(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getX(), 
-    LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getY(), drivetrain.getPigeon2().getRotation2d());
+    LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getY(), new Rotation2d(-180));
 
     return new SequentialCommandGroup(
-    drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightPose)), 
+    //drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightPose)), 
     DriveTrajectory("TeleopShoot"));
 
   }
