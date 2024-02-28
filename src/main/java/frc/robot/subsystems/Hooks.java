@@ -32,7 +32,7 @@ public class Hooks extends SubsystemBase {
   public double RightHookRelative;
  
   public Timer RotationalVelocityRefresh;
-  public double RotationalVelocityRefreshTime = .1;
+  public double RotationalVelocityRefreshTime = .4;
   public double PreviousRotationPosition = 10;
   public double RotationalVelocity = 0;
   public enum HookState {
@@ -109,9 +109,7 @@ public class Hooks extends SubsystemBase {
   
   public void UpdateHookState() {
 
-    if (RotationalVelocity > .5 && CurrentState != HookState.CALIBRATED) {
-
-      CurrentState = HookState.ON_ANGLE;
+    if (RotationalVelocity > 2 && CurrentState != HookState.CALIBRATED) {
 
       if (CurrentState == HookState.STRAIGHT) {
 
@@ -121,6 +119,7 @@ public class Hooks extends SubsystemBase {
 
       } else {
 
+        CurrentState = HookState.ON_ANGLE;
         LeftHookMotor.setPosition(0);
         HookMessage = "Angled: Please move the hook up to calibrate";
 
@@ -128,9 +127,7 @@ public class Hooks extends SubsystemBase {
 
     }
 
-    if (RotationalVelocity < .5 && CurrentState != HookState.CALIBRATED) {
-
-      CurrentState = HookState.STRAIGHT;
+    if (RotationalVelocity < 2 && CurrentState != HookState.CALIBRATED) {
  
       if (CurrentState == HookState.ON_ANGLE) {
 
@@ -140,6 +137,7 @@ public class Hooks extends SubsystemBase {
 
       } else {
 
+        CurrentState = HookState.STRAIGHT;
         HookMessage = "Straight: Please move the hook down to calibrate";
 
       }

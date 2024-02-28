@@ -197,8 +197,8 @@ public class Limelight extends SubsystemBase {
     ReadNetworkTables();
     limelightDashboard = "Limelight Horizontal/" + dbl_tx + ";";
     limelightDashboard = limelightDashboard + "Limelight Vertical/" + dbl_ty + ";";
-    Pose2d Limepose = new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[4]));
-    double[] Limearray = {Limepose.getX(), Limepose.getY(), Limepose.getRotation().getDegrees()}; 
+    Pose2d Limepose = new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[3]));
+    double[] Limearray = {Limepose.getX(), Limepose.getY(), dbl_botpose[5] - 90}; 
     SmartDashboard.putNumber("Limelight Distance", getDistanceToAprilTag());
 
     SmartDashboard.putNumberArray("Limelight Array", Limearray);
@@ -207,14 +207,9 @@ public class Limelight extends SubsystemBase {
 
   public Pose2d GetPose() {
 
-    return new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[4]));
+    return new Pose2d(new Translation2d(dbl_botpose[0], dbl_botpose[1]), new Rotation2d(dbl_botpose[3]).minus(new Rotation2d(90)));
 
   }
-   {
-    SmartDashboard.putNumberArray("Limelight Pose", dbl_botpose);
-
-  }
-
  
   public double getDistanceToAprilTag(){
 

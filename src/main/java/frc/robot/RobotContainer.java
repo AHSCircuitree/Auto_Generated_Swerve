@@ -223,9 +223,9 @@ public class RobotContainer {
     Player1.y().whileTrue(new RunIntake(intake, arm, lights, -.5));
 
     //Reset Field Orientation
-    //Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Ronew Pose2d(new Translation2d(), Rotationtation2d.fromDegrees(180)))));//James changed from Leftbumper 2/24/2024
+    Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), new Rotation2d(180)))));//James changed from Leftbumper 2/24/2024
     
-    Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(limelight.GetPose())));//James changed from Leftbumper 2/24/2024
+   // Player1.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(limelight.GetPose())));//James changed from Leftbumper 2/24/2024
     //Test limelight pose
     Player1.back().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh"))));//James changed from Leftbumper 2/24/2024
 
@@ -239,7 +239,7 @@ public class RobotContainer {
     Player2.rightBumper().whileTrue(new RunHooks(hooks, arm, -.75));
 
     // Shooting into the trap
-    Player2.start().whileTrue(new RunShooter(arm, lights, -.05));
+    Player2.start().whileTrue(new RunShooter(arm, lights, -.07));
 
     //Registers the Telemetry
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -263,13 +263,13 @@ public class RobotContainer {
     AutoSelect.setDefaultOption("Close Notes", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      ResetAutoPoseOnAlliance("CenterShoot"),
+      ResetPoseOnLimelight().withTimeout(.05),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the second note
-      new EnableIntake(intake, arm, lights, .5),
+      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
       DriveTrajectory("CenterShoot"),
       new DisableIntake(intake, arm, lights),
  
@@ -423,7 +423,7 @@ public class RobotContainer {
 
     // What auto are we running
     //return AutoSelect.getSelected();
-    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh")));
+    return AutoSelect.getSelected();
     
   }
  
@@ -485,9 +485,7 @@ public class RobotContainer {
 
   public Command ResetPoseOnLimelight() {
 
-    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(
-    new Pose2d(new Translation2d(limelight.dbl_botpose[0], limelight.dbl_botpose[1]), 
-    new Rotation2d(limelight.dbl_botpose[3], limelight.dbl_botpose[4]))));
+    return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(limelight.GetPose()));
 
   }
 
