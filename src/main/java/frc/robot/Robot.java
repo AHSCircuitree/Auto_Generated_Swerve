@@ -6,9 +6,11 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.SetColor;
@@ -25,7 +27,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    
     CommandScheduler.getInstance().run(); 
+   
+    var lastResult = LimelightHelpers.getLatestResults("limelight").targetingResults;
+
+    Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
+
+    if (lastResult.valid) {
+
+      m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+        
+    }
+ 
   }
 
   @Override
