@@ -557,7 +557,7 @@ public class RobotContainer {
       new ParallelCommandGroup(
         //Drive and intake
         new RunIntake(intake, arm, lights, .5),
-        DriveTrajectory("CloseRight", false)
+        DriveTrajectory("Amp", false)
       )
 
     ));
