@@ -514,6 +514,53 @@ public class RobotContainer {
       
       ));
 
+      //Amp Auto
+    AutoSelect.addOption("Amp", new SequentialCommandGroup(
+
+      //Reset Field Orinetation
+      ResetAutoPoseOnAlliance("Amp", false),
+      //Run to amp
+      new ParallelCommandGroup(
+        DriveTrajectory("Amp", false)     
+        ).withTimeout(.4),
+      
+        //Shoot first note into amp
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      //bring arm down here
+
+      //Run intake and drive for second note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("Amp", false)
+       ),
+
+       //Bring arm up here
+
+       //Shoot second note into amp
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      //Bring arm back down here
+
+      //Drive to third not
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("Amp", false)
+      ),
+
+      //Shoot third note onto our side of the field
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      //Drive to fourth note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseRight", false)
+      )
+
+    ));
       SmartDashboard.putData("Select Auto", AutoSelect);
   }
   //Field Orientation Reset
