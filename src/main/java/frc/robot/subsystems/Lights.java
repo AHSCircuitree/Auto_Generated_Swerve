@@ -17,7 +17,7 @@ public class Lights extends SubsystemBase {
 
   public Lights() {
 
-    blinkin = new Spark(0);
+    blinkin = new Spark(1);
 
   }
 

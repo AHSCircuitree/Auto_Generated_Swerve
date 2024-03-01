@@ -233,7 +233,7 @@ public class RobotContainer {
     Player1.leftBumper().whileTrue(new ParallelCommandGroup(DriveToGamePiece(), new RunIntake(intake, arm, lights, .5)));
     
     //Drives to shoot
-    Player1.leftStick().whileTrue(DriveToShootTeleop());
+    //Player1.leftStick().whileTrue(DriveToShootTeleop());
 
     //Hooks go Up
     Player2.leftBumper().whileTrue(new RunHooks(hooks, arm, .75));
@@ -263,136 +263,255 @@ public class RobotContainer {
     configureBindings();
 
     // Close Notes
-    AutoSelect.setDefaultOption("Close All From Center", new SequentialCommandGroup( 
+    AutoSelect.setDefaultOption("Blue Center Shoot 4", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      //ResetAutoPoseOnAlliance("CenterShoot"),
-      ResetPoseOnLimelight(),
+      ResetAutoPoseOnAlliance("CenterShoot", false),
+      //ResetPoseOnLimelight(),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the second note
-      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
-      DriveTrajectory("CenterShoot"),
-      new DisableIntake(intake, arm, lights),
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot", false)
+
+      ).withTimeout(4.3),
  
       // Take the second shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+      new RunShooter(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the third note
-      new EnableIntake(intake, arm, lights, .5),
-      DriveTrajectory("CenterShoot2"),
-      new DisableIntake(intake, arm, lights),
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot2", false)
+
+      ).withTimeout(4.3),
 
       // Take the third shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the fourth note
-      new EnableIntake(intake, arm, lights, .5),
-      DriveTrajectory("CenterShoot3"),
-      new DisableIntake(intake, arm, lights),
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot3", false)
+
+      ).withTimeout(1.7),
+
+      DriveToGamePiece().withTimeout(.43),
+
+       // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot4", false)
+
+      ).withTimeout(2.3),
 
       // Take the fourth shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50)
 
     ));
 
-    
     // Close Notes
-    AutoSelect.addOption("Close Amp", new SequentialCommandGroup( 
+    AutoSelect.addOption("Red Center Shoot 4", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      ResetAutoPoseOnAlliance("CloseLeft"),
+      ResetAutoPoseOnAlliance("CenterShoot", true),
+      //ResetPoseOnLimelight(),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the second note
-      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
-      DriveTrajectory("CloseLeft"),
-      new DisableIntake(intake, arm, lights),
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot", true)
+
+      ).withTimeout(4.3),
  
       // Take the second shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot2", true)
+
+      ).withTimeout(4.3),
+
+      // Take the third shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-       // Run intake and drive for the third note
-      new EnableIntake(intake, arm, lights, .5),
-      DriveTrajectory("LineupLeft"),
-      new DisableIntake(intake, arm, lights)
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot3", true)
 
+      ).withTimeout(1.7),
+
+      DriveToGamePiece().withTimeout(.43),
+
+       // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot4", true)
+
+      ).withTimeout(2.3),
+
+      // Take the fourth shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50)
+
+    ));
+
+    // Close Notes
+    AutoSelect.addOption("Blue Amp Shoot 2", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CloseLeft", false),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeft", false)
+
+      ).withTimeout(4.3),
+
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50)
+ 
+    ));
+
+     // Close Notes
+    AutoSelect.addOption("Blue Amp Shoot 3", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CloseLeft", false),
+
+    
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeft", false)
+
+      ).withTimeout(4.3),
+
+      // Initial Shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeftMiddle", false)
+
+      ).withTimeout(4.3),
+
+       // Initial Shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.5)
+ 
     ));
   
     // Center Shoot
-    AutoSelect.addOption("Close Open", new SequentialCommandGroup( 
+    AutoSelect.addOption("Blue Center Shoot 1", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      ResetAutoPoseOnAlliance("CenterShoot"),
+      ResetAutoPoseOnAlliance("CenterShoot", false),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the second note
-      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
-      DriveTrajectory("CenterShoot"),
-      new DisableIntake(intake, arm, lights),
+           // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot", false)
+
+      ).withTimeout(4.3),
  
       // Take the second shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-       // Run intake and drive for the third note
-      new EnableIntake(intake, arm, lights, .5),
-      DriveTrajectory("LineupMiddle"),
-      new DisableIntake(intake, arm, lights)
+             // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("LineupMiddle", false)
 
+     )
+    
     ));
 
     // Close Right
-    AutoSelect.addOption("Close Right", new SequentialCommandGroup( 
+    AutoSelect.addOption("Blue Close Right", new SequentialCommandGroup( 
     
       // Reset Field Orientation
-      ResetAutoPoseOnAlliance("CloseRight"),
+      ResetAutoPoseOnAlliance("CloseRight", false),
 
       // Initial Shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the second note
-      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
-      DriveTrajectory("CloseRight"),
-      new DisableIntake(intake, arm, lights),
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseRight", false)
+
+      ).withTimeout(4),
  
-      // Take the second shot
+         // Take the second shot
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-       // Run intake and drive for the third note
-      new EnableIntake(intake, arm, lights, .5),
-      DriveTrajectory("LineupRight"),
-      new DisableIntake(intake, arm, lights)
+           // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("LineupRight", false)
 
-    ));
+      )
+
+      ));
     
-    AutoSelect.addOption("Close Right and Middle", new SequentialCommandGroup(
+    AutoSelect.addOption("Blue Close Right and Middle", new SequentialCommandGroup(
         
       //Reset Field Orientation 
-      ResetAutoPoseOnAlliance("CloseRight"),
+      ResetAutoPoseOnAlliance("CloseRight", false),
 
       //Inital shot
       new RunShooter(arm, lights, 1).withTimeout(.50),
 
-      // Run intake and drive for the second note
-      new EnableIntake(intake, arm, lights, .5).withTimeout(.05),
-      DriveTrajectory("CloseRight"),
-      new DisableIntake(intake, arm, lights),
+           // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseRight", false)
+
+      ).withTimeout(4),
 
       //Shoot 2nd note
       new RunShooterAuto(arm, lights, 1).withTimeout(.50),
 
-       // Run intake and drive for the third note
-      new EnableIntake(intake, arm, lights, .5),
-      DriveTrajectory("CloseRightMiddle"),
-      new DisableIntake(intake, arm, lights)
+      // Run intake and drive for the third note
+           // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseRightMiddle", false)
 
-
+      )
+      
       ));
 
       SmartDashboard.putData("Select Auto", AutoSelect);
@@ -417,36 +536,36 @@ public class RobotContainer {
   public Command DriveToGamePiece() {
    
     return drivetrain.applyRequest(() -> driveRobotCentric
-      .withVelocityX(1.5)  
+      .withVelocityX(1.7)  
       .withVelocityY(0)  
       .withRotationalRate(-limelight.dbl_tx_ri / 16));  
  
   }
 
   // Trajectory command generator
-  public Command DriveTrajectory(String Trajectory) {
+  public Command DriveTrajectory(String Trajectory, boolean IsRed) {
 
     Optional<Alliance> RobotAlliance;
     RobotAlliance = DriverStation.getAlliance();
 
     return Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory("CenterShoot"), 
+      Choreo.getTrajectory(Trajectory), 
       () -> (drivetrain.getState().Pose), 
       AutoDrivePID, AutoDrivePID, AutoTurnPID, 
       (ChassisSpeeds speeds) -> drivetrain.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(speeds)),
-      () -> RobotAlliance.get() == Alliance.Red, 
+      () -> IsRed, 
       drivetrain
       );
 
   }
 
   // Pose reset function that flips on color
-  public Command ResetAutoPoseOnAlliance(String Trajectory) {
+  public Command ResetAutoPoseOnAlliance(String Trajectory, boolean IsRed) {
  
     Optional<Alliance> RobotAlliance;
     RobotAlliance = DriverStation.getAlliance();
 
-    if (RobotAlliance.get() == Alliance.Red) {
+    if (IsRed == true) {
  
       return drivetrain.runOnce(() -> drivetrain.seedFieldRelative(new Pose2d(
       16.565 - Choreo.getTrajectory(Trajectory).getInitialPose().getX(),
@@ -470,6 +589,7 @@ public class RobotContainer {
 
   }
 
+  /*
   public SequentialCommandGroup DriveToShootTeleop() {
 
     Pose2d LimelightPose = new Pose2d(LimelightHelpers.getBotPose2d_wpiBlue("limelight-sh").getX(), 
@@ -480,5 +600,6 @@ public class RobotContainer {
     DriveTrajectory("TeleopShoot"));
 
   }
+  */
 
 }

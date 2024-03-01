@@ -51,11 +51,7 @@ public class RunShooterAuto extends Command {
 
       arm.RunShooter(speed);
 
-    } else {
-
-      end(true);
-
-    }
+    } 
 
   }
 

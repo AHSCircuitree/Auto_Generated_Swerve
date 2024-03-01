@@ -30,6 +30,7 @@ public class Robot extends TimedRobot {
     
     CommandScheduler.getInstance().run(); 
    
+    /* 
     var lastResult = LimelightHelpers.getLatestResults("limelight").targetingResults;
 
     Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
       m_robotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
         
     }
+    */
  
   }
 
