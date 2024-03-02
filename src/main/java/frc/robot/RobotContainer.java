@@ -411,7 +411,7 @@ public class RobotContainer {
 
       ).withTimeout(4.3),
 
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50)
+      new RunShooter(arm, lights, 1).withTimeout(.50)
  
     ));
 
@@ -431,7 +431,7 @@ public class RobotContainer {
       ).withTimeout(4.3),
 
       // Initial Shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+      new RunShooter(arm, lights, 1).withTimeout(.50),
 
       // Run intake and drive for the third note
       new ParallelCommandGroup(
@@ -442,7 +442,7 @@ public class RobotContainer {
       ).withTimeout(4.3),
 
        // Initial Shot
-      new RunShooterAuto(arm, lights, 1).withTimeout(.5)
+      new RunShooter(arm, lights, 1).withTimeout(.5)
  
     ));
 
