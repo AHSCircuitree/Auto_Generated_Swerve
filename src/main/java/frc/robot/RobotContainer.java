@@ -393,6 +393,28 @@ public class RobotContainer {
  
     ));
 
+    
+    // Close Notes
+    AutoSelect.addOption("Red Amp Shoot 2", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CloseLeft", true),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeft", true)
+
+      ).withTimeout(4.3),
+
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50)
+ 
+    ));
+
      // Close Notes
     AutoSelect.addOption("Blue Amp Shoot 3", new SequentialCommandGroup( 
     
@@ -416,6 +438,37 @@ public class RobotContainer {
         //Drive and intake
         new RunIntake(intake, arm, lights, .5),
         DriveTrajectory("CloseLeftMiddle", false)
+
+      ).withTimeout(4.3),
+
+       // Initial Shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.5)
+ 
+    ));
+
+     // Close Notes
+    AutoSelect.addOption("Red Amp Shoot 3", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CloseLeft", true),
+
+    
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeft", true)
+
+      ).withTimeout(4.3),
+
+      // Initial Shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+      // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CloseLeftMiddle", true)
 
       ).withTimeout(4.3),
 
@@ -453,6 +506,37 @@ public class RobotContainer {
      )
     
     ));
+
+    // Center Shoot
+    AutoSelect.addOption("Red Center Shoot 1", new SequentialCommandGroup( 
+    
+      // Reset Field Orientation
+      ResetAutoPoseOnAlliance("CenterShoot", true),
+
+      // Initial Shot
+      new RunShooter(arm, lights, 1).withTimeout(.50),
+
+           // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("CenterShoot", true)
+
+      ).withTimeout(4.3),
+ 
+      // Take the second shot
+      new RunShooterAuto(arm, lights, 1).withTimeout(.50),
+
+             // Run intake and drive for the third note
+      new ParallelCommandGroup(
+        //Drive and intake
+        new RunIntake(intake, arm, lights, .5),
+        DriveTrajectory("LineupMiddle", true)
+
+     )
+    
+    ));
+
 
     // Close Right
     AutoSelect.addOption("Blue Close Right", new SequentialCommandGroup( 
