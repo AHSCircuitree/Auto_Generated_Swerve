@@ -4,24 +4,24 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hooks;
+import frc.robot.subsystems.Lights;
 
-public class RunHooksToAngle extends Command {
+public class ScoreTrap extends Command {
   /** Creates a new RunAngle. */
-  Hooks hooks;
-  XboxController xbox;
-  double ClimbState;
- 
-  public RunHooksToAngle(Hooks Hooks, XboxController Xbox) {
+  Arm arm;
+  Timer Spinup;
 
-    hooks = Hooks;
-    xbox = Xbox;
+  public ScoreTrap(Arm Arm) {
 
-    addRequirements(Hooks);
+    arm = Arm;
+    Spinup = new Timer();
+
+    addRequirements(Arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,8 +29,9 @@ public class RunHooksToAngle extends Command {
   @Override
   public void initialize() {
 
-    hooks.SetTarget(-15);
-    ClimbState = 1;
+    Spinup.restart();
+
+   // speed = SmartDashboard.getNumber("Custom Speed", .5);
 
   }
 
@@ -38,44 +39,26 @@ public class RunHooksToAngle extends Command {
   @Override
   public void execute() {
 
-    if (ClimbState == 1 && xbox.getRightBumper() == true) {
+    if (Spinup.get() < 2) {
 
-      ClimbState = 2;
-
-    }
-
-    if (ClimbState == 2 && hooks.RightHookRelative > 200 && xbox.getRightBumper() == true) {
-
-      ClimbState = 3;
-
-    }
-
-    if (ClimbState == 1) {
-
-      hooks.SetTarget(-15);
-      hooks.RunHooksToAngle();      
-
-    } else if (ClimbState == 2) {
-
-      hooks.RunHooksToRelative();
-
-    } else if (ClimbState == 3) {
-
-      hooks.SetTarget(-80);
-      hooks.RunHooksToAngle();   
-
+      arm.RunBottom(-.07);
+ 
     } else {
 
-
+      end(true);
 
     }
-  
+
   }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
 
-    hooks.RunHooks(0);
+    arm.RunShooter(0);
+    arm.Spinup(0);
+    Spinup.stop();
+    Spinup.reset();
 
   }
 

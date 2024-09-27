@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
@@ -34,8 +35,9 @@ public class Arm extends SubsystemBase {
   public double BottomShootingVoltage;
   public double CentralShootingVoltage;
   public double TopShootingVoltage;
+ 
   public double CustomArmSpeed;
-  
+ 
   public Arm() {
  
     AngleMotor = new TalonFX(Constants.CAN_IDs.AngleID,"FRC 1599");
@@ -45,7 +47,7 @@ public class Arm extends SubsystemBase {
 
     AngleMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    AnglePID = new PIDController(.07, 0, 0);
+    AnglePID = new PIDController(.03, 0, 0);
 
     AngleEncoder = new DutyCycleEncoder(6);
 
@@ -53,7 +55,7 @@ public class Arm extends SubsystemBase {
  
     SmartDashboard.putNumber("Custom Angle", 0);
     SmartDashboard.putNumber("Custom Speed",0);
-
+ 
   }
 
   @Override
@@ -71,7 +73,7 @@ public class Arm extends SubsystemBase {
 
     }
 
-    CurrentAngle = -(CurrentTicks / (.072 / 28) - 328);
+    CurrentAngle = -(CurrentTicks / (.072 / 28) - 328) - 14;
 
     SmartDashboard.getNumber("Angle Voltage", AngleVoltage);
     SmartDashboard.putNumber("Angle Encoder Ticks", AngleEncoder.getAbsolutePosition());
@@ -106,9 +108,21 @@ public class Arm extends SubsystemBase {
 
   public void RunShooter(double speed) {
  
+    BottomShootingMotor.set(-speed);
     CentralShootingMotor.set(-speed);
     TopShootingMotor.set(-speed);
 
+  }
+
+  public void Spinup(double speed) {
+
+    TopShootingMotor.set(-speed);
+    CentralShootingMotor.set(-speed);
+  }
+
+  public void SpinupAuto(double speed) {
+ 
+    CentralShootingMotor.set(-speed);
   }
 
   public void RunBottom(double speed) {
@@ -116,6 +130,7 @@ public class Arm extends SubsystemBase {
     BottomShootingMotor.set(-speed);
 
   }
+
 
   public void AnglePID(double Setpoint) {
 

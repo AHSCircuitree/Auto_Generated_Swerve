@@ -11,7 +11,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lights;
 
-public class RunIntake extends Command {
+public class EnableIntake extends Command {
   /** Creates a new RunIntake. */
 
   Intake intake;
@@ -20,7 +20,7 @@ public class RunIntake extends Command {
   double speed;
   Timer Spinup;
 
-  public RunIntake(Intake Intake, Arm Arm, Lights Lights, double Speed) {
+  public EnableIntake(Intake Intake, Arm Arm, Lights Lights, double Speed) {
     
     intake = Intake;
     arm = Arm;
@@ -37,41 +37,10 @@ public class RunIntake extends Command {
   @Override
   public void initialize() {
 
-    Spinup.restart();
-
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
- 
     intake.RunIntake(speed);
     arm.RunBottom(speed / 3);
+    lights.SetColor(Constants.Colors.Blue);
 
-    if (Spinup.get() > .5) {
-
-      if (lights.GetState() == Constants.RobotState.RING_DETECTED && intake.CheckIntakeForPiece() == true) {
-
-        lights.ChangeState(Constants.RobotState.RING_COLLECTED);
-
-      }
-
-    }
- 
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
- 
-    intake.RunIntake(0);
-    arm.RunBottom(0);
- 
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 }

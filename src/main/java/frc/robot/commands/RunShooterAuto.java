@@ -5,38 +5,37 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hooks;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lights;
 
-public class RunHooks extends Command {
-  /** Creates a new RunHooks. */
-
-  Hooks hooks;
-  Arm m_arms;
-  XboxController xbox;
+public class RunShooterAuto extends Command {
+  /** Creates a new RunAngle. */
+  Arm arm;
+  Lights lights;
   double speed;
   Timer Spinup;
 
-  public RunHooks(Hooks Hooks, Arm Arms, double Speed) {
-    
-    hooks = Hooks;
-    m_arms = Arms;
+  public RunShooterAuto(Arm Arm, Lights Lights, double Speed) {
+
+    arm = Arm;
     speed = Speed;
+    lights = Lights;
     Spinup = new Timer();
- 
-    addRequirements(Hooks);
-      
+
+    addRequirements(Arm);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
-  
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
 
-    Spinup.start();
+    Spinup.restart();
+
+   // speed = SmartDashboard.getNumber("Custom Speed", .5);
 
   }
 
@@ -44,20 +43,28 @@ public class RunHooks extends Command {
   @Override
   public void execute() {
 
-    if (Spinup.get() > .5) {
+    if (Spinup.get() < 0.1) {
 
-      hooks.UpdateHookState();
+      arm.RunBottom(-.05);
 
-    }
- 
-    hooks.RunHooks(speed);
-    
+    } else if (Spinup.get() < 0.4) {
+
+      arm.RunShooter(speed);
+
+    } 
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hooks.RunHooks(0);
+
+    lights.ChangeState(Constants.RobotState.NO_RING);
+    arm.RunBottom(0);
+    arm.SpinupAuto(0);
+    Spinup.stop();
+    Spinup.reset();
+
   }
 
   // Returns true when the command should end.
@@ -65,5 +72,4 @@ public class RunHooks extends Command {
   public boolean isFinished() {
     return false;
   }
-
 }

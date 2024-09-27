@@ -7,19 +7,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lights;
 
 public class RunShooter extends Command {
   /** Creates a new RunAngle. */
   Arm arm;
+  Lights lights;
   double speed;
-  Timer topDelay;
+  Timer Spinup;
 
-  public RunShooter(Arm Arm, double Speed) {
+  public RunShooter(Arm Arm, Lights Lights, double Speed) {
 
     arm = Arm;
     speed = Speed;
-    topDelay = new Timer();
+    lights = Lights;
+    Spinup = new Timer();
 
     addRequirements(Arm);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,9 +33,9 @@ public class RunShooter extends Command {
   @Override
   public void initialize() {
 
-    topDelay.restart();
+    Spinup.restart();
 
-    speed = SmartDashboard.getNumber("Custom Speed", .5);
+   // speed = SmartDashboard.getNumber("Custom Speed", .5);
 
   }
 
@@ -39,13 +43,20 @@ public class RunShooter extends Command {
   @Override
   public void execute() {
 
-    if (topDelay.get() > .5) {
+    if (Spinup.get() < 0.1) {
 
-      arm.RunBottom(speed);
+      arm.RunBottom(-.05);
+
+    } else if (Spinup.get() < 0.3) {
+
+      arm.RunBottom(0);
+      arm.Spinup(speed);
+
+    } else if (Spinup.get() < 1) {
+
+      end(true);
 
     }
-
-    arm.RunShooter(speed);
 
   }
 
@@ -53,10 +64,11 @@ public class RunShooter extends Command {
   @Override
   public void end(boolean interrupted) {
 
+    lights.ChangeState(Constants.RobotState.NO_RING);
     arm.RunShooter(0);
-    arm.RunBottom(0);
-    topDelay.stop();
-    topDelay.reset();
+    arm.Spinup(0);
+    Spinup.stop();
+    Spinup.reset();
 
   }
 

@@ -4,60 +4,44 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hooks;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.Limelight;
 
-public class RunHooks extends Command {
-  /** Creates a new RunHooks. */
-
-  Hooks hooks;
-  Arm m_arms;
-  XboxController xbox;
-  double speed;
-  Timer Spinup;
-
-  public RunHooks(Hooks Hooks, Arm Arms, double Speed) {
-    
-    hooks = Hooks;
-    m_arms = Arms;
-    speed = Speed;
-    Spinup = new Timer();
- 
-    addRequirements(Hooks);
-      
-  }
+public class UpdateTracking extends Command {
+  /** Creates a new RunAngle. */
+  Limelight m_limelight;
   
+  public UpdateTracking(Limelight Limelight) {
+
+    m_limelight = Limelight;
+
+    addRequirements(Limelight);
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-    Spinup.start();
-
+ 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if (Spinup.get() > .5) {
-
-      hooks.UpdateHookState();
-
-    }
  
-    hooks.RunHooks(speed);
-    
+    m_limelight.ReadNetworkTables();
+ 
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hooks.RunHooks(0);
+ 
   }
 
   // Returns true when the command should end.
@@ -65,5 +49,4 @@ public class RunHooks extends Command {
   public boolean isFinished() {
     return false;
   }
-
 }

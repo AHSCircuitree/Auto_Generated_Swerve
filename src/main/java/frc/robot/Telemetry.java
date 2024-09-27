@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
@@ -8,10 +9,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -39,6 +43,10 @@ public class Telemetry {
     NetworkTable table = inst.getTable("Pose");
     DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
     StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
+
+    // FMS NetworkTables
+    NetworkTable FMStable = inst.getTable("FMSInfo");
+    BooleanSubscriber AllianceSub = table.getBooleanTopic("IsRedAlliance").subscribe(false, PubSubOption.topicsOnly(false));
 
     /* Robot speeds for general checking */
     NetworkTable driveStats = inst.getTable("Drive");
@@ -113,33 +121,10 @@ public class Telemetry {
 
     }
 
-    public Pose2d returnPose() {
+    public boolean IsRedAllience () {
 
-        return m_lastPose;
-
+        return AllianceSub.get();
+        
     }
- 
-    BooleanSupplier CheckIfFinished(double X, double Y, double Angle) {
-
-        return () -> Math.abs(m_lastPose.getX() - X) <= Constants.POSETOLERANCE
-        && Math.abs(m_lastPose.getY() - Y) <= Constants.POSETOLERANCE
-        && Math.abs(returnPose().getRotation().getDegrees() - Angle) <= Constants.ANGLETOLERANCE;
-  
-    }
-
-    BooleanSupplier CheckIfFinished(double X, double Y, double Angle, double Tolerance) {
-
-        return () -> Math.abs(m_lastPose.getX() - X) <= Tolerance
-        && Math.abs(m_lastPose.getY() - Y) <= Tolerance
-        && Math.abs(returnPose().getRotation().getDegrees() - Angle) <= Constants.ANGLETOLERANCE;
-  
-    }
-
-    BooleanSupplier CheckIfFinished(double X, double Y) {
-
-        return () -> Math.abs(m_lastPose.getX() - X) <= Constants.POSETOLERANCE
-        && Math.abs(m_lastPose.getY() - Y) <= Constants.POSETOLERANCE;
-  
-     }
  
 }

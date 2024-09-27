@@ -6,48 +6,57 @@ public class Constants {
     public static double POSETOLERANCE = .1;
     public static double ANGLETOLERANCE = 2;
 
+    public enum RobotState {
+
+        NO_RING,
+        RING_DETECTED,
+        RING_COLLECTED,
+        VALID_TARGET
+    
+    }
+
     public static int[] ShootAngle = {
-        0, // 0 Meters 
-        0, 
-        0, 
-        0, 
-        0, 
-        2, 
-        2, 
-        0,
-        0,
-        0,
-        0,  // 1 Meter
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        55, // 0 Meters 
+        55, 
+        55, 
+        55, 
+        55, 
+        55, 
+        55, 
+        55,
+        54,
+        53,
+        48,  // 1 Meter
         48,
-        0,
-        0,  // 2 Meter
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,  // 3 Meter
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,  // 4 Meter
+        48,
+        48,
+        47, //50
+        47,
+        44, //47
+        42,
+        39, //42
+        37,
+        36,  // 2 Meter
+        36,
+        35,
+        34,
+        33, // 34
+        32,
+        31,
+        30,
+        29,
+        29,
+        29,  // 3 Meter
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,
+        29,  // 4 Meter
     }; 
  
     public class Limits {
@@ -98,52 +107,7 @@ public class Constants {
         public final String CANBUS_NAME = "FRC 1599";
 
     }
-
-    public class WayPoints {
-
-        // Initial Points
-        public static double FieldCenter[] = {0, 0, 0};
-        public static double BlueStartingLeft[] = {6.782, 0.610, -120};
-        public static double BlueStartingCenter[] = {5.639, 1.372, 178};
-        public static double BlueStartingRight[] = {4.369, 0.610, 120};
-        public static double RedStartingLeft[] = {4.369, 16.002, 60};
-        public static double RedStartingCenter[] = {5.639, 15.189, 0};
-        public static double RedStartingRight[] = {6.782, 16.002, -60};
-
-        // Blue Side Rings
-        public static double BlueThreeShootStart1[] = {7.5104, 1.5654, -120};
-        public static double BlueThreeShootStart2[] = {7.5104, 2, -90};
-        public static double BlueLeftRing[] = {7.0104, 2.8, -90};
-        public static double BlueLeftRingShoot[] = {7.0104, 2.9654, -160};
-        public static double BlueCenterRing[] = {5.5626, 2.8, 178};
-        public static double BlueAboveRightRing[] = {3.9894, 1.8, 90};
-        public static double BlueRightRing[] = {3.9494, 2.6654, 90};
-        public static double BlueRightRingShoot1[] = {4.2894, 2.2, 90};
-        public static double BlueRightRingShoot2[] = {4.2894, 2.2, 150};
-
-        // Blue Right Steal
-        public static double BlueStealShootingLine[] = {3.282, 2.110, 120};
-        public static double RightBlueStageLine[] = {0.7874, 5.8674, 120};
-        public static double MiddleRing5FromBlue[] = {0.5874, 8.2, 90};
-        public static double MiddleRing4FromBlue[] = {2.6384, 8.2, 90};
-
-        // Blue Left Steal
-        public static double BlueLeftStealLineUp1[] = {7, 2, -120};
-        public static double BlueLeftStealRing1[] = {7.0104, 2.8 + .2, -90};
-        public static double BlueLeftStealRingShoot[] = {7.0104, 2.8 + .2, -150};
-        public static double BlueLeftStealLineUp2[] = {7.46, 5.82, -90};
-        public static double BlueLeftStealRing2[] = {7.46, 8.2 + .2, -90};
-        public static double BlueLeftStealLineUp3[] = {6.14, 5.82, -90};
-        public static double BlueLeftStealRing3[] = {5.76, 8.2 + .2, -90};
-      
-
-        //Red Side Rings
-        public static double RedLeftRing[] = {4.0894,13.9192,0};
-        public static double RedCenterRing[] = {5.588,13.9192,0};
-        public static double RedRightRing[] = {7.0104,13.9192,0};
-
-    }
-
+ 
     public class Colors {
 
         // Fixed Patterns
